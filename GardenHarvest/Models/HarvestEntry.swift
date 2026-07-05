@@ -8,7 +8,7 @@ final class HarvestEntry {
     var date: Date
     var note: String
     var variant: String?
-    var photoData: Data?
+    @Attribute(.externalStorage) var photoData: Data?
     var photoSource: String?
 
     init(

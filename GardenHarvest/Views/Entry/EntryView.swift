@@ -61,11 +61,13 @@ struct EntryView: View {
         }
         .photosPicker(isPresented: $showPhotosPicker, selection: $photoPickerItem, matching: .images)
         .onChange(of: photoPickerItem) { _, newValue in
+            guard let newValue else { return }
             Task {
-                if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                if let data = try? await newValue.loadTransferable(type: Data.self) {
                     photoData = data
                     photoSource = "Library"
                 }
+                photoPickerItem = nil
             }
         }
     }
@@ -263,9 +265,10 @@ struct EntryView: View {
 
     private func save() {
         guard ounces > 0 else { return }
+        let roundedOunces = (ounces * 10).rounded() / 10
         let entry = HarvestEntry(
             cropName: cropName,
-            ounces: ounces,
+            ounces: roundedOunces,
             date: selectedDateChip.date(),
             note: note,
             variant: selectedVariant,
@@ -273,7 +276,11 @@ struct EntryView: View {
             photoSource: photoSource
         )
         modelContext.insert(entry)
-        try? modelContext.save()
-        onSaved("🌱 Logged \(WeightFormatter.ounces(ounces)) oz \(cropName)")
+        do {
+            try modelContext.save()
+            onSaved("🌱 Logged \(WeightFormatter.ounces(roundedOunces)) oz \(cropName)")
+        } catch {
+            assertionFailure("Failed to save harvest entry: \(error)")
+        }
     }
 }
