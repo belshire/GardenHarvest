@@ -55,7 +55,9 @@ struct EntryView: View {
         .background(Theme.panelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .confirmationDialog("Add a photo of this pick", isPresented: $showPhotoDialog, titleVisibility: .visible) {
-            Button("Take Photo") { showCamera = true }
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                Button("Take Photo") { showCamera = true }
+            }
             Button("Choose from Library") { showPhotosPicker = true }
             Button("Cancel", role: .cancel) { }
         }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */; };
 		0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */; };
 		1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */; };
 		1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C86015BCE19741443A328 /* GardenHarvestApp.swift */; };
@@ -68,6 +69,7 @@
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
+		8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCropView.swift; sourceTree = "<group>"; };
 		906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedIfNeededTests.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
 		9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPersistenceTests.swift; sourceTree = "<group>"; };
@@ -108,6 +110,14 @@
 				B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		25EF93C51C63DBFA98CB4ED4 /* Add */ = {
+			isa = PBXGroup;
+			children = (
+				8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */,
+			);
+			path = Add;
 			sourceTree = "<group>";
 		};
 		2A175997EFAA09A17061632A /* Services */ = {
@@ -191,6 +201,7 @@
 				8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */,
 				797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */,
 				0D29EA0A52F056B6C5E121BC /* RootView.swift */,
+				25EF93C51C63DBFA98CB4ED4 /* Add */,
 				68D01B2AE68D1EE288C3B9CD /* Entry */,
 				CF22C8A470A8261DBA80F1EB /* Home */,
 			);
@@ -314,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68B7E41809D808FD963D5CD2 /* AddCropTileView.swift in Sources */,
+				03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */,
 				25A40347E4B78135958703CC /* AppTab.swift in Sources */,
 				31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */,
 				2B3966569BC262116EA34C2A /* CameraPicker.swift in Sources */,

@@ -28,10 +28,13 @@ struct HomeContainerView: View {
                         onBack: { if !path.isEmpty { path.removeLast() } }
                     )
                 case .add:
-                    VStack(spacing: 16) {
-                        Text("Add a vegetable")
-                        Button("Back") { path.removeLast() }
-                    }
+                    AddCropView(
+                        onCommitted: { cropName in
+                            if !path.isEmpty { path.removeLast() }
+                            path.append(.entry(cropName: cropName))
+                        },
+                        onBack: { if !path.isEmpty { path.removeLast() } }
+                    )
                 }
             }
         }
