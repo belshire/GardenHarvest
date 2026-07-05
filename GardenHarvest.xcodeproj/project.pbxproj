@@ -8,8 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C86015BCE19741443A328 /* GardenHarvestApp.swift */; };
+		2274BD7C870FDCE58309788B /* Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3414F2F7D19EC8A0E534EBA7 /* Crop.swift */; };
 		231FE263F01DC16E78FD7195 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A2BEA23B393E224BAFDBDC /* Theme.swift */; };
+		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */; };
+		B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */; };
 		DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,9 +28,12 @@
 
 /* Begin PBXFileReference section */
 		27A2BEA23B393E224BAFDBDC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		3414F2F7D19EC8A0E534EBA7 /* Crop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crop.swift; sourceTree = "<group>"; };
 		599C86015BCE19741443A328 /* GardenHarvestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenHarvestApp.swift; sourceTree = "<group>"; };
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
+		9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPersistenceTests.swift; sourceTree = "<group>"; };
 		B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GardenHarvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -38,6 +44,7 @@
 			children = (
 				EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */,
 				599C86015BCE19741443A328 /* GardenHarvestApp.swift */,
+				B37B8D327911F78A20CCA529 /* Models */,
 				79011D86BBBAB53A98618255 /* Theme */,
 			);
 			path = GardenHarvest;
@@ -60,6 +67,15 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
+		B37B8D327911F78A20CCA529 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3414F2F7D19EC8A0E534EBA7 /* Crop.swift */,
+				8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		DC7328CFF9D78FB3EBFEC3C2 = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */,
+				9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */,
 			);
 			path = GardenHarvestTests;
 			sourceTree = "<group>";
@@ -170,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */,
+				B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +195,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2274BD7C870FDCE58309788B /* Crop.swift in Sources */,
 				1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */,
+				71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */,
 				231FE263F01DC16E78FD7195 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
