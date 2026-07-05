@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 enum SeedDataService {
     struct BaseEntry {
@@ -203,5 +204,42 @@ enum SeedDataService {
             lastYearEntries: lastYearEntries,
             twoYearsAgoEntries: twoYearsAgoEntries
         )
+    }
+
+    static let knownCrops: [(name: String, isQuickLog: Bool, variants: [String])] = [
+        ("Asparagus", true, []),
+        ("Strawberries", true, []),
+        ("Raspberries", true, ["small", "large"]),
+        ("Blueberries", true, []),
+        ("Boysenberries", true, []),
+        ("Artichoke", true, []),
+        ("Peas", true, []),
+        ("Radishes", true, []),
+        ("Mushrooms", false, []),
+        ("Tomatoes Cherry", false, [])
+    ]
+
+    static func seedIfNeeded(context: ModelContext, currentYear: Int) {
+        let existingCrops = (try? context.fetch(FetchDescriptor<Crop>())) ?? []
+        guard existingCrops.isEmpty else { return }
+
+        for (index, crop) in knownCrops.enumerated() {
+            let record = Crop(
+                name: crop.name,
+                colorHex: CropColorAssigner.colorHex(for: crop.name),
+                isQuickLog: crop.isQuickLog,
+                sortIndex: index,
+                variants: crop.variants
+            )
+            context.insert(record)
+        }
+
+        let seasonSeed = buildSeasonSeed(currentYear: currentYear)
+        let allGenerated = seasonSeed.currentYearEntries + seasonSeed.lastYearEntries + seasonSeed.twoYearsAgoEntries
+        for generated in allGenerated {
+            context.insert(HarvestEntry(cropName: generated.crop, ounces: generated.ounces, date: generated.date, note: generated.note))
+        }
+
+        try? context.save()
     }
 }

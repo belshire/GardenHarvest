@@ -12,6 +12,7 @@
 		1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C86015BCE19741443A328 /* GardenHarvestApp.swift */; };
 		2274BD7C870FDCE58309788B /* Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3414F2F7D19EC8A0E534EBA7 /* Crop.swift */; };
 		231FE263F01DC16E78FD7195 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A2BEA23B393E224BAFDBDC /* Theme.swift */; };
+		3E50C502E5AF3A7DEE2F509D /* SeedIfNeededTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */; };
 		6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */; };
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */; };
@@ -45,6 +46,7 @@
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
+		906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedIfNeededTests.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
 		9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPersistenceTests.swift; sourceTree = "<group>"; };
 		9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChipTests.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
 				9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */,
 				C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */,
+				906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */,
 				CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */,
 			);
 			path = GardenHarvestTests;
@@ -238,6 +241,7 @@
 				0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */,
 				B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */,
 				F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */,
+				3E50C502E5AF3A7DEE2F509D /* SeedIfNeededTests.swift in Sources */,
 				1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
