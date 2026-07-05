@@ -8,7 +8,7 @@ struct RootView: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    Text("Home")
+                    HomeView(onSelectCrop: { _ in }, onAddCrop: { })
                 case .log:
                     ComingSoonView(title: "Harvest Log")
                 case .unwrapped:
