@@ -19,14 +19,14 @@ struct HomeContainerView: View {
             .navigationDestination(for: HomeRoute.self) { route in
                 switch route {
                 case .entry(let cropName):
-                    VStack(spacing: 16) {
-                        Text("Entry: \(cropName)")
-                        Button("Save") {
-                            path.removeLast()
-                            showToast("🌱 Logged \(cropName)")
-                        }
-                        Button("Back") { path.removeLast() }
-                    }
+                    EntryView(
+                        cropName: cropName,
+                        onSaved: { message in
+                            if !path.isEmpty { path.removeLast() }
+                            showToast(message)
+                        },
+                        onBack: { if !path.isEmpty { path.removeLast() } }
+                    )
                 case .add:
                     VStack(spacing: 16) {
                         Text("Add a vegetable")
