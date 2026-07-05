@@ -15,8 +15,10 @@
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */; };
 		AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */; };
+		B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5449C088D712A3599D41170 /* CropColorAssigner.swift */; };
 		B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */; };
 		B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */; };
+		B7CC2C81F6B27BA83F03588F /* CropColorAssignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */; };
 		DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,9 +41,11 @@
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
 		9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPersistenceTests.swift; sourceTree = "<group>"; };
+		A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssignerTests.swift; sourceTree = "<group>"; };
 		B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropListTests.swift; sourceTree = "<group>"; };
 		B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GardenHarvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
+		D5449C088D712A3599D41170 /* CropColorAssigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssigner.swift; sourceTree = "<group>"; };
 		EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -72,6 +76,7 @@
 		2A175997EFAA09A17061632A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				D5449C088D712A3599D41170 /* CropColorAssigner.swift */,
 				7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */,
 			);
 			path = Services;
@@ -107,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */,
+				A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */,
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
 				9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */,
 				CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */,
@@ -215,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */,
+				B7CC2C81F6B27BA83F03588F /* CropColorAssignerTests.swift in Sources */,
 				0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */,
 				B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */,
 				1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */,
@@ -226,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2274BD7C870FDCE58309788B /* Crop.swift in Sources */,
+				B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */,
 				1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */,
 				71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */,
 				B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */,
