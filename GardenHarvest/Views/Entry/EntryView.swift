@@ -70,6 +70,17 @@ struct EntryView: View {
                 photoPickerItem = nil
             }
         }
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker(
+                onCapture: { data in
+                    photoData = data
+                    photoSource = "Camera"
+                    showCamera = false
+                },
+                onCancel: { showCamera = false }
+            )
+            .ignoresSafeArea()
+        }
     }
 
     private var topBar: some View {
@@ -280,6 +291,7 @@ struct EntryView: View {
             try modelContext.save()
             onSaved("🌱 Logged \(WeightFormatter.ounces(roundedOunces)) oz \(cropName)")
         } catch {
+            modelContext.delete(entry)
             assertionFailure("Failed to save harvest entry: \(error)")
         }
     }
