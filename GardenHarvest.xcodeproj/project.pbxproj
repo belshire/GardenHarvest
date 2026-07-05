@@ -12,6 +12,7 @@
 		1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C86015BCE19741443A328 /* GardenHarvestApp.swift */; };
 		2274BD7C870FDCE58309788B /* Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3414F2F7D19EC8A0E534EBA7 /* Crop.swift */; };
 		231FE263F01DC16E78FD7195 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A2BEA23B393E224BAFDBDC /* Theme.swift */; };
+		6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */; };
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */; };
 		AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		D3F219C2FA18B48A859BFEE3 /* DateChipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */; };
 		D46E0CEAE4B9C7526B1A9BF6 /* DateChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B0648B2D125D047F6E2A44 /* DateChip.swift */; };
 		DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */; };
+		F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,7 @@
 		27A2BEA23B393E224BAFDBDC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		3414F2F7D19EC8A0E534EBA7 /* Crop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crop.swift; sourceTree = "<group>"; };
 		45B0648B2D125D047F6E2A44 /* DateChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChip.swift; sourceTree = "<group>"; };
+		4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
 		599C86015BCE19741443A328 /* GardenHarvestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenHarvestApp.swift; sourceTree = "<group>"; };
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +51,7 @@
 		A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssignerTests.swift; sourceTree = "<group>"; };
 		B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropListTests.swift; sourceTree = "<group>"; };
 		B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GardenHarvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataServiceTests.swift; sourceTree = "<group>"; };
 		CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
 		D5449C088D712A3599D41170 /* CropColorAssigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssigner.swift; sourceTree = "<group>"; };
 		EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -121,6 +125,7 @@
 				9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */,
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
 				9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */,
+				C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */,
 				CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */,
 			);
 			path = GardenHarvestTests;
@@ -130,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */,
+				4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */,
 			);
 			path = Seed;
 			sourceTree = "<group>";
@@ -231,6 +237,7 @@
 				D3F219C2FA18B48A859BFEE3 /* DateChipTests.swift in Sources */,
 				0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */,
 				B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */,
+				F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */,
 				1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +252,7 @@
 				1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */,
 				71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */,
 				B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */,
+				6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */,
 				231FE263F01DC16E78FD7195 /* Theme.swift in Sources */,
 				9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */,
 			);
