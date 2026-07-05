@@ -17,6 +17,7 @@
 		31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */; };
 		3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F214A547210FBEEFBA4D6 /* CropTileView.swift */; };
 		3E50C502E5AF3A7DEE2F509D /* SeedIfNeededTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */; };
+		674301C41838220F87BB3474 /* CropInitials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0326D752E09E8676C5366250 /* CropInitials.swift */; };
 		68B7E41809D808FD963D5CD2 /* AddCropTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4C3BC0278C24E151F3A651 /* AddCropTileView.swift */; };
 		6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */; };
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0326D752E09E8676C5366250 /* CropInitials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropInitials.swift; sourceTree = "<group>"; };
 		0D29EA0A52F056B6C5E121BC /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		192D55BE9CD2F603337CC6FC /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		27A2BEA23B393E224BAFDBDC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				D5449C088D712A3599D41170 /* CropColorAssigner.swift */,
+				0326D752E09E8676C5366250 /* CropInitials.swift */,
 				45B0648B2D125D047F6E2A44 /* DateChip.swift */,
 				7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */,
 			);
@@ -293,6 +296,7 @@
 				77FC9A150C69FAD1B97A64E3 /* ComingSoonView.swift in Sources */,
 				2274BD7C870FDCE58309788B /* Crop.swift in Sources */,
 				B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */,
+				674301C41838220F87BB3474 /* CropInitials.swift in Sources */,
 				3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */,
 				D46E0CEAE4B9C7526B1A9BF6 /* DateChip.swift in Sources */,
 				1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */,

@@ -78,9 +78,10 @@ struct HomeView: View {
     }
 
     private var grid: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 11), count: 3), spacing: 11) {
+        let totals = totalsByCrop
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 11), count: 3), spacing: 11) {
             ForEach(quickCrops) { crop in
-                CropTileView(crop: crop, totalOunces: totalsByCrop[crop.name] ?? 0) {
+                CropTileView(crop: crop, totalOunces: totals[crop.name] ?? 0) {
                     onSelectCrop(crop.name)
                 }
             }

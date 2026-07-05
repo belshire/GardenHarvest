@@ -12,7 +12,7 @@ struct CropTileView: View {
                     .fill(Color(hex: crop.colorHex))
                     .frame(width: 46, height: 46)
                     .overlay(
-                        Text(initials)
+                        Text(crop.name.cropInitials)
                             .font(Theme.Font.mono(15, weight: .bold))
                             .foregroundStyle(.white)
                     )
@@ -34,9 +34,5 @@ struct CropTileView: View {
             .clipShape(RoundedRectangle(cornerRadius: Theme.tileRadius))
         }
         .buttonStyle(.plain)
-    }
-
-    private var initials: String {
-        String(crop.name.filter(\.isLetter).prefix(2)).uppercased()
     }
 }
