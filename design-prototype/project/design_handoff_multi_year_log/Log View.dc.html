@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#e9e6de;font-family:'Nunito Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{padding:40px 46px 60px}
+  .intro{max-width:760px;margin:0 0 30px}
+  .intro .tag{display:inline-block;font:700 10px/1 'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:#6f8f5f;margin-bottom:12px}
+  .intro h1{font-family:'DM Serif Display',serif;font-size:30px;color:#26301f;margin:0 0 8px;font-weight:400}
+  .intro p{font-size:14px;line-height:1.6;color:#4d5647;margin:0 0 10px;max-width:660px}
+  .row{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+  .col{display:flex;flex-direction:column;gap:14px}
+  .olabel{display:flex;align-items:center;gap:9px;font:600 13px/1.3 'Nunito Sans',sans-serif;color:#4d5647}
+  .oid{font:700 11px 'DM Mono',monospace;padding:3px 8px;background:#26301f;color:#fff;border-radius:6px}
+  .ohint{font:400 12px/1.5 'Nunito Sans',sans-serif;color:#77806c;max-width:360px}
+  .phone{width:390px;height:844px;background:#0c0c0d;border-radius:54px;padding:13px;box-shadow:0 34px 80px -24px rgba(20,30,15,.5),0 0 0 2px rgba(0,0,0,.55);position:relative}
+  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;position:relative;background:#000}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:30px;background:#0c0c0d;border-radius:0 0 19px 19px;z-index:30}
+</style>
+</helmet>
+
+<div class="wrap">
+  <div class="intro">
+    <div class="tag">Garden harvest tracker · Log view · multi-year</div>
+    <h1>Two ways to read many seasons</h1>
+    <p>The Log now spans every year she's tracked. Real 2026 data sits alongside synthesized 2024–2025 seasons so the year switching and crop history feel real. Both directions default to <strong>2026, newest first</strong>, group pickings <strong>by day with month dividers</strong>, and let you <strong>filter by a single crop</strong> and trace that crop <strong>across all years</strong>. Comparison stays over in Unwrapped.</p>
+    <p style="font-size:13px;color:#6a7360">Both are fully interactive — switch years, tap a crop chip, open a crop's multi-year history.</p>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="olabel"><span class="oid">A</span> Feed — pill year-switcher, always-open chronological stream</div>
+      <div class="ohint">Fast to scan a whole season. Year pills + a scrollable crop-chip filter up top; tap a crop then “across all years” to see its year-by-year record.</div>
+      <div class="phone"><div class="notch"></div><div class="phone-screen">
+        <div style="{{ s.screen }}">
+          <div style="{{ s.status }}"><span>9:41</span><span style="{{ s.statusR }}">{{ statusGlyph }}</span></div>
+          <div style="{{ s.body }}">
+            <div style="{{ s.logTitle }}">Harvest log</div>
+            <div style="{{ s.logSub }}">{{ subA }}</div>
+
+            <div style="{{ s.yearRow }}">
+              <sc-for list="{{ yearPillsA }}" as="p" hint-placeholder-count="3">
+                <button onClick="{{ p.onTap }}" style="{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+
+            <div style="{{ s.filterRow }}">
+              <sc-for list="{{ cropChipsA }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onTap }}" style="{{ c.style }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ cropActiveA }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ s.banner }}">
+                <div style="{{ s.bannerL }}">
+                  <div style="{{ bannerDiscA }}">{{ bannerIniA }}</div>
+                  <div>
+                    <div style="{{ s.bannerName }}">{{ cropA }}</div>
+                    <div style="{{ s.bannerSub }}">{{ bannerSubA }}</div>
+                  </div>
+                </div>
+                <button onClick="{{ onToggleCrossA }}" style="{{ crossBtnStyleA }}">{{ crossBtnLabelA }}</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ crossA }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ s.crossWrap }}">
+                <div style="{{ s.crossHead }}">{{ cropA }} — every year</div>
+                <sc-for list="{{ crossRowsA }}" as="r" hint-placeholder-count="3">
+                  <button onClick="{{ r.onTap }}" style="{{ r.rowStyle }}">
+                    <div style="{{ s.crossYear }}">{{ r.year }}</div>
+                    <div style="{{ s.crossTrack }}"><div style="{{ r.bar }}"></div></div>
+                    <div style="{{ s.crossVal }}">{{ r.valStr }}</div>
+                  </button>
+                </sc-for>
+                <div style="{{ s.crossFoot }}">{{ crossFootA }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showFeedA }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ monthsA }}" as="m" hint-placeholder-count="3">
+                <div style="{{ s.monthDiv }}"><span style="{{ s.monthName }}">{{ m.name }}</span><span style="{{ s.monthTot }}">{{ m.totalStr }}</span></div>
+                <sc-for list="{{ m.days }}" as="day" hint-placeholder-count="3">
+                  <div style="{{ s.dayLbl }}">{{ day.label }}</div>
+                  <sc-for list="{{ day.items }}" as="it" hint-placeholder-count="2">
+                    <div style="{{ s.row }}">
+                      <div style="{{ it.disc }}">{{ it.initial }}</div>
+                      <div style="{{ s.rowMid }}">
+                        <div style="{{ s.rowName }}">{{ it.name }}</div>
+                        <sc-if value="{{ it.hasNote }}" hint-placeholder-val="{{ false }}"><div style="{{ s.rowNote }}">{{ it.note }}</div></sc-if>
+                      </div>
+                      <div style="{{ s.rowOz }}">{{ it.ozStr }}</div>
+                    </div>
+                  </sc-for>
+                </sc-for>
+              </sc-for>
+              <sc-if value="{{ emptyA }}" hint-placeholder-val="{{ false }}"><div style="{{ s.empty }}">{{ emptyLabelA }}</div></sc-if>
+            </sc-if>
+          </div>
+          <div style="{{ s.nav }}">
+            <sc-for list="{{ navA }}" as="n" hint-placeholder-count="3">
+              <button onClick="{{ n.onTap }}" style="{{ n.style }}"><div style="{{ n.iconStyle }}">{{ n.icon }}</div><div style="{{ n.lblStyle }}">{{ n.label }}</div></button>
+            </sc-for>
+          </div>
+          <div style="{{ s.homeInd }}"></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <div class="olabel"><span class="oid">B</span> Almanac — year stepper, collapsible months, crop dossier</div>
+      <div class="ohint">Structured like a record book. Step through years with a summary header; months collapse so a long history stays tidy. The crop menu opens a per-crop dossier with a year-by-year breakdown.</div>
+      <div class="phone"><div class="notch"></div><div class="phone-screen">
+        <div style="{{ s.screen }}">
+          <div style="{{ s.status }}"><span>9:41</span><span style="{{ s.statusR }}">{{ statusGlyph }}</span></div>
+          <div style="{{ s.body }}">
+            <div style="{{ s.stepRow }}">
+              <button onClick="{{ onPrevY }}" style="{{ prevStyleB }}">‹</button>
+              <div style="{{ s.stepMid }}">
+                <div style="{{ s.stepKick }}">Harvest log</div>
+                <div style="{{ s.stepYear }}">{{ yearB }}</div>
+              </div>
+              <button onClick="{{ onNextY }}" style="{{ nextStyleB }}">›</button>
+            </div>
+
+            <div style="{{ s.sumCard }}">
+              <div style="{{ s.sumTotal }}">{{ sumTotalB }}</div>
+              <div style="{{ s.sumSub }}">{{ sumSubB }}</div>
+            </div>
+
+            <button onClick="{{ onOpenSheetB }}" style="{{ s.cropPill }}"><span style="{{ cropDotB }}"></span><span style="{{ s.cropPillLbl }}">{{ cropPillLabelB }}</span><span style="{{ s.caret }}">⌄</span></button>
+
+            <sc-if value="{{ cropHistoryB }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ s.chWrap }}">
+                <div style="{{ s.chHead }}">Across the years</div>
+                <sc-for list="{{ chYearsB }}" as="y" hint-placeholder-count="3">
+                  <button onClick="{{ y.onTap }}" style="{{ y.rowStyle }}">
+                    <div style="{{ y.yearStyle }}">{{ y.year }}</div>
+                    <div style="{{ s.chTrack }}"><div style="{{ y.bar }}"></div></div>
+                    <div style="{{ s.chVal }}">{{ y.valStr }}</div>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="{{ s.chSectLbl }}">{{ chSectLblB }}</div>
+            </sc-if>
+
+            <sc-for list="{{ monthsB }}" as="m" hint-placeholder-count="4">
+              <button onClick="{{ m.onToggle }}" style="{{ m.headerStyle }}">
+                <div style="{{ s.mName }}">{{ m.name }}</div>
+                <div style="{{ s.mBarTrack }}"><div style="{{ m.bar }}"></div></div>
+                <div style="{{ s.mTot }}">{{ m.totalStr }}</div>
+                <div style="{{ m.chevStyle }}">›</div>
+              </button>
+              <sc-if value="{{ m.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ s.monthDays }}">
+                  <sc-for list="{{ m.days }}" as="day" hint-placeholder-count="3">
+                    <div style="{{ s.dayLbl }}">{{ day.label }}</div>
+                    <sc-for list="{{ day.items }}" as="it" hint-placeholder-count="2">
+                      <div style="{{ s.row }}">
+                        <div style="{{ it.disc }}">{{ it.initial }}</div>
+                        <div style="{{ s.rowMid }}">
+                          <div style="{{ s.rowName }}">{{ it.name }}</div>
+                          <sc-if value="{{ it.hasNote }}" hint-placeholder-val="{{ false }}"><div style="{{ s.rowNote }}">{{ it.note }}</div></sc-if>
+                        </div>
+                        <div style="{{ s.rowOz }}">{{ it.ozStr }}</div>
+                      </div>
+                    </sc-for>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </sc-for>
+            <sc-if value="{{ emptyB }}" hint-placeholder-val="{{ false }}"><div style="{{ s.empty }}">{{ emptyLabelB }}</div></sc-if>
+          </div>
+
+          <sc-if value="{{ sheetB }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ s.sheetScrim }}" onClick="{{ onCloseSheetB }}"></div>
+            <div style="{{ s.sheet }}">
+              <div style="{{ s.sheetTitle }}">Filter by crop</div>
+              <div style="{{ s.sheetScroll }}">
+                <sc-for list="{{ sheetItemsB }}" as="it" hint-placeholder-count="8">
+                  <button onClick="{{ it.onTap }}" style="{{ it.style }}">
+                    <div style="{{ it.disc }}">{{ it.initial }}</div>
+                    <div style="{{ s.sheetName }}">{{ it.name }}</div>
+                    <div style="{{ s.sheetVal }}">{{ it.valStr }}</div>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="{{ s.nav }}">
+            <sc-for list="{{ navB }}" as="n" hint-placeholder-count="3">
+              <button onClick="{{ n.onTap }}" style="{{ n.style }}"><div style="{{ n.iconStyle }}">{{ n.icon }}</div><div style="{{ n.lblStyle }}">{{ n.label }}</div></button>
+            </sc-for>
+          </div>
+          <div style="{{ s.homeInd }}"></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  COLORS = { Asparagus:'#5a9a3d', Strawberries:'#e8434a', Raspberries:'#c02f66', Blueberries:'#3f6ad0', Boysenberries:'#6f3fa8', Artichoke:'#7f9a4e', Radishes:'#e05583', Peas:'#8cbf4f', Mushrooms:'#b08a63', 'Tomatoes Cherry':'#ef4f34' };
+  RAW = `03-10|Asparagus|18|
+03-12|Mushrooms|8|
+04-07|Asparagus|31|
+04-13|Asparagus|36|14 oz woody
+04-15|Asparagus|14|
+04-19|Asparagus|12|
+04-21|Asparagus|8|
+04-23|Asparagus|12|
+04-26|Asparagus|8|
+04-28|Asparagus|8|
+04-30|Asparagus|16|
+05-02|Asparagus|6|
+05-04|Asparagus|14.5|
+05-07|Asparagus|6|
+05-09|Asparagus|4|
+05-09|Strawberries|1|
+05-12|Asparagus|19.5|
+05-12|Artichoke|11.5|
+05-12|Radishes|6.75|
+05-15|Strawberries|3.5|
+05-16|Asparagus|3|
+05-23|Asparagus|12|
+05-23|Strawberries|4.5|
+05-23|Artichoke|10.25|
+05-25|Strawberries|10.75|
+05-27|Strawberries|8.5|
+05-30|Strawberries|14|
+05-31|Strawberries|10|
+06-04|Blueberries|2|
+06-06|Raspberries|4|
+06-09|Strawberries|10.75|
+06-09|Raspberries|9.5|
+06-09|Artichoke|9|
+06-11|Raspberries|7.6|small
+06-11|Boysenberries|2.15|
+06-13|Strawberries|5.5|
+06-15|Blueberries|5|
+06-16|Raspberries|4|small
+06-17|Raspberries|6.5|small
+06-18|Peas|6.5|
+06-21|Raspberries|9.8|large
+06-21|Peas|3.9|
+06-21|Artichoke|10.8|
+06-23|Raspberries|12.4|large
+06-23|Peas|4|
+06-23|Tomatoes Cherry|0.63|
+06-25|Raspberries|8.75|large
+06-27|Raspberries|12|large
+06-27|Peas|9.5|
+06-28|Strawberries|3.6|`;
+
+  seed(n){ const x=Math.sin(n*127.1+311.7)*43758.5; return x-Math.floor(x); }
+  parseBase(){ return this.RAW.trim().split('\n').map(l=>{ const [md,crop,oz,note]=l.split('|'); return {crop,oz:parseFloat(oz),md,note:note||''}; }); }
+  gen(base,year,scale,drop){
+    const out=[];
+    base.forEach((e,i)=>{
+      if(this.seed(i*2.3+year)<drop) return;
+      const oz=Math.max(0.3, Math.round(e.oz*scale*(0.75+this.seed(i*3.7+year)*0.55)*10)/10);
+      const shift=Math.floor(this.seed(i*5.1+year)*7)-3;
+      const d=new Date(year+'-'+e.md+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+shift);
+      out.push({crop:e.crop, oz, date:d.toISOString().slice(0,10), note:''});
+    });
+    return out;
+  }
+  buildData(){
+    const base=this.parseBase();
+    const y2026=base.map(e=>({crop:e.crop, oz:e.oz, date:'2026-'+e.md, note:e.note}));
+    return { 2024:this.gen(base,2024,0.62,0.32), 2025:this.gen(base,2025,0.84,0.18), 2026:y2026 };
+  }
+  DATA = this.buildData();
+  YEARS = [2026,2025,2024];
+
+  state = { yearA:2026, cropA:null, crossA:false, yearB:2026, cropB:null, sheetB:false, expanded:{'2026-6':true} };
+
+  fmt(n){ n=Math.round(n*10)/10; return (n%1===0)? String(n): n.toFixed(1); }
+  wt(oz){ oz=Math.round(oz*10)/10; if(oz>=16){ const lb=Math.floor(oz/16); const r=Math.round((oz-lb*16)*10)/10; return r>0? lb+' lb '+this.fmt(r)+' oz' : lb+' lb'; } return this.fmt(oz)+' oz'; }
+  ini(name){ return (name||'?').replace(/[^A-Za-z]/g,'').slice(0,2)||'?'; }
+  cc(name){ return this.COLORS[name] || 'hsl('+((()=>{let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;return h%360;})())+' 50% 52%)'; }
+  monthName(m){ return ['','January','February','March','April','May','June','July','August','September','October','November','December'][m]; }
+  monShort(m){ return ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m]; }
+  dayLabel(iso){ const [y,m,d]=iso.split('-').map(Number); const W=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const dt=new Date(iso+'T00:00:00Z'); return W[dt.getUTCDay()]+' '+this.monShort(m)+' '+d; }
+
+  monthsOf(entries){
+    const byM={}; entries.forEach(e=>{ const m=+e.date.split('-')[1]; (byM[m]=byM[m]||[]).push(e); });
+    return Object.keys(byM).map(Number).sort((a,b)=>b-a).map(m=>{
+      const list=byM[m]; const byD={}; list.forEach(e=>{ (byD[e.date]=byD[e.date]||[]).push(e); });
+      const days=Object.keys(byD).sort().reverse().map(d=>({date:d, label:this.dayLabel(d), items:byD[d].slice()}));
+      return { m, list, days, total:list.reduce((a,e)=>a+e.oz,0) };
+    });
+  }
+
+  renderVals(){
+    const T={ panel:'linear-gradient(180deg,#f0f8e8,#e2f2d3)', card:'#ffffff', ink:'#22381c', sub:'#6a8560', line:'rgba(34,56,28,.12)', accent:'#ff6a4d', accentInk:'#fff', accent2:'#4caf50', head:'"DM Serif Display", serif', font:'"Nunito Sans", sans-serif', mono:'"DM Mono", monospace' };
+    const soft='0 6px 18px rgba(30,50,20,.08)';
+    const st=this.state;
+
+    const disc=(name,sz)=>({ width:sz, height:sz, borderRadius:'50%', background:this.cc(name), color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:T.mono, fontWeight:700, fontSize:sz>40?13:11, flex:'0 0 auto', boxShadow:'inset 0 -3px 8px rgba(0,0,0,.12)' });
+    const mapItem=(e)=>({ name:e.crop, initial:this.ini(e.crop), disc:disc(e.crop,34), ozStr:this.fmt(e.oz)+' oz', note:e.note||'', hasNote:!!e.note });
+
+    const s={};
+    s.screen={ position:'relative', height:'100%', width:'100%', display:'flex', flexDirection:'column', background:T.panel, color:T.ink, fontFamily:T.font, overflow:'hidden' };
+    s.status={ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 26px 4px', fontSize:13, fontWeight:700, color:T.ink, flex:'0 0 auto' };
+    s.statusR={ fontFamily:T.mono, fontSize:11, letterSpacing:1 };
+    s.body={ flex:'1 1 auto', overflowY:'auto', padding:'8px 20px 96px', display:'flex', flexDirection:'column', gap:12 };
+    s.logTitle={ fontFamily:T.head, fontSize:30, fontWeight:400, color:T.ink, margin:'4px 0 0' };
+    s.logSub={ fontSize:13, color:T.sub, marginTop:-6, fontWeight:600 };
+
+    s.yearRow={ display:'flex', gap:8, marginTop:4, flexShrink:0 };
+    s.filterRow={ display:'flex', gap:7, overflowX:'auto', overflowY:'visible', padding:'4px 0', marginTop:2, flexShrink:0 };
+
+    s.banner={ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, padding:'11px 13px', background:T.card, border:'1px solid '+T.line, borderRadius:16, boxShadow:soft };
+    s.bannerL={ display:'flex', alignItems:'center', gap:11 };
+    s.bannerName={ fontFamily:T.head, fontSize:18, color:T.ink, lineHeight:1.1 };
+    s.bannerSub={ fontSize:12, color:T.sub, fontFamily:T.mono, marginTop:1 };
+
+    s.crossWrap={ display:'flex', flexDirection:'column', gap:9, padding:'14px', background:T.card, border:'1px solid '+T.line, borderRadius:16, boxShadow:soft };
+    s.crossHead={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:T.sub };
+    s.crossYear={ width:44, fontFamily:T.mono, fontSize:14, fontWeight:700, color:T.ink, flex:'0 0 auto', textAlign:'left' };
+    s.crossTrack={ flex:1, height:14, background:T.line, borderRadius:999, overflow:'hidden' };
+    s.crossVal={ width:76, textAlign:'right', fontSize:12.5, fontWeight:800, color:T.sub, fontFamily:T.mono, flex:'0 0 auto' };
+    s.crossFoot={ fontSize:12, color:T.sub, marginTop:2 };
+
+    s.monthDiv={ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'12px 0 2px', paddingBottom:6, borderBottom:'2px solid '+T.line };
+    s.monthName={ fontFamily:T.head, fontSize:20, color:T.ink };
+    s.monthTot={ fontFamily:T.mono, fontSize:12, fontWeight:700, color:T.accent };
+    s.dayLbl={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1, color:T.sub, marginTop:8, fontFamily:T.mono };
+    s.row={ display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:'1px solid '+T.line };
+    s.rowMid={ flex:1 };
+    s.rowName={ fontSize:14.5, fontWeight:700, color:T.ink, fontFamily:T.head };
+    s.rowNote={ fontSize:11.5, color:T.sub, fontStyle:'italic', marginTop:1 };
+    s.rowOz={ fontSize:14, fontWeight:800, color:T.ink, fontFamily:T.mono };
+    s.empty={ textAlign:'center', color:T.sub, fontSize:13, padding:'40px 0', fontStyle:'italic' };
+
+    s.stepRow={ display:'flex', alignItems:'center', gap:10, marginTop:6 };
+    s.stepMid={ flex:1, textAlign:'center' };
+    s.stepKick={ fontFamily:T.mono, fontSize:10.5, textTransform:'uppercase', letterSpacing:2, color:T.accent, fontWeight:700 };
+    s.stepYear={ fontFamily:T.head, fontSize:34, color:T.ink, lineHeight:1 };
+    s.sumCard={ background:T.accent, color:T.accentInk, borderRadius:18, padding:'14px 16px' };
+    s.sumTotal={ fontFamily:T.head, fontSize:30, lineHeight:1 };
+    s.sumSub={ fontSize:12.5, opacity:.92, marginTop:4, fontWeight:600 };
+    s.cropPill={ display:'flex', alignItems:'center', gap:9, padding:'11px 14px', background:T.card, border:'1px solid '+T.line, borderRadius:14, cursor:'pointer', boxShadow:soft, textAlign:'left' };
+    s.cropPillLbl={ flex:1, fontSize:14.5, fontWeight:700, color:T.ink };
+    s.caret={ fontSize:16, color:T.sub, fontWeight:700 };
+
+    s.chWrap={ display:'flex', flexDirection:'column', gap:9, padding:'14px', background:T.card, border:'1px solid '+T.line, borderRadius:16, boxShadow:soft };
+    s.chHead={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:T.sub };
+    s.chTrack={ flex:1, height:14, background:T.line, borderRadius:999, overflow:'hidden' };
+    s.chVal={ width:76, textAlign:'right', fontSize:12.5, fontWeight:800, color:T.sub, fontFamily:T.mono, flex:'0 0 auto' };
+    s.chSectLbl={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:T.sub, marginTop:6 };
+
+    s.mBarTrack={ flex:1, height:8, background:T.line, borderRadius:999, overflow:'hidden', margin:'0 12px' };
+    s.mName={ fontFamily:T.head, fontSize:18, color:T.ink, flex:'0 0 auto', width:96, textAlign:'left' };
+    s.mTot={ fontFamily:T.mono, fontSize:12, fontWeight:700, color:T.accent, flex:'0 0 auto' };
+    s.monthDays={ display:'flex', flexDirection:'column', paddingLeft:2 };
+
+    s.sheetScrim={ position:'absolute', inset:0, background:'rgba(0,0,0,.35)', zIndex:40 };
+    s.sheet={ position:'absolute', left:10, right:10, bottom:14, zIndex:41, background:'#fff', borderRadius:18, overflow:'hidden', boxShadow:'0 16px 48px rgba(0,0,0,.34)', maxHeight:'62%', display:'flex', flexDirection:'column' };
+    s.sheetTitle={ textAlign:'center', padding:'14px', fontSize:12, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:T.sub, borderBottom:'1px solid '+T.line, flex:'0 0 auto' };
+    s.sheetScroll={ overflowY:'auto' };
+    s.sheetName={ flex:1, fontSize:15, fontWeight:700, color:T.ink, textAlign:'left' };
+    s.sheetVal={ fontSize:12.5, fontWeight:700, color:T.sub, fontFamily:T.mono };
+
+    s.nav={ position:'absolute', left:0, right:0, bottom:0, display:'flex', justifyContent:'space-around', alignItems:'center', padding:'8px 12px 20px', background:'rgba(255,255,255,.82)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderTop:'1px solid '+T.line };
+    s.homeInd={ position:'absolute', left:'50%', bottom:8, transform:'translateX(-50%)', width:134, height:5, borderRadius:999, background:'rgba(0,0,0,.35)', zIndex:6 };
+
+    const setSt=(p)=>this.setState(p);
+    const navBuild=()=>{ const defs=[{id:'home',label:'Home',icon:'⌂'},{id:'log',label:'Log',icon:'▤'},{id:'unwrapped',label:'Unwrapped',icon:'✦'}]; return defs.map(n=>{ const active=n.id==='log'; const col=active?T.accent:T.sub; return { label:n.label, icon:n.icon, onTap:()=>{}, style:{ background:'transparent', border:'none', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:3, padding:'2px 10px' }, iconStyle:{ fontSize:19, color:col, lineHeight:1 }, lblStyle:{ fontSize:10, fontWeight:700, color:col } }; }); };
+
+    // ===== A: FEED =====
+    const entriesA=this.DATA[st.yearA]||[];
+    const totalA=entriesA.reduce((a,e)=>a+e.oz,0);
+    const subA=this.wt(totalA)+' · '+entriesA.length+' pickings';
+    const yearPillsA=this.YEARS.map(y=>{ const active=y===st.yearA; return { label:String(y), onTap:()=>setSt({yearA:y, cropA:null, crossA:false}), style:{ padding:'8px 15px', borderRadius:999, border:'1px solid '+(active?T.accent:T.line), background:active?T.accent:T.card, color:active?T.accentInk:T.ink, fontSize:14, fontWeight:800, fontFamily:T.mono, cursor:'pointer', flex:'0 0 auto' } }; });
+
+    const totBy={}; entriesA.forEach(e=>{ totBy[e.crop]=(totBy[e.crop]||0)+e.oz; });
+    const cropsSorted=Object.keys(totBy).sort((a,b)=>totBy[b]-totBy[a]);
+    const chipDef=[null,...cropsSorted];
+    const cropChipsA=chipDef.map(name=>{ const active=st.cropA===name; const label=name||'All'; return { label, onTap:()=>setSt({cropA:name, crossA:false}), style:{ padding:'8px 14px', borderRadius:999, border:'1.5px solid '+(active?T.ink:'rgba(34,56,28,.30)'), background:active?T.ink:T.card, color:active?'#fff':T.ink, fontSize:12.5, fontWeight:800, cursor:'pointer', flex:'0 0 auto', whiteSpace:'nowrap', boxShadow:active?'none':'0 2px 6px rgba(30,50,20,.10)' } }; });
+
+    const cropActiveA=!!st.cropA;
+    let feedEntriesA=entriesA;
+    if(st.cropA) feedEntriesA=entriesA.filter(e=>e.crop===st.cropA);
+    const monthsA=this.monthsOf(feedEntriesA).map(mo=>({ name:this.monthName(mo.m), totalStr:this.wt(mo.total), days:mo.days.map(d=>({ label:d.label, items:d.items.map(mapItem) })) }));
+
+    const bannerDiscA=disc(st.cropA||'',40);
+    const bannerIniA=this.ini(st.cropA||'');
+    const cropTotalA=st.cropA?(totBy[st.cropA]||0):0;
+    const cropCountA=st.cropA?entriesA.filter(e=>e.crop===st.cropA).length:0;
+    const bannerSubA=this.wt(cropTotalA)+' · '+cropCountA+' pickings in '+st.yearA;
+    const crossBtnLabelA=st.crossA?'Hide':'All years ›';
+    const crossBtnStyleA={ padding:'8px 12px', borderRadius:999, border:'1px solid '+(st.crossA?T.accent:T.line), background:st.crossA?T.accent:'transparent', color:st.crossA?T.accentInk:T.accent, fontSize:12.5, fontWeight:800, cursor:'pointer', flex:'0 0 auto', whiteSpace:'nowrap' };
+
+    let crossRowsA=[]; let crossFootA='';
+    if(st.cropA){
+      const perYear=this.YEARS.map(y=>({ year:y, v:(this.DATA[y]||[]).filter(e=>e.crop===st.cropA).reduce((a,e)=>a+e.oz,0) }));
+      const maxV=Math.max(1,...perYear.map(o=>o.v));
+      const best=perYear.slice().sort((a,b)=>b.v-a.v)[0];
+      crossRowsA=perYear.map(o=>{ const active=o.year===st.yearA; return { year:String(o.year), valStr:o.v>0?this.wt(o.v):'—', onTap:()=>setSt({yearA:o.year, crossA:false}), rowStyle:{ display:'flex', alignItems:'center', gap:10, padding:'6px 8px', margin:'0 -8px', borderRadius:10, background:active?'rgba(255,106,77,.08)':'transparent', border:'none', cursor:'pointer' }, bar:{ width:Math.max(4,(o.v/maxV)*100)+'%', height:'100%', background:this.cc(st.cropA), borderRadius:999 } }; });
+      crossFootA=best&&best.v>0? ('Best year: '+best.year+' at '+this.wt(best.v)+'. Tap a year to jump.') : 'Tap a year to jump to it.';
+    }
+    const showFeedA=!st.crossA;
+    const emptyA=showFeedA && monthsA.length===0;
+    const emptyLabelA=st.cropA? ('No '+st.cropA+' logged in '+st.yearA) : ('Nothing logged in '+st.yearA+' yet');
+
+    // ===== B: ALMANAC =====
+    const idxB=this.YEARS.indexOf(st.yearB);
+    const canOlder=idxB<this.YEARS.length-1; const canNewer=idxB>0;
+    const onPrevY=()=>{ if(canOlder) setSt({yearB:this.YEARS[idxB+1]}); };
+    const onNextY=()=>{ if(canNewer) setSt({yearB:this.YEARS[idxB-1]}); };
+    const stepBtn=(on)=>({ width:44, height:44, borderRadius:'50%', border:'1px solid '+T.line, background:on?T.card:'transparent', color:on?T.ink:T.line, fontSize:22, fontWeight:700, cursor:on?'pointer':'default', flex:'0 0 auto', boxShadow:on?soft:'none' });
+    const prevStyleB=stepBtn(canOlder); const nextStyleB=stepBtn(canNewer);
+
+    const entriesB=this.DATA[st.yearB]||[];
+    const totalB=entriesB.reduce((a,e)=>a+e.oz,0);
+    const cropsB=new Set(entriesB.map(e=>e.crop));
+    const sumTotalB=this.wt(totalB);
+    const sumSubB=entriesB.length+' pickings across '+cropsB.size+' crops';
+
+    const cropHistoryB=!!st.cropB;
+    const cropPillLabelB=st.cropB||'All crops';
+    const cropDotB={ width:14, height:14, borderRadius:'50%', flex:'0 0 auto', background: st.cropB? this.cc(st.cropB) : 'linear-gradient(135deg,'+T.accent+','+T.accent2+')' };
+
+    let filteredB=entriesB;
+    if(st.cropB) filteredB=entriesB.filter(e=>e.crop===st.cropB);
+    const monthsBraw=this.monthsOf(filteredB);
+    const maxMonth=Math.max(1,...monthsBraw.map(mo=>mo.total));
+    const monthsB=monthsBraw.map(mo=>{ const key=st.yearB+'-'+mo.m; const expanded=!!st.expanded[key]; return { name:this.monthName(mo.m), totalStr:this.wt(mo.total), expanded, onToggle:()=>this.setState(p=>({expanded:{...p.expanded,[key]:!p.expanded[key]}})), headerStyle:{ display:'flex', alignItems:'center', padding:'12px 14px', background:T.card, border:'1px solid '+T.line, borderRadius:14, cursor:'pointer', boxShadow:soft, marginTop:8, textAlign:'left', width:'100%' }, bar:{ width:Math.max(6,(mo.total/maxMonth)*100)+'%', height:'100%', background:T.accent2, borderRadius:999 }, chevStyle:{ fontSize:18, color:T.sub, marginLeft:10, transform:expanded?'rotate(90deg)':'none', transition:'transform .15s', flex:'0 0 auto' }, days:mo.days.map(d=>({ label:d.label, items:d.items.map(mapItem) })) }; });
+
+    let chYearsB=[]; let chSectLblB='';
+    if(st.cropB){
+      const perYear=this.YEARS.map(y=>({ year:y, v:(this.DATA[y]||[]).filter(e=>e.crop===st.cropB).reduce((a,e)=>a+e.oz,0) }));
+      const maxV=Math.max(1,...perYear.map(o=>o.v));
+      chYearsB=perYear.map(o=>{ const active=o.year===st.yearB; return { year:String(o.year), valStr:o.v>0?this.wt(o.v):'—', onTap:()=>setSt({yearB:o.year}), rowStyle:{ display:'flex', alignItems:'center', gap:10, padding:'7px 9px', margin:'0 -9px', borderRadius:10, background:active?'rgba(255,106,77,.10)':'transparent', border:'none', cursor:'pointer', width:'calc(100% + 18px)' }, yearStyle:{ width:44, fontFamily:T.mono, fontSize:14, fontWeight:active?800:700, color:active?T.accent:T.ink, flex:'0 0 auto', textAlign:'left' }, bar:{ width:Math.max(4,(o.v/maxV)*100)+'%', height:'100%', background:this.cc(st.cropB), borderRadius:999 } }; });
+      chSectLblB=st.cropB+' in '+st.yearB;
+    }
+    const emptyB=monthsB.length===0;
+    const emptyLabelB=st.cropB? ('No '+st.cropB+' logged in '+st.yearB) : ('Nothing logged in '+st.yearB);
+
+    // sheet: all crops across all years
+    const totAll={}; this.YEARS.forEach(y=>(this.DATA[y]||[]).forEach(e=>{ totAll[e.crop]=(totAll[e.crop]||0)+e.oz; }));
+    const allCrops=Object.keys(totAll).sort((a,b)=>totAll[b]-totAll[a]);
+    const sheetDef=[null,...allCrops];
+    const sheetItemsB=sheetDef.map(name=>{ const active=st.cropB===name; return { name:name||'All crops', initial:name?this.ini(name):'∗', valStr:name?this.wt(totAll[name]):'', onTap:()=>setSt({cropB:name, sheetB:false}), disc: name? disc(name,30) : { width:30, height:30, borderRadius:'50%', flex:'0 0 auto', background:'linear-gradient(135deg,'+T.accent+','+T.accent2+')' }, style:{ display:'flex', alignItems:'center', gap:12, padding:'12px 15px', background:active?'rgba(255,106,77,.08)':'transparent', border:'none', borderBottom:'1px solid '+T.line, cursor:'pointer', width:'100%' } }; });
+
+    return {
+      s, statusGlyph:'●●● ⌵ 100%',
+      subA, yearPillsA, cropChipsA, cropActiveA, monthsA, showFeedA, emptyA, emptyLabelA,
+      cropA:st.cropA, bannerDiscA, bannerIniA, bannerSubA, crossBtnLabelA, crossBtnStyleA, onToggleCrossA:()=>this.setState(p=>({crossA:!p.crossA})),
+      crossA:st.crossA, crossRowsA, crossFootA, navA:navBuild(),
+      yearB:String(st.yearB), onPrevY, onNextY, prevStyleB, nextStyleB, sumTotalB, sumSubB,
+      cropPillLabelB, cropDotB, onOpenSheetB:()=>setSt({sheetB:true}),
+      cropHistoryB, chYearsB, chSectLblB, monthsB, emptyB, emptyLabelB,
+      sheetB:st.sheetB, sheetItemsB, onCloseSheetB:()=>setSt({sheetB:false}), navB:navBuild()
+    };
+  }
+}
+</script>
+</body>
+</html>

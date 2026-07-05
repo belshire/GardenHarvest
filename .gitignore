@@ -4,8 +4,7 @@
 # Xcode
 build/
 DerivedData/
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
+**/xcuserdata/
 *.xcworkspace/xcshareddata/swiftpm
 .swiftpm/
 *.hmap
@@ -15,3 +14,6 @@ DerivedData/
 
 # macOS
 .DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
