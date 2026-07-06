@@ -19,29 +19,12 @@ struct LogView: View {
         LogGrouping.entries(in: logYear, from: allEntries)
     }
 
-    private var filteredEntries: [HarvestEntry] {
-        guard let logCrop else { return yearEntries }
-        return yearEntries.filter { $0.cropName == logCrop }
-    }
-
-    private var monthGroups: [LogGrouping.MonthGroup] {
-        LogGrouping.monthGroups(of: filteredEntries)
-    }
-
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                yearStepper
-                summaryPager
-                cropFilterPill
-                if let logCrop {
-                    dossier(for: logCrop)
-                }
-                monthList
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 128)
+        VStack(spacing: 12) {
+            yearStepper
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+            yearPager
         }
         .background(Theme.panelBackground.ignoresSafeArea())
         .sheet(isPresented: $showCropSheet) {
@@ -94,7 +77,7 @@ struct LogView: View {
         .padding(.top, 2)
     }
 
-    /// Animated so the summary pager slides when the year is changed from the
+    /// Animated so the year pager slides when the year is changed from the
     /// stepper or the dossier rather than by swiping.
     private func setYear(_ year: Int) {
         withAnimation(.easeInOut(duration: 0.25)) {
@@ -118,31 +101,48 @@ struct LogView: View {
         .disabled(!enabled)
     }
 
-    // MARK: Summary card
+    // MARK: Year pager
 
-    /// Summary card paged horizontally: swiping left/right steps to the
-    /// newer/older year, mirroring the ‹/› stepper. The crop filter and the
-    /// rest of the screen follow `logYear` and are untouched by the swipe.
-    private var summaryPager: some View {
+    /// Each year is a full page — summary card, filter pill, dossier, and
+    /// month list — so swiping the header drags the whole view in and out,
+    /// like a navigation-view swipe. Swiping left/right steps to the
+    /// newer/older year, mirroring the ‹/› stepper. The crop filter is
+    /// untouched by the swipe.
+    private var yearPager: some View {
         Group {
             if years.contains(logYear) {
-                summaryCard(for: logYear)
-                    .hidden()
-                    .overlay(
-                        TabView(selection: $logYear) {
-                            // Oldest → newest so a leftward swipe advances to
-                            // the newer year, matching the stepper layout.
-                            ForEach(years.reversed(), id: \.self) { year in
-                                summaryCard(for: year).tag(year)
-                            }
-                        }
-                        .tabViewStyle(.page(indexDisplayMode: .never))
-                    )
+                TabView(selection: $logYear) {
+                    // Oldest → newest so a leftward swipe advances to the
+                    // newer year, matching the stepper layout.
+                    ForEach(years.reversed(), id: \.self) { year in
+                        yearPage(for: year).tag(year)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
             } else {
-                summaryCard(for: logYear)
+                yearPage(for: logYear)
             }
         }
     }
+
+    /// One year's scrollable content; pages keep independent scroll positions.
+    private func yearPage(for year: Int) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                summaryCard(for: year)
+                cropFilterPill
+                if let logCrop {
+                    dossier(for: logCrop, in: year)
+                }
+                monthList(for: year)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 2)
+            .padding(.bottom, 128)
+        }
+    }
+
+    // MARK: Summary card
 
     /// Unfiltered: the year's grand total on the accent card. Filtered: the
     /// crop's yearly total on a card tinted with the crop's color.
@@ -218,7 +218,7 @@ struct LogView: View {
 
     // MARK: Crop dossier
 
-    private func dossier(for crop: String) -> some View {
+    private func dossier(for crop: String, in year: Int) -> some View {
         let rows = years.map { year in
             (year: year, total: LogGrouping.entries(in: year, from: allEntries)
                 .filter { $0.cropName == crop }
@@ -228,10 +228,10 @@ struct LogView: View {
             CropDossierCard(
                 colorHex: colorHex(for: crop),
                 rows: rows,
-                activeYear: logYear,
+                activeYear: year,
                 onSelectYear: { setYear($0) }
             )
-            Text("\(crop) in \(String(logYear))")
+            Text("\(crop) in \(String(year))")
                 .font(Theme.Font.mono(11, weight: .heavy))
                 .textCase(.uppercase)
                 .tracking(1.2)
@@ -241,12 +241,14 @@ struct LogView: View {
 
     // MARK: Months
 
-    private var monthList: some View {
-        let groups = monthGroups
+    private func monthList(for year: Int) -> some View {
+        let entries = LogGrouping.entries(in: year, from: allEntries)
+        let filtered = logCrop.map { crop in entries.filter { $0.cropName == crop } } ?? entries
+        let groups = LogGrouping.monthGroups(of: filtered)
         let maxTotal = max(groups.map(\.total).max() ?? 0, 1)
         return Group {
             if groups.isEmpty {
-                Text(emptyLabel)
+                Text(emptyLabel(for: year))
                     .font(Theme.Font.body(13))
                     .italic()
                     .foregroundStyle(Theme.sub)
@@ -259,9 +261,9 @@ struct LogView: View {
                             group: group,
                             fillFraction: max(0.06, group.total / maxTotal),
                             barFill: filterColor ?? Theme.accent2,
-                            isExpanded: expandedMonths.contains(expansionKey(month: group.month)),
+                            isExpanded: expandedMonths.contains(expansionKey(year: year, month: group.month)),
                             colorHex: colorHex(for:),
-                            onToggle: { toggleMonth(group.month) }
+                            onToggle: { toggleMonth(group.month, in: year) }
                         )
                     }
                 }
@@ -269,17 +271,17 @@ struct LogView: View {
         }
     }
 
-    private var emptyLabel: String {
+    private func emptyLabel(for year: Int) -> String {
         if let logCrop {
-            return "No \(logCrop) logged in \(String(logYear))"
+            return "No \(logCrop) logged in \(String(year))"
         }
-        return "Nothing logged in \(String(logYear)) yet"
+        return "Nothing logged in \(String(year)) yet"
     }
 
-    private func expansionKey(month: Int) -> String { "\(logYear)-\(month)" }
+    private func expansionKey(year: Int, month: Int) -> String { "\(year)-\(month)" }
 
-    private func toggleMonth(_ month: Int) {
-        let key = expansionKey(month: month)
+    private func toggleMonth(_ month: Int, in year: Int) {
+        let key = expansionKey(year: year, month: month)
         withAnimation(.easeInOut(duration: 0.15)) {
             if expandedMonths.contains(key) {
                 expandedMonths.remove(key)
@@ -294,7 +296,7 @@ struct LogView: View {
         guard !didExpandPeakMonth else { return }
         didExpandPeakMonth = true
         if let peak = LogGrouping.peakMonth(of: yearEntries) {
-            expandedMonths.insert(expansionKey(month: peak))
+            expandedMonths.insert(expansionKey(year: logYear, month: peak))
         }
     }
 
