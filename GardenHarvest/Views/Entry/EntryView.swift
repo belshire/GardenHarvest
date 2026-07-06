@@ -3,18 +3,38 @@ import SwiftData
 
 struct EntryView: View {
     let cropName: String
+    /// When set, the view edits this entry in place instead of logging a
+    /// new one: fields arrive prefilled and Save updates the record.
+    let editingEntry: HarvestEntry?
     let onSaved: (String) -> Void
     let onBack: () -> Void
 
     @Environment(\.modelContext) private var modelContext
     @Query private var crops: [Crop]
 
-    @State private var ouncesText: String = ""
-    @State private var note: String = ""
+    @State private var ouncesText: String
+    @State private var note: String
     @State private var selectedVariant: String?
-    @State private var selectedDateChip: DateChip = .today
-    @State private var customDate: Date = DateProvider.now
+    @State private var selectedDateChip: DateChip
+    @State private var customDate: Date
     @FocusState private var noteFocused: Bool
+
+    init(
+        cropName: String,
+        editing editingEntry: HarvestEntry? = nil,
+        onSaved: @escaping (String) -> Void,
+        onBack: @escaping () -> Void
+    ) {
+        self.cropName = cropName
+        self.editingEntry = editingEntry
+        self.onSaved = onSaved
+        self.onBack = onBack
+        _ouncesText = State(initialValue: editingEntry.map { WeightFormatter.ounces($0.ounces) } ?? "")
+        _note = State(initialValue: editingEntry?.note ?? "")
+        _selectedVariant = State(initialValue: editingEntry?.variant)
+        _selectedDateChip = State(initialValue: editingEntry == nil ? .today : .custom)
+        _customDate = State(initialValue: editingEntry?.date ?? DateProvider.now)
+    }
 
     private var crop: Crop? {
         crops.first { $0.name == cropName }
@@ -75,7 +95,7 @@ struct EntryView: View {
     /// `PageHeaderTitle`), with the crop's icon plate beside the title.
     private var header: some View {
         VStack(spacing: 4) {
-            Text("Log harvest")
+            Text(editingEntry == nil ? "Log harvest" : "Edit harvest")
                 .font(Theme.Font.mono(13.5, weight: .bold))
                 .textCase(.uppercase)
                 .tracking(1.8)
@@ -199,7 +219,7 @@ struct EntryView: View {
             noteFocused = false
             save()
         } label: {
-            Text(ounces > 0 ? "Log \(WeightFormatter.ounces(ounces)) oz \(cropName)" : "Enter a weight")
+            Text(saveButtonLabel)
                 .font(Theme.Font.body(16, weight: .heavy))
                 .foregroundStyle(ounces > 0 ? .white : Theme.sub)
                 .frame(maxWidth: .infinity)
@@ -230,13 +250,36 @@ struct EntryView: View {
         }
     }
 
+    private var saveButtonLabel: String {
+        guard ounces > 0 else { return "Enter a weight" }
+        return editingEntry == nil
+            ? "Log \(WeightFormatter.ounces(ounces)) oz \(cropName)"
+            : "Save changes"
+    }
+
     private func save() {
         guard ounces > 0 else { return }
         let roundedOunces = (ounces * 10).rounded() / 10
+        let date = selectedDateChip.date(customDate: customDate, from: DateProvider.now)
+
+        if let editingEntry {
+            editingEntry.ounces = roundedOunces
+            editingEntry.date = date
+            editingEntry.note = note
+            editingEntry.variant = selectedVariant
+            do {
+                try modelContext.save()
+                onSaved("✏️ Updated \(WeightFormatter.ounces(roundedOunces)) oz \(cropName)")
+            } catch {
+                assertionFailure("Failed to update harvest entry: \(error)")
+            }
+            return
+        }
+
         let entry = HarvestEntry(
             cropName: cropName,
             ounces: roundedOunces,
-            date: selectedDateChip.date(customDate: customDate, from: DateProvider.now),
+            date: date,
             note: note,
             variant: selectedVariant
         )
