@@ -119,6 +119,10 @@ struct LogView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
+                // The page-style TabView pre-renders neighboring pages and
+                // won't re-render them while offscreen, so a filter change
+                // would leave stale cards sliding in. Rebuild pages on change.
+                .id(logCrop)
             } else {
                 yearPage(for: logYear)
             }
@@ -170,7 +174,6 @@ struct LogView: View {
         .padding(.horizontal, 16)
         .background(filterColor ?? Theme.accent)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
-        .animation(.easeInOut(duration: 0.2), value: logCrop)
     }
 
     /// The selected crop's color, `nil` when showing all crops.
