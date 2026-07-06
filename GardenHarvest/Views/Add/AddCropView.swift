@@ -33,6 +33,7 @@ struct AddCropView: View {
                     .font(Theme.Font.body(13, weight: .semibold))
                     .foregroundStyle(Theme.sub)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                iconPreview
                 TextField("Type a vegetable…", text: $name)
                     .font(Theme.Font.heading(17, weight: .bold))
                     .focused($isFocused)
@@ -70,6 +71,47 @@ struct AddCropView: View {
         }
     }
 
+    private var matchedIconName: String? {
+        trimmedName.isEmpty ? nil : CropIconAssigner.assetName(for: trimmedName)
+    }
+
+    private var iconPreview: some View {
+        VStack(spacing: 8) {
+            if trimmedName.isEmpty {
+                Circle()
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [5, 5]))
+                    .foregroundStyle(Theme.hairline)
+                    .frame(width: 128, height: 128)
+                    .overlay(
+                        Text("🌱")
+                            .font(.system(size: 46))
+                            .opacity(0.5)
+                    )
+            } else {
+                CropIconPlate(
+                    cropName: trimmedName,
+                    colorHex: CropColorAssigner.colorHex(for: trimmedName),
+                    plateSize: 128,
+                    iconSize: 98,
+                    discSize: 108
+                )
+            }
+            Text(previewCaption)
+                .font(Theme.Font.mono(11.5, weight: .bold))
+                .tracking(0.3)
+                .foregroundStyle(matchedIconName != nil ? Theme.accent2 : Theme.sub)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 2)
+        .animation(.easeOut(duration: 0.18), value: matchedIconName)
+    }
+
+    private var previewCaption: String {
+        if matchedIconName != nil { return "Auto-matched icon" }
+        if trimmedName.isEmpty { return "Start typing to auto-pick an icon" }
+        return "No icon match — we'll use initials"
+    }
+
     private var suggestionList: some View {
         VStack(spacing: 0) {
             ForEach(suggestions, id: \.self) { suggestion in
@@ -77,14 +119,13 @@ struct AddCropView: View {
                     name = suggestion
                 } label: {
                     HStack(spacing: 12) {
-                        Circle()
-                            .fill(Color(hex: CropColorAssigner.colorHex(for: suggestion)))
-                            .frame(width: 34, height: 34)
-                            .overlay(
-                                Text(suggestion.cropInitials)
-                                    .font(Theme.Font.mono(12, weight: .bold))
-                                    .foregroundStyle(.white)
-                            )
+                        CropIconPlate(
+                            cropName: suggestion,
+                            colorHex: CropColorAssigner.colorHex(for: suggestion),
+                            plateSize: 40,
+                            iconSize: 32,
+                            discSize: 34
+                        )
                         Text(suggestion)
                             .font(Theme.Font.body(15, weight: .bold))
                             .foregroundStyle(Theme.ink)

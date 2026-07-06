@@ -20,9 +20,10 @@
 		3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F214A547210FBEEFBA4D6 /* CropTileView.swift */; };
 		3E50C502E5AF3A7DEE2F509D /* SeedIfNeededTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */; };
 		4032B288DCBEED08167DB888 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFFA0D50018AAD0F17EB69A /* ToastView.swift */; };
+		474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */; };
 		49E66E7F6F94B866ABA19761 /* ChipButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241BD037D0F81D70CC20B4BE /* ChipButtonStyle.swift */; };
+		559B4F451A26BF05C1747C2E /* CropIconPlate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */; };
 		674301C41838220F87BB3474 /* CropInitials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0326D752E09E8676C5366250 /* CropInitials.swift */; };
-		68B7E41809D808FD963D5CD2 /* AddCropTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4C3BC0278C24E151F3A651 /* AddCropTileView.swift */; };
 		6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */; };
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		77FC9A150C69FAD1B97A64E3 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */; };
@@ -39,6 +40,8 @@
 		DBE92658C53E2EC985F4EDD7 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF76E17B753CE23FCB985A4 /* EntryView.swift */; };
 		F17498723188FAF9A343F51E /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EDE223CB055F31ABA92A00 /* HomeContainerView.swift */; };
 		F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */; };
+		FE4A6EFF6475A3A438774571 /* CropIconAssignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */; };
+		FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,14 +61,17 @@
 		241BD037D0F81D70CC20B4BE /* ChipButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipButtonStyle.swift; sourceTree = "<group>"; };
 		27A2BEA23B393E224BAFDBDC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		286AE35877D0AD31C976B8A2 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
-		2A4C3BC0278C24E151F3A651 /* AddCropTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCropTileView.swift; sourceTree = "<group>"; };
+		2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssigner.swift; sourceTree = "<group>"; };
 		3414F2F7D19EC8A0E534EBA7 /* Crop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crop.swift; sourceTree = "<group>"; };
 		45B0648B2D125D047F6E2A44 /* DateChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChip.swift; sourceTree = "<group>"; };
 		4BFFA0D50018AAD0F17EB69A /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
 		599C86015BCE19741443A328 /* GardenHarvestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenHarvestApp.swift; sourceTree = "<group>"; };
+		5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssignerTests.swift; sourceTree = "<group>"; };
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
+		7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconPlate.swift; sourceTree = "<group>"; };
 		797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComingSoonView.swift; sourceTree = "<group>"; };
+		7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVegFAB.swift; sourceTree = "<group>"; };
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				D5449C088D712A3599D41170 /* CropColorAssigner.swift */,
+				2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */,
 				0326D752E09E8676C5366250 /* CropInitials.swift */,
 				45B0648B2D125D047F6E2A44 /* DateChip.swift */,
 				7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */,
@@ -161,7 +168,7 @@
 		CF22C8A470A8261DBA80F1EB /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				2A4C3BC0278C24E151F3A651 /* AddCropTileView.swift */,
+				7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */,
 				E77F214A547210FBEEFBA4D6 /* CropTileView.swift */,
 				D5EDE223CB055F31ABA92A00 /* HomeContainerView.swift */,
 				C66F3A9BE72042DDDB464608 /* HomeView.swift */,
@@ -184,6 +191,7 @@
 			children = (
 				95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */,
 				A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */,
+				5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */,
 				9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */,
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
 				9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */,
@@ -200,6 +208,7 @@
 				192D55BE9CD2F603337CC6FC /* AppTab.swift */,
 				8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */,
 				797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */,
+				7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */,
 				0D29EA0A52F056B6C5E121BC /* RootView.swift */,
 				25EF93C51C63DBFA98CB4ED4 /* Add */,
 				68D01B2AE68D1EE288C3B9CD /* Entry */,
@@ -311,6 +320,7 @@
 			files = (
 				DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */,
 				B7CC2C81F6B27BA83F03588F /* CropColorAssignerTests.swift in Sources */,
+				FE4A6EFF6475A3A438774571 /* CropIconAssignerTests.swift in Sources */,
 				D3F219C2FA18B48A859BFEE3 /* DateChipTests.swift in Sources */,
 				0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */,
 				B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */,
@@ -324,8 +334,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68B7E41809D808FD963D5CD2 /* AddCropTileView.swift in Sources */,
 				03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */,
+				FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */,
 				25A40347E4B78135958703CC /* AppTab.swift in Sources */,
 				31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */,
 				2B3966569BC262116EA34C2A /* CameraPicker.swift in Sources */,
@@ -333,6 +343,8 @@
 				77FC9A150C69FAD1B97A64E3 /* ComingSoonView.swift in Sources */,
 				2274BD7C870FDCE58309788B /* Crop.swift in Sources */,
 				B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */,
+				474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */,
+				559B4F451A26BF05C1747C2E /* CropIconPlate.swift in Sources */,
 				674301C41838220F87BB3474 /* CropInitials.swift in Sources */,
 				3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */,
 				D46E0CEAE4B9C7526B1A9BF6 /* DateChip.swift in Sources */,

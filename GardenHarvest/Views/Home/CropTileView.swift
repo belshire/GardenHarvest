@@ -7,31 +7,32 @@ struct CropTileView: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 6) {
-                Circle()
-                    .fill(Color(hex: crop.colorHex))
-                    .frame(width: 46, height: 46)
-                    .overlay(
-                        Text(crop.name.cropInitials)
-                            .font(Theme.Font.mono(15, weight: .bold))
-                            .foregroundStyle(.white)
-                    )
+            VStack(spacing: 9) {
+                CropIconPlate(
+                    cropName: crop.name,
+                    colorHex: crop.colorHex,
+                    plateSize: 104,
+                    iconSize: 82,
+                    discSize: 92
+                )
                 Text(crop.name)
-                    .font(Theme.Font.body(12.5, weight: .heavy))
+                    .font(Theme.Font.heading(15, weight: .heavy))
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                 Text(totalOunces > 0 ? WeightFormatter.poundsAndOunces(totalOunces) : "—")
-                    .font(Theme.Font.mono(11))
+                    .font(Theme.Font.mono(12))
                     .foregroundStyle(Theme.sub)
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 6)
-            .frame(minHeight: 104)
+            .padding(.top, 20)
+            .padding(.horizontal, 10)
+            .padding(.bottom, 16)
+            .frame(minHeight: 172)
             .frame(maxWidth: .infinity)
             .background(Theme.card)
             .overlay(RoundedRectangle(cornerRadius: Theme.tileRadius).stroke(Theme.hairline, lineWidth: 1))
             .clipShape(RoundedRectangle(cornerRadius: Theme.tileRadius))
+            .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
         }
         .buttonStyle(.plain)
     }

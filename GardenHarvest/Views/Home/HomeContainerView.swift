@@ -13,8 +13,7 @@ struct HomeContainerView: View {
     var body: some View {
         NavigationStack(path: $path) {
             HomeView(
-                onSelectCrop: { name in path.append(.entry(cropName: name)) },
-                onAddCrop: { path.append(.add) }
+                onSelectCrop: { name in path.append(.entry(cropName: name)) }
             )
             .navigationDestination(for: HomeRoute.self) { route in
                 switch route {
@@ -36,6 +35,13 @@ struct HomeContainerView: View {
                         onBack: { if !path.isEmpty { path.removeLast() } }
                     )
                 }
+            }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if path.isEmpty {
+                AddVegFAB { path.append(.add) }
+                    .padding(.trailing, 16)
+                    .padding(.bottom, 86)
             }
         }
         .overlay(alignment: .bottom) {

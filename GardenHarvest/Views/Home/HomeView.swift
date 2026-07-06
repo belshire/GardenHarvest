@@ -6,7 +6,6 @@ struct HomeView: View {
     @Query private var allEntries: [HarvestEntry]
 
     let onSelectCrop: (String) -> Void
-    let onAddCrop: () -> Void
 
     private var season: Int { Calendar.current.component(.year, from: .now) }
 
@@ -27,16 +26,11 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 totalCard
-                Text("Quick log — tap to add")
-                    .font(Theme.Font.mono(11, weight: .bold))
-                    .textCase(.uppercase)
-                    .tracking(1.2)
-                    .foregroundStyle(Theme.sub)
                 grid
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
-            .padding(.bottom, 96)
+            .padding(.bottom, 128)
         }
         .background(Theme.panelBackground.ignoresSafeArea())
     }
@@ -44,9 +38,9 @@ struct HomeView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(seasonLabel)
-                .font(Theme.Font.mono(11, weight: .bold))
+                .font(Theme.Font.mono(13.5, weight: .bold))
                 .textCase(.uppercase)
-                .tracking(1.5)
+                .tracking(1.8)
                 .foregroundStyle(Theme.accent)
             Text("What did you pick?")
                 .font(Theme.Font.heading(27, weight: .heavy))
@@ -79,13 +73,12 @@ struct HomeView: View {
 
     private var grid: some View {
         let totals = totalsByCrop
-        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 11), count: 3), spacing: 11) {
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 2), spacing: 14) {
             ForEach(quickCrops) { crop in
                 CropTileView(crop: crop, totalOunces: totals[crop.name] ?? 0) {
                     onSelectCrop(crop.name)
                 }
             }
-            AddCropTileView(action: onAddCrop)
         }
     }
 }
