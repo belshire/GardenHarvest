@@ -12,6 +12,7 @@ struct LogView: View {
     @State private var expandedMonths: Set<String> = []
     @State private var didExpandLatestMonth = false
     @State private var showCropSheet = false
+    @State private var showImportSheet = false
 
     /// Everything the Log derives from the entry list, computed once per
     /// data/filter change (not on every body evaluation — grouping thousands
@@ -63,6 +64,11 @@ struct LogView: View {
             )
             .presentationDetents([.fraction(0.62), .large])
             .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showImportSheet) {
+            ImportSheet()
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .onAppear {
             rebuildDerivedData()
@@ -157,7 +163,10 @@ struct LogView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 12) {
                 summaryCard(for: year)
-                cropFilterPill
+                HStack(spacing: 8) {
+                    cropFilterPill
+                    importButton
+                }
                 if let logCrop {
                     dossier(for: logCrop, in: year)
                 }
@@ -234,6 +243,23 @@ struct LogView: View {
             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Square button beside the filter pill opening the note-import sheet.
+    private var importButton: some View {
+        Button {
+            showImportSheet = true
+        } label: {
+            Image(systemName: "square.and.arrow.down")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(Theme.accent)
+                .frame(width: 44, height: 44)
+                .background(Theme.card)
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
         }
         .buttonStyle(.plain)
     }
