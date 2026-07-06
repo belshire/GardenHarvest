@@ -142,6 +142,9 @@ struct LogMonthSection: View {
         .overlay(alignment: .bottom) {
             Rectangle().fill(Theme.hairline).frame(height: 1)
         }
+        // The row is a button; without an explicit shape the transparent
+        // stretch around the Spacer isn't hit-testable.
+        .contentShape(Rectangle())
     }
 
     /// Variant and free-form note joined as in the design, e.g. "large · some woody".
