@@ -70,4 +70,70 @@ struct InsightFactsTests {
         ]
         #expect(InsightFacts.oneDayWonder(in: entries) == .oneDayWonder(crop: "Artichoke"))
     }
+
+    // MARK: marathonCrop
+
+    @Test func marathonFindsLongestSpanOver30Days() {
+        let entries = [
+            entry("Raspberries", 5, month: 6, day: 1),
+            entry("Raspberries", 5, month: 8, day: 20), // ~80-day span
+            entry("Peas", 3, month: 6, day: 3),
+            entry("Peas", 3, month: 6, day: 20)          // 17-day span
+        ]
+        guard case .marathonCrop(let crop, let spanDays)? = InsightFacts.marathonCrop(in: entries) else {
+            Issue.record("expected marathonCrop fact")
+            return
+        }
+        #expect(crop == "Raspberries")
+        #expect(spanDays == 80)
+    }
+
+    @Test func marathonNeedsAtLeast30DaySpan() {
+        let entries = [
+            entry("Peas", 3, month: 6, day: 3),
+            entry("Peas", 3, month: 6, day: 20)
+        ]
+        #expect(InsightFacts.marathonCrop(in: entries) == nil)
+    }
+
+    // MARK: lateBloomer / earlyBird
+
+    @Test func lateBloomerSkewsToSeasonEnd() {
+        // Season spans Apr 1 – Sep 30 via asparagus; boysenberries sit at the end.
+        let entries = [
+            entry("Asparagus", 10, month: 4, day: 1),
+            entry("Asparagus", 10, month: 5, day: 1),
+            entry("Boysenberries", 6, month: 9, day: 10),
+            entry("Boysenberries", 6, month: 9, day: 30)
+        ]
+        #expect(InsightFacts.seasonTimingOutlier(in: entries) == .lateBloomer(crop: "Boysenberries"))
+    }
+
+    @Test func earlyBirdSkewsToSeasonStart() {
+        let entries = [
+            entry("Asparagus", 10, month: 4, day: 1),
+            entry("Asparagus", 10, month: 4, day: 10),
+            entry("Raspberries", 6, month: 6, day: 10),
+            entry("Raspberries", 6, month: 9, day: 30)
+        ]
+        #expect(InsightFacts.seasonTimingOutlier(in: entries) == .earlyBird(crop: "Asparagus"))
+    }
+
+    @Test func noTimingOutlierWhenEveryoneSpansTheMiddle() {
+        let entries = [
+            entry("Peas", 3, month: 5, day: 1),
+            entry("Peas", 3, month: 8, day: 1),
+            entry("Beans", 3, month: 5, day: 15),
+            entry("Beans", 3, month: 7, day: 20)
+        ]
+        #expect(InsightFacts.seasonTimingOutlier(in: entries) == nil)
+    }
+
+    @Test func timingOutlierNeedsMultipleCrops() {
+        let entries = [
+            entry("Boysenberries", 6, month: 9, day: 10),
+            entry("Boysenberries", 6, month: 9, day: 30)
+        ]
+        #expect(InsightFacts.seasonTimingOutlier(in: entries) == nil)
+    }
 }
