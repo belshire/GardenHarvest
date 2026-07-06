@@ -16,6 +16,7 @@ struct GardenHarvestApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .preferredColorScheme(.light)
                 .task {
                     SeedDataService.seedIfNeeded(
                         context: container.mainContext,
