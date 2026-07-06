@@ -206,6 +206,10 @@ struct ReportView: View {
         }
 
         if #available(iOS 26.0, *), FoundationModelComposer.isAvailable {
+            // The fingerprint re-check guards against BOTH staleness kinds while
+            // compose ran: entries changed within this season, or the user
+            // stepped to another season (seasonEntries re-derives from the
+            // current one). Don't narrow it to a season-only comparison.
             guard let ai = await FoundationModelComposer.compose(facts: facts, season: season),
                   fingerprint == InsightStore.fingerprint(of: seasonEntries)
             else { return }
