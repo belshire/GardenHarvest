@@ -320,4 +320,20 @@ struct InsightFactsTests {
         let entries = [entry("Peas", 3, month: 6, day: 3)]
         #expect(InsightFacts.storyNotes(in: entries).isEmpty)
     }
+
+    // MARK: story first-person guard
+
+    @Test func firstPersonStoriesAreDetected() {
+        guard #available(iOS 26.0, *) else { return }
+        #expect(FoundationModelComposer.containsFirstPerson(
+            "My asparagus was a true workhorse, giving me 95 days of harvest."))
+        #expect(FoundationModelComposer.containsFirstPerson(
+            "What a year it's been! I've had my ups and downs."))
+        #expect(FoundationModelComposer.containsFirstPerson(
+            "Overall it was a great year, and what 2027 has in store for me."))
+        #expect(!FoundationModelComposer.containsFirstPerson(
+            "The asparagus was a true workhorse, bringing 95 days of delicious harvest."))
+        #expect(!FoundationModelComposer.containsFirstPerson(
+            "Your strawberries showed up in prime time, and the mint just kept coming."))
+    }
 }

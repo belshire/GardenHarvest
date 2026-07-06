@@ -42,7 +42,10 @@ enum InsightStore {
         defaults.set(data, forKey: key(for: season))
     }
 
+    /// v2: v1 caches could hold AI-reworded card text from before the
+    /// template-only amendment; the version bump orphans them so fact cards
+    /// regenerate from templates.
     private static func key(for season: Int) -> String {
-        "insights.season.\(season)"
+        "insights.season.v2.\(season)"
     }
 }

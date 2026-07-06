@@ -73,6 +73,16 @@ struct InsightStoreTests {
         #expect(InsightStore.load(season: 1999, defaults: freshDefaults()) == nil)
     }
 
+    @Test func loadIgnoresPreVersionedCaches() {
+        // v1 caches may hold AI-reworded card text; they must be orphaned.
+        let defaults = freshDefaults()
+        let v1Payload = try! JSONEncoder().encode(
+            InsightStore.Cached(fingerprint: "f", insights: [], story: nil)
+        )
+        defaults.set(v1Payload, forKey: "insights.season.2026")
+        #expect(InsightStore.load(season: 2026, defaults: defaults) == nil)
+    }
+
     @Test func seasonsAreCachedIndependently() {
         let defaults = freshDefaults()
         let c2025 = InsightStore.Cached(fingerprint: "f25", insights: [], story: nil)
