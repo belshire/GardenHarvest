@@ -136,4 +136,51 @@ enum InsightFacts {
         }
         return nil
     }
+
+    /// The single date with the most distinct crops picked (≥ 3). Ties break
+    /// toward the earliest date so results are stable.
+    static func busiestDay(in entries: [HarvestEntry], calendar: Calendar = .current) -> InsightFact? {
+        let byDay = Dictionary(grouping: entries) { calendar.startOfDay(for: $0.date) }
+            .mapValues { Set($0.map(\.cropName)) }
+        guard let busiest = byDay
+            .sorted(by: { $0.value.count == $1.value.count ? $0.key < $1.key : $0.value.count > $1.value.count })
+            .first, busiest.value.count >= 3
+        else { return nil }
+        return .busiestDay(date: busiest.key, crops: busiest.value.sorted())
+    }
+
+    /// Crop with ≥ 5 pickings across ≥ 28 days whose longest gap between
+    /// consecutive pickings is at most 35% of its span — i.e. it kept
+    /// producing with no long dry spells. Best (smallest max-gap ratio) wins.
+    static func steadyProducer(in entries: [HarvestEntry], calendar: Calendar = .current) -> InsightFact? {
+        let candidates: [(crop: String, pickings: Int, ratio: Double)] =
+            Dictionary(grouping: entries, by: \.cropName).compactMap { crop, cropEntries in
+                guard cropEntries.count >= 5 else { return nil }
+                let days = cropEntries.map { calendar.startOfDay(for: $0.date) }.sorted()
+                let span = calendar.dateComponents([.day], from: days.first!, to: days.last!).day ?? 0
+                guard span >= 28 else { return nil }
+                let maxGap = zip(days, days.dropFirst())
+                    .map { calendar.dateComponents([.day], from: $0, to: $1).day ?? 0 }
+                    .max() ?? 0
+                return (crop, cropEntries.count, Double(maxGap) / Double(span))
+            }
+        guard let best = candidates
+            .sorted(by: { $0.ratio == $1.ratio ? $0.crop < $1.crop : $0.ratio < $1.ratio })
+            .first, best.ratio <= 0.35
+        else { return nil }
+        return .steadyProducer(crop: best.crop, pickings: best.pickings)
+    }
+
+    /// Crop with the most distinct non-empty logged variants (≥ 2).
+    static func varietyCollector(in entries: [HarvestEntry]) -> InsightFact? {
+        let variantCounts = Dictionary(grouping: entries, by: \.cropName)
+            .mapValues { cropEntries in
+                Set(cropEntries.compactMap { $0.variant }.filter { !$0.isEmpty }).count
+            }
+        guard let collector = variantCounts
+            .sorted(by: { $0.value == $1.value ? $0.key < $1.key : $0.value > $1.value })
+            .first, collector.value >= 2
+        else { return nil }
+        return .varietyCollector(crop: collector.key, variantCount: collector.value)
+    }
 }

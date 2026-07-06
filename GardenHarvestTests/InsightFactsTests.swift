@@ -136,4 +136,90 @@ struct InsightFactsTests {
         ]
         #expect(InsightFacts.seasonTimingOutlier(in: entries) == nil)
     }
+
+    // MARK: busiestDay
+
+    @Test func busiestDayNeedsThreeCrops() {
+        let entries = [
+            entry("Peas", 3, month: 6, day: 14),
+            entry("Strawberries", 4, month: 6, day: 14),
+            entry("Raspberries", 5, month: 6, day: 15)
+        ]
+        #expect(InsightFacts.busiestDay(in: entries) == nil)
+    }
+
+    @Test func busiestDayReportsCropsSorted() {
+        let entries = [
+            entry("Peas", 3, month: 6, day: 14),
+            entry("Strawberries", 4, month: 6, day: 14),
+            entry("Strawberries", 2, month: 6, day: 14), // same crop twice, counts once
+            entry("Asparagus", 8, month: 6, day: 14),
+            entry("Raspberries", 5, month: 6, day: 15)
+        ]
+        guard case .busiestDay(let date, let crops)? = InsightFacts.busiestDay(in: entries) else {
+            Issue.record("expected busiestDay fact")
+            return
+        }
+        #expect(crops == ["Asparagus", "Peas", "Strawberries"])
+        #expect(Calendar.current.component(.day, from: date) == 14)
+    }
+
+    // MARK: steadyProducer
+
+    @Test func steadyProducerRewardsEvenSpread() {
+        // Raspberries: 5 pickings, evenly ~2 weeks apart across 56 days.
+        let entries = [
+            entry("Raspberries", 5, month: 6, day: 1),
+            entry("Raspberries", 5, month: 6, day: 15),
+            entry("Raspberries", 5, month: 6, day: 29),
+            entry("Raspberries", 5, month: 7, day: 13),
+            entry("Raspberries", 5, month: 7, day: 27)
+        ]
+        #expect(InsightFacts.steadyProducer(in: entries)
+            == .steadyProducer(crop: "Raspberries", pickings: 5))
+    }
+
+    @Test func steadyProducerRejectsLongDrySpell() {
+        // 5 pickings but a 44-day gap in a 56-day span (ratio > 0.35).
+        let entries = [
+            entry("Raspberries", 5, month: 6, day: 1),
+            entry("Raspberries", 5, month: 6, day: 5),
+            entry("Raspberries", 5, month: 6, day: 9),
+            entry("Raspberries", 5, month: 6, day: 13),
+            entry("Raspberries", 5, month: 7, day: 27)
+        ]
+        #expect(InsightFacts.steadyProducer(in: entries) == nil)
+    }
+
+    @Test func steadyProducerNeedsFivePickings() {
+        let entries = [
+            entry("Raspberries", 5, month: 6, day: 1),
+            entry("Raspberries", 5, month: 6, day: 15),
+            entry("Raspberries", 5, month: 6, day: 29),
+            entry("Raspberries", 5, month: 7, day: 13)
+        ]
+        #expect(InsightFacts.steadyProducer(in: entries) == nil)
+    }
+
+    // MARK: varietyCollector
+
+    @Test func varietyCollectorCountsDistinctVariants() {
+        let entries = [
+            entry("Strawberries", 4, month: 5, day: 1, variant: "Albion"),
+            entry("Strawberries", 4, month: 5, day: 8, variant: "Seascape"),
+            entry("Strawberries", 4, month: 5, day: 15, variant: "Albion"),
+            entry("Peas", 3, month: 6, day: 3, variant: "Sugar Snap")
+        ]
+        #expect(InsightFacts.varietyCollector(in: entries)
+            == .varietyCollector(crop: "Strawberries", variantCount: 2))
+    }
+
+    @Test func varietyCollectorIgnoresNilAndEmptyVariants() {
+        let entries = [
+            entry("Strawberries", 4, month: 5, day: 1, variant: "Albion"),
+            entry("Strawberries", 4, month: 5, day: 8, variant: ""),
+            entry("Strawberries", 4, month: 5, day: 15)
+        ]
+        #expect(InsightFacts.varietyCollector(in: entries) == nil)
+    }
 }
