@@ -51,17 +51,14 @@ struct CropFilterSheet: View {
             onSelect(name)
         } label: {
             HStack(spacing: 12) {
-                if let name {
-                    CropIconPlate(
-                        cropName: name,
-                        colorHex: colorHex(name),
-                        plateSize: 34,
-                        iconSize: 27,
-                        discSize: 30
-                    )
-                } else {
-                    allCropsDot
-                }
+                CropIconPlate(
+                    cropName: name ?? "All crops",
+                    colorHex: name.map(colorHex) ?? "#999999",
+                    plateSize: 34,
+                    iconSize: 27,
+                    discSize: 30,
+                    assetOverride: name == nil ? CropIconAssigner.allCropsAssetName : nil
+                )
                 Text(name ?? "All crops")
                     .font(Theme.Font.body(15, weight: .bold))
                     .foregroundStyle(Theme.ink)
@@ -81,17 +78,5 @@ struct CropFilterSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-    }
-
-    private var allCropsDot: some View {
-        Circle()
-            .fill(LinearGradient(colors: [Theme.accent, Theme.accent2], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .frame(width: 30, height: 30)
-            .overlay(
-                Text("∗")
-                    .font(Theme.Font.mono(15, weight: .bold))
-                    .foregroundStyle(.white)
-            )
-            .padding(.horizontal, 2)
     }
 }

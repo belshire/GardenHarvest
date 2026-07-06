@@ -29,6 +29,8 @@
 		474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */; };
 		49E66E7F6F94B866ABA19761 /* ChipButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241BD037D0F81D70CC20B4BE /* ChipButtonStyle.swift */; };
 		559B4F451A26BF05C1747C2E /* CropIconPlate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */; };
+		5D8E2A4C1B7F60931EAD5C02 /* PageHeaderTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */; };
+		6E9F3B5D2C8A71042FBE6D13 /* TotalInfoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */; };
 		674301C41838220F87BB3474 /* CropInitials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0326D752E09E8676C5366250 /* CropInitials.swift */; };
 		6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */; };
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
@@ -82,6 +84,8 @@
 		5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssignerTests.swift; sourceTree = "<group>"; };
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconPlate.swift; sourceTree = "<group>"; };
+		9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageHeaderTitle.swift; sourceTree = "<group>"; };
+		AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalInfoCard.swift; sourceTree = "<group>"; };
 		797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComingSoonView.swift; sourceTree = "<group>"; };
 		7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVegFAB.swift; sourceTree = "<group>"; };
 		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -222,7 +226,9 @@
 				8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */,
 				797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */,
 				7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */,
+				9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */,
 				0D29EA0A52F056B6C5E121BC /* RootView.swift */,
+				AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */,
 				25EF93C51C63DBFA98CB4ED4 /* Add */,
 				68D01B2AE68D1EE288C3B9CD /* Entry */,
 				CF22C8A470A8261DBA80F1EB /* Home */,
@@ -371,6 +377,8 @@
 				2B8D551CE00FE231AC64C004 /* CropFilterSheet.swift in Sources */,
 				474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */,
 				559B4F451A26BF05C1747C2E /* CropIconPlate.swift in Sources */,
+				5D8E2A4C1B7F60931EAD5C02 /* PageHeaderTitle.swift in Sources */,
+				6E9F3B5D2C8A71042FBE6D13 /* TotalInfoCard.swift in Sources */,
 				674301C41838220F87BB3474 /* CropInitials.swift in Sources */,
 				3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */,
 				D46E0CEAE4B9C7526B1A9BF6 /* DateChip.swift in Sources */,

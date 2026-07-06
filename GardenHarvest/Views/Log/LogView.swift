@@ -59,17 +59,8 @@ struct LogView: View {
             stepButton(glyph: "‹", enabled: canGoOlder) {
                 if let yearIndex, canGoOlder { setYear(years[yearIndex + 1]) }
             }
-            VStack(spacing: 2) {
-                Text("Harvest log")
-                    .font(Theme.Font.mono(10.5, weight: .bold))
-                    .textCase(.uppercase)
-                    .tracking(2)
-                    .foregroundStyle(Theme.accent)
-                Text(String(logYear))
-                    .font(Theme.Font.heading(32))
-                    .foregroundStyle(Theme.ink)
-            }
-            .frame(maxWidth: .infinity)
+            PageHeaderTitle(eyebrow: "Harvest log", title: String(logYear))
+                .frame(maxWidth: .infinity)
             stepButton(glyph: "›", enabled: canGoNewer) {
                 if let yearIndex, canGoNewer { setYear(years[yearIndex - 1]) }
             }
@@ -161,24 +152,32 @@ struct LogView: View {
             let cropCount = Set(entries.map(\.cropName)).count
             subline = "\(entries.count) pickings · \(cropCount) crops"
         }
-        return VStack(alignment: .leading, spacing: 4) {
-            Text(WeightFormatter.poundsAndOunces(total))
-                .font(Theme.Font.heading(30))
-            Text(subline)
-                .font(Theme.Font.body(12.5, weight: .semibold))
-                .opacity(0.92)
+        return TotalInfoCard(
+            total: total,
+            caption: subline,
+            background: filterColor ?? Theme.accent
+        ) {
+            filterIconPlate(plateSize: 54, iconSize: 42, discSize: 46)
         }
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 14)
-        .padding(.horizontal, 16)
-        .background(filterColor ?? Theme.accent)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     /// The selected crop's color, `nil` when showing all crops.
     private var filterColor: Color? {
         logCrop.map { Color(hex: colorHex(for: $0)) }
+    }
+
+    /// Plate for the active filter: the crop's vegetable icon when filtered
+    /// (initials disc when that crop has none), the cornucopia when showing
+    /// all crops. The solid plate keeps the icon legible on any card color.
+    private func filterIconPlate(plateSize: CGFloat, iconSize: CGFloat, discSize: CGFloat) -> some View {
+        CropIconPlate(
+            cropName: logCrop ?? "All crops",
+            colorHex: logCrop.map { colorHex(for: $0) } ?? "#999999",
+            plateSize: plateSize,
+            iconSize: iconSize,
+            discSize: discSize,
+            assetOverride: logCrop == nil ? CropIconAssigner.allCropsAssetName : nil
+        )
     }
 
     // MARK: Crop filter pill
@@ -188,15 +187,7 @@ struct LogView: View {
             showCropSheet = true
         } label: {
             HStack(spacing: 9) {
-                if let logCrop {
-                    Circle()
-                        .fill(Color(hex: colorHex(for: logCrop)))
-                        .frame(width: 14, height: 14)
-                } else {
-                    Circle()
-                        .fill(allCropsGradient)
-                        .frame(width: 14, height: 14)
-                }
+                filterIconPlate(plateSize: 26, iconSize: 20, discSize: 22)
                 Text(logCrop ?? "All crops")
                     .font(Theme.Font.body(14.5, weight: .bold))
                     .foregroundStyle(Theme.ink)
@@ -205,7 +196,7 @@ struct LogView: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Theme.sub)
             }
-            .padding(.vertical, 11)
+            .padding(.vertical, 9)
             .padding(.horizontal, 14)
             .background(Theme.card)
             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
@@ -213,10 +204,6 @@ struct LogView: View {
             .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
         }
         .buttonStyle(.plain)
-    }
-
-    private var allCropsGradient: LinearGradient {
-        LinearGradient(colors: [Theme.accent, Theme.accent2], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 
     // MARK: Crop dossier

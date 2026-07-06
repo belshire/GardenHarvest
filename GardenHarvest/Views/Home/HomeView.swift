@@ -32,17 +32,8 @@ struct HomeView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(seasonLabel)
-                .font(Theme.Font.mono(13.5, weight: .bold))
-                .textCase(.uppercase)
-                .tracking(1.8)
-                .foregroundStyle(Theme.accent)
-            Text("What did you pick?")
-                .font(Theme.Font.heading(27, weight: .heavy))
-                .foregroundStyle(Theme.ink)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        PageHeaderTitle(eyebrow: seasonLabel, title: "What did you pick?")
+            .frame(maxWidth: .infinity)
     }
 
     private var seasonLabel: String {
@@ -52,19 +43,11 @@ struct HomeView: View {
     }
 
     private var totalCard: some View {
-        let total = seasonEntries.reduce(0) { $0 + $1.ounces }
-        return VStack(alignment: .leading, spacing: 4) {
-            Text(WeightFormatter.poundsAndOunces(total))
-                .font(Theme.Font.heading(34, weight: .heavy))
-            Text("picked this season across \(totalsByCrop.keys.count) crops")
-                .font(Theme.Font.body(12.5, weight: .semibold))
-                .opacity(0.9)
-        }
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Theme.accent)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        TotalInfoCard(
+            total: seasonEntries.reduce(0) { $0 + $1.ounces },
+            caption: "picked this season across \(totalsByCrop.keys.count) crops",
+            background: Theme.accent
+        )
     }
 
     private var grid: some View {

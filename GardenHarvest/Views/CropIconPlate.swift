@@ -11,6 +11,9 @@ struct CropIconPlate: View {
     let iconSize: CGFloat
     /// Fallback initials disc diameter.
     let discSize: CGFloat
+    /// Explicit asset to show instead of looking one up from the crop name,
+    /// e.g. the cornucopia for the "All crops" filter row.
+    var assetOverride: String? = nil
 
     private static let plateInner = Color.white
     private static let plateOuter = Color(hex: "#eef3e4")
@@ -27,7 +30,7 @@ struct CropIconPlate: View {
                     )
                 )
                 .shadow(color: Color(hex: "#22381c").opacity(0.07), radius: plateSize * 0.07, y: plateSize * 0.03)
-            if let assetName = CropIconAssigner.assetName(for: cropName) {
+            if let assetName = assetOverride ?? CropIconAssigner.assetName(for: cropName) {
                 Image(assetName)
                     .resizable()
                     .scaledToFit()

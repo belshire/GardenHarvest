@@ -1,4 +1,7 @@
 enum CropIconAssigner {
+    /// Icon for the "All crops" filter state; not tied to any single crop.
+    static let allCropsAssetName = "VegIcons/cornucopia"
+
     /// Ports the prototype's `ICON_MAP`: lowercased crop name -> icon slug in the
     /// `VegIcons` asset namespace. Extended with the icons that ship in
     /// `vegetable-icons/individual-icons` but weren't mapped in the prototype
