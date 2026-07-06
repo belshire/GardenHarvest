@@ -1,25 +1,37 @@
 import SwiftUI
 
-/// Swipeable deck of season insight cards: crop-tinted backgrounds, the
+/// Swipeable deck of season fun-fact cards: crop-tinted backgrounds, the
 /// crop's icon plate (sparkle for multi-crop facts), springy scale on page
-/// change, and index dots. Replaces the old AIInsightCard placeholder.
+/// change, and index dots. The carousel wraps around: sentinel copies of the
+/// first and last cards sit beyond each end, and landing on one snaps
+/// without animation to its real twin.
 struct InsightDeck: View {
     let insights: [Insight]
     /// Resolves a crop's display color, matching the rest of the report.
     let colorHex: (String) -> String
 
-    @State private var page = 0
+    /// Tag into `pages`: real cards are 1...count, 0 and count+1 are the
+    /// wraparound sentinels.
+    @State private var page = 1
+
+    private var pages: [(tag: Int, insight: Insight)] {
+        let real = insights.enumerated().map { (tag: $0.offset + 1, insight: $0.element) }
+        guard let first = insights.first, let last = insights.last, insights.count > 1 else {
+            return real
+        }
+        return [(tag: 0, insight: last)] + real + [(tag: insights.count + 1, insight: first)]
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 11) {
             header
             TabView(selection: $page) {
-                ForEach(Array(insights.enumerated()), id: \.offset) { index, insight in
-                    card(insight)
-                        .scaleEffect(page == index ? 1 : 0.9)
+                ForEach(pages, id: \.tag) { entry in
+                    card(entry.insight)
+                        .scaleEffect(page == entry.tag ? 1 : 0.9)
                         .animation(.spring(response: 0.4, dampingFraction: 0.65), value: page)
                         .padding(.horizontal, 2)
-                        .tag(index)
+                        .tag(entry.tag)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -28,23 +40,38 @@ struct InsightDeck: View {
                 dots
             }
         }
-        .onChange(of: insights.count) { _, _ in page = min(page, max(0, insights.count - 1)) }
+        .onChange(of: page) { _, newPage in
+            guard insights.count > 1 else { return }
+            if newPage == 0 {
+                snap(to: insights.count)
+            } else if newPage == insights.count + 1 {
+                snap(to: 1)
+            }
+        }
+        .onChange(of: insights.count) { _, count in page = min(page, max(1, count)) }
+    }
+
+    /// Jumps from a sentinel page to its real twin with animations disabled
+    /// so the wraparound reads as one continuous swipe.
+    private func snap(to tag: Int) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { page = tag }
+    }
+
+    /// Dot index for the current page, mapping both sentinels onto the real
+    /// cards they mirror.
+    private var currentIndex: Int {
+        guard !insights.isEmpty else { return 0 }
+        return ((page - 1) % insights.count + insights.count) % insights.count
     }
 
     private var header: some View {
-        HStack(spacing: 9) {
-            Text("✦")
-                .font(Theme.Font.body(14, weight: .heavy))
-                .foregroundStyle(Theme.accent)
-                .frame(width: 26, height: 26)
-                .background(Theme.accent.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            Text("AI Insight")
-                .font(Theme.Font.body(11, weight: .heavy))
-                .textCase(.uppercase)
-                .tracking(1.2)
-                .foregroundStyle(Theme.sub)
-        }
+        Text("Fun Facts")
+            .font(Theme.Font.body(11, weight: .heavy))
+            .textCase(.uppercase)
+            .tracking(1.2)
+            .foregroundStyle(Theme.sub)
     }
 
     private func card(_ insight: Insight) -> some View {
@@ -92,7 +119,7 @@ struct InsightDeck: View {
         HStack(spacing: 6) {
             ForEach(insights.indices, id: \.self) { index in
                 Circle()
-                    .fill(page == index ? Theme.accent : Theme.hairline)
+                    .fill(currentIndex == index ? Theme.accent : Theme.hairline)
                     .frame(width: 6, height: 6)
             }
         }
