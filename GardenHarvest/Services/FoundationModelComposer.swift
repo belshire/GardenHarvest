@@ -1,41 +1,45 @@
 import Foundation
 import FoundationModels
 
-/// Rewords extracted facts with the on-device Apple Intelligence model.
+/// Generates the "story of the season" with the on-device Apple Intelligence
+/// model from the season's facts and the gardener's own harvest notes.
 /// Availability is double-gated: `#available(iOS 26, *)` at call sites plus
 /// the runtime model check (absent on non-eligible devices, when Apple
 /// Intelligence is off, or while the model downloads). Any failure returns
-/// nil and the caller keeps template wording — never a user-facing error.
+/// nil and the story section stays hidden — never a user-facing error.
 @available(iOS 26.0, *)
 enum FoundationModelComposer {
     @Generable
-    struct Wordings {
-        @Guide(description: "Exactly one short, playful sentence per fact, in the same order the facts were given.")
-        let sentences: [String]
+    struct Story {
+        @Guide(description: "A warm 2-4 sentence second-person story of the gardener's season, one paragraph.")
+        let story: String
     }
 
     static var isAvailable: Bool {
         SystemLanguageModel.default.availability == .available
     }
 
-    static func compose(facts: [InsightFact], season: Int) async -> [Insight]? {
+    /// Narrates the season from the extracted facts plus any harvest notes;
+    /// with no notes it narrates from the facts alone.
+    static func storyText(facts: [InsightFact], notes: [String], season: Int) async -> String? {
         guard isAvailable, !facts.isEmpty else { return nil }
         let session = LanguageModelSession(instructions: """
-            You write one-sentence insights for a home gardener's \(season) \
-            year-in-review. Tone: warm, playful, a little whimsical. Write \
-            exactly one sentence per fact, in the order given. Use only the \
-            facts provided. Never invent numbers, weights, percentages, or \
-            comparisons that are not stated in the fact.
+            You write a short story-of-the-season recap for a home gardener's \
+            \(season) year-in-review. Address the gardener as "you". Tone: \
+            warm, playful, a little whimsical. Write 2 to 4 sentences as one \
+            paragraph. Use only the facts and notes provided. Never invent \
+            numbers, weights, percentages, or events that are not stated.
             """)
-        let prompt = "Reword each of these harvest facts as one fun sentence:\n"
-            + facts.enumerated()
-                .map { "\($0.offset + 1). \($0.element.promptLine)" }
-                .joined(separator: "\n")
-        guard let response = try? await session.respond(to: prompt, generating: Wordings.self),
-              response.content.sentences.count == facts.count
-        else { return nil }
-        return zip(facts, response.content.sentences).map { fact, sentence in
-            Insight(kind: fact.kind, text: sentence, cropName: fact.primaryCrop)
+        var prompt = "Facts about the season:\n"
+            + facts.map { "- \($0.promptLine)" }.joined(separator: "\n")
+        if !notes.isEmpty {
+            prompt += "\n\nThe gardener's own harvest notes:\n"
+                + notes.map { "- \($0)" }.joined(separator: "\n")
         }
+        prompt += "\n\nWrite the story of this season."
+        guard let response = try? await session.respond(to: prompt, generating: Story.self)
+        else { return nil }
+        let text = response.content.story.trimmingCharacters(in: .whitespacesAndNewlines)
+        return text.isEmpty ? nil : text
     }
 }

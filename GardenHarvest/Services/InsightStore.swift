@@ -7,9 +7,10 @@ enum InsightStore {
     struct Cached: Codable, Equatable {
         let fingerprint: String
         let insights: [Insight]
-        /// True once the on-device model has reworded the templates, so we
-        /// don't re-run generation for unchanged data.
-        let aiComposed: Bool
+        /// The on-device model's season story; nil until generated, so a
+        /// missing story retries on the next view when the model is
+        /// available without re-composing the fact cards.
+        let story: String?
     }
 
     /// Order-independent FNV-1a hash over every entry's crop, ounces, date,

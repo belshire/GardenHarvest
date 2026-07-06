@@ -281,4 +281,43 @@ struct InsightFactsTests {
         #expect(facts[1].promptLine == "You grew 3 different varieties of Strawberries.")
         #expect(facts[2].promptLine == "Artichoke was picked exactly once all season.")
     }
+
+    // MARK: storyNotes
+
+    private func notedEntry(_ crop: String, month: Int, day: Int, note: String) -> HarvestEntry {
+        var components = DateComponents()
+        components.year = 2026
+        components.month = month
+        components.day = day
+        let date = Calendar.current.date(from: components)!
+        return HarvestEntry(cropName: crop, ounces: 4, date: date, note: note)
+    }
+
+    @Test func storyNotesFormatsSortedNonEmptyNotes() {
+        let entries = [
+            notedEntry("Raspberries", month: 7, day: 2, note: "Best haul yet"),
+            notedEntry("Strawberries", month: 6, day: 14, note: "Fought off the birds"),
+            notedEntry("Peas", month: 6, day: 20, note: ""),
+            notedEntry("Peas", month: 6, day: 21, note: "   ")
+        ]
+        #expect(InsightFacts.storyNotes(in: entries) == [
+            "Jun 14 Strawberries: Fought off the birds",
+            "Jul 2 Raspberries: Best haul yet"
+        ])
+    }
+
+    @Test func storyNotesCapsAtLimit() {
+        let entries = (1...25).map { day in
+            notedEntry("Peas", month: 6, day: day, note: "note \(day)")
+        }
+        let notes = InsightFacts.storyNotes(in: entries, limit: 20)
+        #expect(notes.count == 20)
+        #expect(notes.first == "Jun 1 Peas: note 1")
+        #expect(notes.last == "Jun 20 Peas: note 20")
+    }
+
+    @Test func storyNotesEmptyWhenNoNotes() {
+        let entries = [entry("Peas", 3, month: 6, day: 3)]
+        #expect(InsightFacts.storyNotes(in: entries).isEmpty)
+    }
 }

@@ -21,6 +21,10 @@ struct ReportView: View {
     /// whenever the season's entries change (see insightKey).
     @State private var insights: [Insight] = []
 
+    /// The on-device model's "story of the season"; nil (section hidden)
+    /// until generated, and only ever set on Apple Intelligence devices.
+    @State private var story: String?
+
     /// Years with entries plus the current year, newest first, so a fresh
     /// January can still step back to last season's report.
     private var availableYears: [Int] {
@@ -190,32 +194,36 @@ struct ReportView: View {
         let facts = InsightFacts.topFacts(in: entries)
         guard !facts.isEmpty else {
             insights = []
+            story = nil
             return
         }
         let fingerprint = InsightStore.fingerprint(of: entries)
 
         if let cached = InsightStore.load(season: season), cached.fingerprint == fingerprint {
             insights = cached.insights
-            if cached.aiComposed { return }
+            story = cached.story
+            if story != nil { return }
         } else {
             insights = TemplateComposer().compose(facts: facts, season: season)
+            story = nil
             InsightStore.save(
-                .init(fingerprint: fingerprint, insights: insights, aiComposed: false),
+                .init(fingerprint: fingerprint, insights: insights, story: nil),
                 season: season
             )
         }
 
         if #available(iOS 26.0, *), FoundationModelComposer.isAvailable {
+            let notes = InsightFacts.storyNotes(in: entries)
             // The fingerprint re-check guards against BOTH staleness kinds while
-            // compose ran: entries changed within this season, or the user
-            // stepped to another season (seasonEntries re-derives from the
+            // the story generated: entries changed within this season, or the
+            // user stepped to another season (seasonEntries re-derives from the
             // current one). Don't narrow it to a season-only comparison.
-            guard let ai = await FoundationModelComposer.compose(facts: facts, season: season),
+            guard let text = await FoundationModelComposer.storyText(facts: facts, notes: notes, season: season),
                   fingerprint == InsightStore.fingerprint(of: seasonEntries)
             else { return }
-            withAnimation(.easeInOut(duration: 0.3)) { insights = ai }
+            withAnimation(.easeInOut(duration: 0.3)) { story = text }
             InsightStore.save(
-                .init(fingerprint: fingerprint, insights: ai, aiComposed: true),
+                .init(fingerprint: fingerprint, insights: insights, story: text),
                 season: season
             )
         }

@@ -56,10 +56,17 @@ struct InsightStoreTests {
         let cached = InsightStore.Cached(
             fingerprint: "abc123",
             insights: [Insight(kind: "oneDayWonder", text: "Hello", cropName: "Artichoke")],
-            aiComposed: true
+            story: "What a season it was."
         )
         InsightStore.save(cached, season: 2026, defaults: defaults)
         #expect(InsightStore.load(season: 2026, defaults: defaults) == cached)
+    }
+
+    @Test func roundTripPreservesNilStory() {
+        let defaults = freshDefaults()
+        let cached = InsightStore.Cached(fingerprint: "abc123", insights: [], story: nil)
+        InsightStore.save(cached, season: 2026, defaults: defaults)
+        #expect(InsightStore.load(season: 2026, defaults: defaults)?.story == nil)
     }
 
     @Test func loadReturnsNilForUnknownSeason() {
@@ -68,8 +75,8 @@ struct InsightStoreTests {
 
     @Test func seasonsAreCachedIndependently() {
         let defaults = freshDefaults()
-        let c2025 = InsightStore.Cached(fingerprint: "f25", insights: [], aiComposed: false)
-        let c2026 = InsightStore.Cached(fingerprint: "f26", insights: [], aiComposed: true)
+        let c2025 = InsightStore.Cached(fingerprint: "f25", insights: [], story: nil)
+        let c2026 = InsightStore.Cached(fingerprint: "f26", insights: [], story: "Berries abounded.")
         InsightStore.save(c2025, season: 2025, defaults: defaults)
         InsightStore.save(c2026, season: 2026, defaults: defaults)
         #expect(InsightStore.load(season: 2025, defaults: defaults) == c2025)

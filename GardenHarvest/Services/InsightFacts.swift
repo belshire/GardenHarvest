@@ -200,6 +200,22 @@ enum InsightFacts {
     }
 }
 
+extension InsightFacts {
+    /// The season's non-empty harvest notes as "Jun 14 Strawberries: <note>"
+    /// lines, oldest first, capped so the story prompt stays small.
+    static func storyNotes(
+        in entries: [HarvestEntry],
+        calendar: Calendar = .current,
+        limit: Int = 20
+    ) -> [String] {
+        entries
+            .filter { !$0.note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            .sorted { $0.date < $1.date }
+            .prefix(limit)
+            .map { "\(ReportStats.monthDayLabel($0.date, calendar: calendar)) \($0.cropName): \($0.note)" }
+    }
+}
+
 extension InsightFact {
     /// Plain-English statement of the fact, fed verbatim to the on-device
     /// model so it rewords exactly this and nothing more.
