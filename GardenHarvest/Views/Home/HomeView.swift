@@ -31,7 +31,9 @@ struct HomeView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
-            .padding(.bottom, 128)
+            // Enough clearance for the Add Crop FAB (116pt offset + ~56pt
+            // capsule) so it never covers the last tile row.
+            .padding(.bottom, 200)
         }
         .background(Theme.panelBackground.ignoresSafeArea())
     }

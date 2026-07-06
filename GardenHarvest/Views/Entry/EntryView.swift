@@ -111,7 +111,10 @@ struct EntryView: View {
     private var bumpChips: some View {
         HStack(spacing: 8) {
             ForEach([("−1", -1.0), ("+0.5", 0.5), ("+1", 1.0), ("+5", 5.0)], id: \.0) { label, delta in
-                Button(label) { bump(by: delta) }
+                Button(label) {
+                    noteFocused = false
+                    bump(by: delta)
+                }
                     .buttonStyle(ChipButtonStyle())
             }
         }
@@ -121,6 +124,7 @@ struct EntryView: View {
         HStack(spacing: 8) {
             ForEach(variants, id: \.self) { variant in
                 Button(variant) {
+                    noteFocused = false
                     selectedVariant = (selectedVariant == variant) ? nil : variant
                 }
                 .buttonStyle(ChipButtonStyle(isSelected: selectedVariant == variant))
@@ -132,6 +136,7 @@ struct EntryView: View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 9), count: 3), spacing: 9) {
             ForEach(["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"], id: \.self) { key in
                 Button {
+                    noteFocused = false
                     handleKey(key)
                 } label: {
                     Text(key)
@@ -151,7 +156,10 @@ struct EntryView: View {
         VStack(spacing: 10) {
             HStack(spacing: 8) {
                 ForEach(DateChip.allCases, id: \.self) { chip in
-                    Button(chip.label) { selectedDateChip = chip }
+                    Button(chip.label) {
+                        noteFocused = false
+                        selectedDateChip = chip
+                    }
                         .buttonStyle(ChipButtonStyle(isSelected: selectedDateChip == chip))
                 }
             }
@@ -188,6 +196,7 @@ struct EntryView: View {
 
     private var saveButton: some View {
         Button {
+            noteFocused = false
             save()
         } label: {
             Text(ounces > 0 ? "Log \(WeightFormatter.ounces(ounces)) oz \(cropName)" : "Enter a weight")
