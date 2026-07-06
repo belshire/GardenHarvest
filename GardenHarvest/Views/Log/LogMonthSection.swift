@@ -27,14 +27,15 @@ struct LogMonthSection: View {
                     ForEach(group.days, id: \.date) { day in
                         dayLabel(day.date)
                         ForEach(day.entries) { entry in
-                            Button {
-                                onRowTap(entry)
-                            } label: {
-                                pickingRow(entry)
-                            }
-                            .buttonStyle(.plain)
                             if revealedEntryID == entry.id {
-                                actionBar(entry)
+                                revealedRow(entry)
+                            } else {
+                                Button {
+                                    onRowTap(entry)
+                                } label: {
+                                    pickingRow(entry)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -44,18 +45,34 @@ struct LogMonthSection: View {
         }
     }
 
-    /// Inline Edit/Delete revealed by tapping a row.
-    private func actionBar(_ entry: HarvestEntry) -> some View {
-        HStack(spacing: 8) {
-            Spacer()
-            actionButton("Edit", icon: "pencil", tint: Theme.accent) { onEdit(entry) }
-            actionButton("Delete", icon: "trash", tint: Color(hex: "#c0392b")) { onDelete(entry) }
+    /// A tapped row and its Edit/Delete actions, grouped under one soft
+    /// highlight (no divider between them) so it's unambiguous which entry
+    /// the buttons belong to, even mid-list.
+    private func revealedRow(_ entry: HarvestEntry) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button {
+                onRowTap(entry)
+            } label: {
+                pickingRow(entry, showsDivider: false)
+            }
+            .buttonStyle(.plain)
+            HStack(spacing: 8) {
+                Spacer()
+                actionButton("Edit", icon: "pencil", tint: Theme.accent) { onEdit(entry) }
+                actionButton("Delete", icon: "trash", tint: Color(hex: "#c0392b")) { onDelete(entry) }
+            }
+            .padding(.top, 2)
+            .padding(.bottom, 11)
+            .transition(.opacity.combined(with: .move(edge: .top)))
         }
-        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Theme.accent.opacity(0.07))
+                .padding(.horizontal, -8)
+        )
         .overlay(alignment: .bottom) {
             Rectangle().fill(Theme.hairline).frame(height: 1)
         }
-        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     private func actionButton(_ label: String, icon: String, tint: Color, action: @escaping () -> Void) -> some View {
@@ -113,7 +130,7 @@ struct LogMonthSection: View {
             .padding(.top, 8)
     }
 
-    private func pickingRow(_ entry: HarvestEntry) -> some View {
+    private func pickingRow(_ entry: HarvestEntry, showsDivider: Bool = true) -> some View {
         HStack(spacing: 12) {
             CropIconPlate(
                 cropName: entry.cropName,
@@ -140,7 +157,9 @@ struct LogMonthSection: View {
         }
         .padding(.vertical, 9)
         .overlay(alignment: .bottom) {
-            Rectangle().fill(Theme.hairline).frame(height: 1)
+            if showsDivider {
+                Rectangle().fill(Theme.hairline).frame(height: 1)
+            }
         }
         // The row is a button; without an explicit shape the transparent
         // stretch around the Spacer isn't hit-testable.
