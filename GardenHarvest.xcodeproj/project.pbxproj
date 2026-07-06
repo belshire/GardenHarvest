@@ -44,6 +44,7 @@
 		9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */; };
 		AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */; };
 		B28BA66E5A9082AC2C892001 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D29EA0A52F056B6C5E121BC /* RootView.swift */; };
+		7E2C51B8F09A4D33E6B5C871 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3A9D21C4E87B60D1A2F340 /* LaunchView.swift */; };
 		B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5449C088D712A3599D41170 /* CropColorAssigner.swift */; };
 		B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */; };
 		B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */; };
@@ -71,6 +72,7 @@
 /* Begin PBXFileReference section */
 		0326D752E09E8676C5366250 /* CropInitials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropInitials.swift; sourceTree = "<group>"; };
 		0D29EA0A52F056B6C5E121BC /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		5F3A9D21C4E87B60D1A2F340 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		192D55BE9CD2F603337CC6FC /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B001 /* LogGrouping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogGrouping.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B002 /* CapsuleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleBar.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				192D55BE9CD2F603337CC6FC /* AppTab.swift */,
 				8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */,
 				7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */,
+				5F3A9D21C4E87B60D1A2F340 /* LaunchView.swift */,
 				9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */,
 				0D29EA0A52F056B6C5E121BC /* RootView.swift */,
 				AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */,
@@ -423,6 +426,7 @@
 				2B8D551CE00FE231AC64C005 /* LogMonthSection.swift in Sources */,
 				2B8D551CE00FE231AC64C006 /* LogView.swift in Sources */,
 				B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */,
+				7E2C51B8F09A4D33E6B5C871 /* LaunchView.swift in Sources */,
 				B28BA66E5A9082AC2C892001 /* RootView.swift in Sources */,
 				6EFB2D98C90024D4AD09A4E3 /* SeedDataService.swift in Sources */,
 				231FE263F01DC16E78FD7195 /* Theme.swift in Sources */,
