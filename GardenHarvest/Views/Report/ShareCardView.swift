@@ -19,9 +19,6 @@ struct HarvestShareCardModel {
     let mvpValueString: String?
     /// Ranks 2–5; the MVP row above covers #1.
     let topCrops: [TopCrop]
-    /// The season's top-priority fun fact in template wording, nil for
-    /// seasons too sparse to trigger any extractor.
-    let funFact: String?
     let peakLabel: String
 }
 
@@ -112,17 +109,6 @@ struct HarvestShareCardView: View {
                     }
                     .padding(.vertical, 6)
                 }
-            }
-
-            if let funFact = model.funFact {
-                sectionLabel("Fun fact")
-                    .padding(.top, 11)
-                Text(funFact)
-                    .font(Theme.Font.body(12, weight: .semibold))
-                    .italic()
-                    .foregroundStyle(Theme.ink)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 5)
             }
 
             HStack(alignment: .firstTextBaseline) {
