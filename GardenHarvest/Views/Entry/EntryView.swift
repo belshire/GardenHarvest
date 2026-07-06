@@ -14,6 +14,7 @@ struct EntryView: View {
     @State private var selectedVariant: String?
     @State private var selectedDateChip: DateChip = .today
     @State private var customDate: Date = .now
+    @FocusState private var noteFocused: Bool
 
     private var crop: Crop? {
         crops.first { $0.name == cropName }
@@ -24,26 +25,41 @@ struct EntryView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                topBar
-                cropHeader
-                ouncesDisplay
-                bumpChips
-                if let variants = crop?.variants, !variants.isEmpty {
-                    variantChips(variants)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 12) {
+                    topBar
+                    header
+                    ouncesDisplay
+                    bumpChips
+                    if let variants = crop?.variants, !variants.isEmpty {
+                        variantChips(variants)
+                    }
+                    keypad
+                    dateChips
+                    noteRow
+                    saveButton
+                        .id("save")
                 }
-                keypad
-                dateChips
-                noteRow
-                saveButton
+                .padding(.horizontal, 20)
+                .padding(.top, 6)
+                .padding(.bottom, 28)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 6)
-            .padding(.bottom, 28)
+            .background(Theme.panelBackground.ignoresSafeArea())
+            .navigationBarHidden(true)
+            .onChange(of: noteFocused) { _, focused in
+                guard focused else { return }
+                // Wait for the keyboard inset to land, then scroll the save
+                // button into view so the note field sits comfortably above
+                // the keyboard instead of flush against it.
+                Task {
+                    try? await Task.sleep(for: .milliseconds(350))
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        proxy.scrollTo("save", anchor: .bottom)
+                    }
+                }
+            }
         }
-        .background(Theme.panelBackground.ignoresSafeArea())
-        .navigationBarHidden(true)
     }
 
     private var topBar: some View {
@@ -52,28 +68,32 @@ struct EntryView: View {
                 .font(Theme.Font.body(15, weight: .bold))
                 .foregroundStyle(Theme.accent)
             Spacer()
-            Text("LOG HARVEST")
-                .font(Theme.Font.mono(13, weight: .bold))
-                .tracking(1.2)
-                .foregroundStyle(Theme.sub)
-            Spacer()
-            Color.clear.frame(width: 44)
         }
     }
 
-    private var cropHeader: some View {
-        HStack(spacing: 12) {
-            CropIconPlate(
-                cropName: cropName,
-                colorHex: crop?.colorHex ?? "#999999",
-                plateSize: 46,
-                iconSize: 36,
-                discSize: 40
-            )
-            Text(cropName)
-                .font(Theme.Font.heading(24, weight: .heavy))
-                .foregroundStyle(Theme.ink)
+    /// Eyebrow-over-serif page header matching Home/Log/Add (see
+    /// `PageHeaderTitle`), with the crop's icon plate beside the title.
+    private var header: some View {
+        VStack(spacing: 4) {
+            Text("Log harvest")
+                .font(Theme.Font.mono(13.5, weight: .bold))
+                .textCase(.uppercase)
+                .tracking(1.8)
+                .foregroundStyle(Theme.accent)
+            HStack(spacing: 10) {
+                CropIconPlate(
+                    cropName: cropName,
+                    colorHex: crop?.colorHex ?? "#999999",
+                    plateSize: 46,
+                    iconSize: 36,
+                    discSize: 40
+                )
+                Text(cropName)
+                    .font(Theme.Font.heading(27, weight: .heavy))
+                    .foregroundStyle(Theme.ink)
+            }
         }
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
     }
 
@@ -157,6 +177,7 @@ struct EntryView: View {
     private var noteRow: some View {
         TextField("Note — e.g. some woody", text: $note)
             .font(Theme.Font.body(13.5))
+            .focused($noteFocused)
             .padding(.horizontal, 13)
             .frame(height: 44)
             .frame(maxWidth: .infinity)
