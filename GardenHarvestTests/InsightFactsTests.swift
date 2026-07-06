@@ -222,4 +222,49 @@ struct InsightFactsTests {
         ]
         #expect(InsightFacts.varietyCollector(in: entries) == nil)
     }
+
+    // MARK: topFacts
+
+    @Test func topFactsEmptyForEmptySeason() {
+        #expect(InsightFacts.topFacts(in: []).isEmpty)
+    }
+
+    @Test func topFactsOrdersByPriorityAndCapsAtFive() {
+        // Rich season triggering many extractors at once.
+        let entries = [
+            // Strawberries: most picked (4), two variants, evenly spread over ~2 months
+            entry("Strawberries", 3, month: 5, day: 1, variant: "Albion"),
+            entry("Strawberries", 3, month: 5, day: 20, variant: "Seascape"),
+            entry("Strawberries", 3, month: 6, day: 10, variant: "Albion"),
+            entry("Strawberries", 3, month: 6, day: 28, variant: "Albion"),
+            // Asparagus: heaviest, early bird
+            entry("Asparagus", 30, month: 4, day: 1),
+            entry("Asparagus", 30, month: 4, day: 15),
+            // Raspberries: marathon span Apr–Sep
+            entry("Raspberries", 5, month: 4, day: 5),
+            entry("Raspberries", 5, month: 9, day: 20),
+            // Artichoke: one-day wonder
+            entry("Artichoke", 7, month: 7, day: 12),
+            // Busiest day: 3 crops on Jun 10
+            entry("Peas", 2, month: 6, day: 10),
+            entry("Asparagus", 4, month: 6, day: 10)
+        ]
+        let facts = InsightFacts.topFacts(in: entries)
+        #expect(facts.count <= 5)
+        #expect(facts.first?.kind == "frequencyWeightSplit")
+        // Priority order preserved: each fact's priority index increases.
+        let order = ["frequencyWeightSplit", "marathonCrop", "lateBloomer", "earlyBird",
+                     "busiestDay", "steadyProducer", "varietyCollector", "oneDayWonder"]
+        let indices = facts.compactMap { order.firstIndex(of: $0.kind) }
+        #expect(indices == indices.sorted())
+    }
+
+    @Test func topFactsSkipsUnmetExtractors() {
+        // Single crop, two pickings, short span: nothing should trigger.
+        let entries = [
+            entry("Peas", 3, month: 6, day: 3),
+            entry("Peas", 3, month: 6, day: 10)
+        ]
+        #expect(InsightFacts.topFacts(in: entries).isEmpty)
+    }
 }

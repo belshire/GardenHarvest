@@ -183,4 +183,19 @@ enum InsightFacts {
         else { return nil }
         return .varietyCollector(crop: collector.key, variantCount: collector.value)
     }
+
+    /// The season's insight cards: every triggered extractor in
+    /// interestingness priority order, capped at five.
+    static func topFacts(in entries: [HarvestEntry], calendar: Calendar = .current) -> [InsightFact] {
+        let extracted: [InsightFact?] = [
+            frequencyWeightSplit(in: entries),
+            marathonCrop(in: entries, calendar: calendar),
+            seasonTimingOutlier(in: entries, calendar: calendar),
+            busiestDay(in: entries, calendar: calendar),
+            steadyProducer(in: entries, calendar: calendar),
+            varietyCollector(in: entries),
+            oneDayWonder(in: entries)
+        ]
+        return Array(extracted.compactMap { $0 }.prefix(5))
+    }
 }
