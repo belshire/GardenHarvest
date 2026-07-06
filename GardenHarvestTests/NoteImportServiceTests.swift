@@ -32,6 +32,19 @@ struct NoteImportServiceTests {
 
     // MARK: dedup
 
+    @Test func utcMidnightSeedEntriesStillMatch() {
+        // Seeded entries store UTC-midnight dates; in western timezones the
+        // local calendar sees the previous day, which must not defeat dedup.
+        let utcDate = SeedDataService.date(year: 2026, monthDay: "06-11")!
+        let seeded = HarvestEntry(cropName: "Boysenberries", ounces: 2.15, date: utcDate)
+        let result = plan(
+            [parsed("Boysenberries", 2.15, month: 6, day: 11)],
+            existingEntries: [seeded]
+        )
+        #expect(result.new.isEmpty)
+        #expect(result.duplicateCount == 1)
+    }
+
     @Test func priorYearEntryIsNotADuplicate() {
         // The store holds seeded prior seasons; a 2025 entry sharing
         // month/day/ounces must not absorb a 2026 note line.
@@ -127,6 +140,39 @@ struct NoteImportServiceTests {
         let result = plan(incoming, existingEntries: store)
         #expect(result.new.isEmpty)
         #expect(result.duplicateCount == 3)
+    }
+
+    @Test func realNotePlusJulyAgainstSeededStoreImportsOnlyTheNewLines() {
+        // The exact Katie scenario: store seeded from the transcription,
+        // note re-imported with six new July lines appended.
+        let seeded = SeedDataService.buildSeasonSeed(currentYear: 2026).currentYearEntries.map {
+            HarvestEntry(cropName: $0.crop, ounces: $0.ounces, date: $0.date, note: $0.note)
+        }
+        let crops = SeedDataService.knownCrops.enumerated().map { index, crop in
+            Crop(name: crop.name, colorHex: "#000000", sortIndex: index, variants: crop.variants)
+        }
+        let july = """
+
+        July:
+        Peas, 5oz (7/3)
+        Blueberries, 2oz (7/4)
+        Strawberries, 6.9oz (7/4)
+        Peas, 3oz (7/5)
+        Raspberries, large 3.3 oz (7/6)
+        Strawberries, 2.6 oz (7/6)
+        """
+        let result = NoteImportService.plan(
+            parsed: HarvestNoteParser.parse(HarvestNoteParserTests.realNote + "\n" + july),
+            fallbackYear: 2026,
+            existingEntries: seeded,
+            existingCrops: crops
+        )
+        // 6 July lines plus the 4/13 asparagus: the note says 22oz but the
+        // transcription summed it to 36oz, so it legitimately imports.
+        #expect(result.new.count == 7)
+        #expect(result.duplicateCount == seeded.count - 1)
+        #expect(result.newCropNames.isEmpty)
+        #expect(result.issues.isEmpty)
     }
 
     // MARK: crops & variants

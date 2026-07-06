@@ -82,6 +82,9 @@ struct LogView: View {
                 onSaved: { _ in entryToEdit = nil },
                 onBack: { entryToEdit = nil }
             )
+            // Push the Back/header clear of the sheet's rounded top edge.
+            .safeAreaPadding(.top, 16)
+            .presentationDragIndicator(.visible)
         }
         .confirmationDialog(
             deleteConfirmationTitle,

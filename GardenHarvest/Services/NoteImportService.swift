@@ -55,25 +55,56 @@ enum NoteImportService {
         // Dedup pool: each existing entry can absorb one incoming duplicate.
         // Only the imported year participates — the store holds other
         // seasons, and a 2025 entry must never absorb a 2026 note line.
-        struct PoolEntry {
-            let cropKey: String
+        //
+        // Dates are read in BOTH the local calendar and UTC: seeded entries
+        // store UTC-midnight dates (a day earlier in western timezones)
+        // while hand-entered and imported ones are local, and a note line
+        // is a duplicate if the stored date matches in either reading.
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(identifier: "UTC")!
+        struct DayReading {
+            let year: Int
             let month: Int
             let day: Int
+        }
+        struct PoolEntry {
+            let cropKey: String
+            let readings: [DayReading]
             let ounces: Double
             let variant: String?
+            let note: String
             var used = false
-        }
-        var pool = existingEntries
-            .filter { calendar.component(.year, from: $0.date) == year }
-            .map { entry in
-                PoolEntry(
-                    cropKey: cropKey(entry.cropName),
-                    month: calendar.component(.month, from: entry.date),
-                    day: calendar.component(.day, from: entry.date),
-                    ounces: entry.ounces,
-                    variant: entry.variant
-                )
+
+            func matches(year: Int, month: Int, day: Int?) -> Bool {
+                readings.contains { reading in
+                    reading.year == year && reading.month == month
+                        && (day == nil || reading.day == day)
+                }
             }
+
+            /// Seeded entries recorded the variant as the note ("small"),
+            /// so an incoming variant also matches a variant-less existing
+            /// entry whose note is exactly that word.
+            func variantMatches(_ incoming: String?) -> Bool {
+                if variant == incoming { return true }
+                guard variant == nil, let incoming else { return false }
+                return note == incoming
+            }
+        }
+        func reading(of date: Date, in calendar: Calendar) -> DayReading {
+            let parts = calendar.dateComponents([.year, .month, .day], from: date)
+            return DayReading(year: parts.year ?? 0, month: parts.month ?? 0, day: parts.day ?? 0)
+        }
+        var pool = existingEntries.map { entry in
+            PoolEntry(
+                cropKey: cropKey(entry.cropName),
+                readings: [reading(of: entry.date, in: calendar), reading(of: entry.date, in: utcCalendar)],
+                ounces: entry.ounces,
+                variant: entry.variant,
+                note: entry.note
+            )
+        }
+        pool.removeAll { !$0.readings.contains { $0.year == year } }
 
         var new: [PlannedEntry] = []
         var duplicateCount = 0
@@ -96,14 +127,11 @@ enum NoteImportService {
 
             // Duplicate check: exact day when dated, same month when not.
             let matchIndex = pool.firstIndex { candidate in
-                guard !candidate.used,
-                      candidate.cropKey == key,
-                      abs(candidate.ounces - entry.ounces) < 0.001,
-                      candidate.variant == entry.variant,
-                      candidate.month == entry.month
-                else { return false }
-                guard let day = entry.day else { return true }
-                return candidate.day == day
+                !candidate.used
+                    && candidate.cropKey == key
+                    && abs(candidate.ounces - entry.ounces) < 0.001
+                    && candidate.variantMatches(entry.variant)
+                    && candidate.matches(year: year, month: entry.month, day: entry.day)
             }
             if let matchIndex {
                 pool[matchIndex].used = true
