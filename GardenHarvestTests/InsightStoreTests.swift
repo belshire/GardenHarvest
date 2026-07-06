@@ -40,6 +40,15 @@ struct InsightStoreTests {
         #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: b))
     }
 
+    @Test func fingerprintChangesWhenVariantEdited() {
+        let date = Calendar.current.date(from: DateComponents(year: 2026, month: 5, day: 1))!
+        let a = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date, variant: "Albion")]
+        let b = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date, variant: "Seascape")]
+        let c = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date)]
+        #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: b))
+        #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: c))
+    }
+
     // MARK: cache round-trip
 
     @Test func saveAndLoadRoundTrip() {
