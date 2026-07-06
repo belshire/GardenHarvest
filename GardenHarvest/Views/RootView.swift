@@ -10,7 +10,7 @@ struct RootView: View {
                 case .home:
                     HomeContainerView()
                 case .log:
-                    ComingSoonView(title: "Harvest Log")
+                    LogView()
                 case .unwrapped:
                     ComingSoonView(title: "Unwrapped")
                 }
