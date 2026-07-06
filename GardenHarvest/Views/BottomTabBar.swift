@@ -38,11 +38,30 @@ struct BottomTabBar: View {
             }
         }
         .padding(.top, 8)
-        .padding(.bottom, 20)
         .padding(.horizontal, 12)
-        .background(.ultraThinMaterial)
-        .overlay(alignment: .top) {
-            Rectangle().fill(Theme.hairline).frame(height: 1)
+        .modifier(TabBarGlass())
+    }
+}
+
+/// Chrome for the tab bar: a floating Liquid Glass capsule on iOS 26,
+/// the full-width material slab (today's look) on earlier OSes. Owns the
+/// bottom padding because the two shapes need different insets.
+private struct TabBarGlass: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26, *) {
+            content
+                .padding(.bottom, 8)
+                .glassEffect(.regular.interactive(), in: .capsule)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+        } else {
+            content
+                .padding(.bottom, 20)
+                .background(.ultraThinMaterial)
+                .overlay(alignment: .top) {
+                    Rectangle().fill(Theme.hairline).frame(height: 1)
+                }
         }
     }
 }
