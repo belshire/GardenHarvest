@@ -273,10 +273,12 @@ struct InsightFactsTests {
     @Test func promptLinesArePlainEnglishFactStatements() {
         let facts: [InsightFact] = [
             .frequencyWeightSplit(mostPicked: "Strawberries", heaviest: "Asparagus"),
+            .varietyCollector(crop: "Strawberries", variantCount: 3),
             .oneDayWonder(crop: "Artichoke")
         ]
         #expect(facts[0].promptLine
-            == "The gardener picked Strawberries most often, but no crop weighed more in total than Asparagus.")
-        #expect(facts[1].promptLine == "Artichoke was picked exactly once all season.")
+            == "You picked Strawberries most often, but no crop weighed more in total than Asparagus.")
+        #expect(facts[1].promptLine == "You grew 3 different varieties of Strawberries.")
+        #expect(facts[2].promptLine == "Artichoke was picked exactly once all season.")
     }
 }
