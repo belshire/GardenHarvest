@@ -40,6 +40,16 @@ struct InsightStoreTests {
         #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: b))
     }
 
+    @Test func fingerprintChangesWhenNoteEdited() {
+        // Notes feed the season story, so editing one must regenerate it.
+        let date = Calendar.current.date(from: DateComponents(year: 2026, month: 5, day: 1))!
+        let a = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date, note: "Fought off the birds")]
+        let b = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date, note: "Birds won this round")]
+        let c = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date)]
+        #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: b))
+        #expect(InsightStore.fingerprint(of: a) != InsightStore.fingerprint(of: c))
+    }
+
     @Test func fingerprintChangesWhenVariantEdited() {
         let date = Calendar.current.date(from: DateComponents(year: 2026, month: 5, day: 1))!
         let a = [HarvestEntry(cropName: "Strawberries", ounces: 4, date: date, variant: "Albion")]
