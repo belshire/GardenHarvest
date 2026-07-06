@@ -6,7 +6,7 @@ struct BottomTabBar: View {
     private let items: [(tab: AppTab, label: String, icon: String)] = [
         (.home, "Home", "house.fill"),
         (.log, "Log", "list.bullet"),
-        (.unwrapped, "Unwrapped", "sparkles")
+        (.unwrapped, "Report", "sparkles")
     ]
 
     var body: some View {

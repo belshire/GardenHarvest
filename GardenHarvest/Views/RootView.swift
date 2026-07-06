@@ -12,7 +12,7 @@ struct RootView: View {
                 case .log:
                     LogView()
                 case .unwrapped:
-                    ComingSoonView(title: "Unwrapped")
+                    ReportView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
