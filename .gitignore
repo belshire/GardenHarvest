@@ -17,3 +17,7 @@ DerivedData/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Vegetable icon heavy source formats (PNGs in individual-icons are committed)
+vegetable-icons/eps/
+vegetable-icons/pdf/

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#e9e6de;font-family:'Nunito Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .intro{max-width:760px;margin:0;padding:40px 46px 8px}
+  .intro h1{font-family:'DM Serif Display',serif;font-size:30px;color:#26301f;margin:0 0 6px;font-weight:400}
+  .intro p{font-size:14px;line-height:1.6;color:#4d5647;margin:0 0 12px;max-width:640px}
+  .intro .tag{display:inline-block;font:700 10px/1 'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:#6f8f5f;margin-bottom:14px}
+  .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .fact{font:600 12px/1 'Nunito Sans',sans-serif;color:#3c4636;background:#fbf9f2;border:1px solid rgba(51,64,44,.12);border-radius:999px;padding:8px 13px}
+  .dv-turn{padding:22px 46px 44px;scroll-margin-top:16px}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 22px}
+  .dv-tid{font:700 11px 'DM Mono',monospace;padding:4px 9px;background:#26301f;color:#fff;border-radius:6px;text-decoration:none}
+  .dv-tname{font:700 14px/1.2 'Nunito Sans',sans-serif;color:#26301f}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+  .dv-oid{font:700 11px 'DM Mono',monospace;padding:3px 8px;background:rgba(38,48,31,.10);color:#26301f;border-radius:6px;text-decoration:none}
+  .dv-olabel{display:flex;align-items:center;gap:9px;font:600 13px/1.3 'Nunito Sans',sans-serif;color:#4d5647}
+  .dv-opt:target .dv-oid{background:#6f8f5f;color:#fff}
+  .dv-next{margin:26px 0 0;font:13px/1.6 'Nunito Sans',sans-serif;color:#5a6350;max-width:720px}
+  .dv-next a{color:#3c4636;font-weight:700;text-decoration:none;border-bottom:1.5px solid rgba(111,143,95,.5)}
+  .phone{width:390px;height:844px;background:#0c0c0d;border-radius:54px;padding:13px;box-shadow:0 34px 80px -24px rgba(20,30,15,.5),0 0 0 2px rgba(0,0,0,.55);position:relative}
+  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;position:relative;background:#000}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:30px;background:#0c0c0d;border-radius:0 0 19px 19px;z-index:30}
+</style>
+</helmet>
+
+<section class="intro">
+  <div class="tag">Garden harvest tracker · iOS prototype</div>
+  <h1>The merged direction</h1>
+  <p><a class="dv-oid" href="#2a">2a</a> is the current pick — the fresh tomato-and-leaf palette with DM Serif display headings. It's the <strong>same working app</strong> as the earlier explorations (kept below for reference). Tap a crop to quick-log a weight on the number pad; use <strong>＋ Add veg</strong> to enter a new vegetable with name autofill and an option to pin it to quick-log. The <strong>Log</strong> and <strong>Unwrapped</strong> tabs are live, computed from her real 2026 harvest.</p>
+  <p style="font-size:13px;color:#6a7360">Colored discs are placeholders for the custom illustrated icons — drop art in later. Everything below is fully interactive; try adding a picking and watch the totals move.</p>
+  <div class="facts">
+    <div class="fact">🍓 Real data from harvets.txt</div>
+    <div class="fact">⚖️ Weight · note · photo · date</div>
+    <div class="fact">📈 Spotify-Wrapped style report</div>
+  </div>
+</section>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Merged — <a class="dv-oid" href="#1a">1a</a>'s palette + <a class="dv-oid" href="#1b">1b</a>'s serif headings</span></div>
+  <div class="dv-opts">
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a> Fresh palette, DM Serif display type, tile grid</div>
+      <div class="phone"><div class="notch"></div><div class="phone-screen">
+        <dc-import name="GardenPhone" app="{{ appD }}" theme="{{ themeD }}" colors="{{ colors }}" variants="{{ variants }}" master="{{ master }}" on-select="{{ hD.onSelect }}" on-nav="{{ hD.onNav }}" on-key="{{ hD.onKey }}" on-bump="{{ hD.onBump }}" on-note="{{ hD.onNote }}" on-date="{{ hD.onDate }}" on-photo="{{ hD.onPhoto }}" on-variant="{{ hD.onVariant }}" on-save="{{ hD.onSave }}" on-back="{{ hD.onBack }}" on-start-add="{{ hD.onStartAdd }}" on-add-name="{{ hD.onAddName }}" on-pick-suggest="{{ hD.onPickSuggest }}" on-toggle-quick="{{ hD.onToggleQuick }}" on-commit-add="{{ hD.onCommitAdd }}" on-share="{{ hD.onShare }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import>
+      </div></div>
+    </div>
+  </div>
+  <p class="dv-next">Try next: "swap the grid for <a class="dv-oid" href="#1b">1b</a>'s list layout in <a class="dv-oid" href="#2a">2a</a>" · "make the Unwrapped a swipeable full-screen story" · "add a per-crop detail screen" · "round the serif into something friendlier"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Earlier explorations — Fresh (<a class="dv-oid" href="#1a">1a</a>) &amp; Botanical (<a class="dv-oid" href="#1b">1b</a>)</span></div>
+  <div class="dv-opts">
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a> Fresh &amp; playful — juicy, rounded, tile grid</div>
+      <div class="phone"><div class="notch"></div><div class="phone-screen">
+        <dc-import name="GardenPhone" app="{{ appA }}" theme="{{ themeA }}" colors="{{ colors }}" variants="{{ variants }}" master="{{ master }}" on-select="{{ hA.onSelect }}" on-nav="{{ hA.onNav }}" on-key="{{ hA.onKey }}" on-bump="{{ hA.onBump }}" on-note="{{ hA.onNote }}" on-date="{{ hA.onDate }}" on-photo="{{ hA.onPhoto }}" on-variant="{{ hA.onVariant }}" on-save="{{ hA.onSave }}" on-back="{{ hA.onBack }}" on-start-add="{{ hA.onStartAdd }}" on-add-name="{{ hA.onAddName }}" on-pick-suggest="{{ hA.onPickSuggest }}" on-toggle-quick="{{ hA.onToggleQuick }}" on-commit-add="{{ hA.onCommitAdd }}" on-share="{{ hA.onShare }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import>
+      </div></div>
+    </div>
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a> Botanical &amp; calm — sage, serif, tidy list</div>
+      <div class="phone"><div class="notch"></div><div class="phone-screen">
+        <dc-import name="GardenPhone" app="{{ appB }}" theme="{{ themeB }}" colors="{{ colors }}" variants="{{ variants }}" master="{{ master }}" on-select="{{ hB.onSelect }}" on-nav="{{ hB.onNav }}" on-key="{{ hB.onKey }}" on-bump="{{ hB.onBump }}" on-note="{{ hB.onNote }}" on-date="{{ hB.onDate }}" on-photo="{{ hB.onPhoto }}" on-variant="{{ hB.onVariant }}" on-save="{{ hB.onSave }}" on-back="{{ hB.onBack }}" on-start-add="{{ hB.onStartAdd }}" on-add-name="{{ hB.onAddName }}" on-pick-suggest="{{ hB.onPickSuggest }}" on-toggle-quick="{{ hB.onToggleQuick }}" on-commit-add="{{ hB.onCommitAdd }}" on-share="{{ hB.onShare }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import>
+      </div></div>
+    </div>
+  </div>
+  <p class="dv-next">Earlier directions, kept for reference. <a class="dv-oid" href="#2a">2a</a> above is the merged one.</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  COLORS = { Asparagus:'#5a9a3d', Strawberries:'#e8434a', Raspberries:'#c02f66', Blueberries:'#3f6ad0', Boysenberries:'#6f3fa8', Artichoke:'#7f9a4e', Radishes:'#e05583', Peas:'#8cbf4f', Mushrooms:'#b08a63', 'Tomatoes Cherry':'#ef4f34' };
+  QUICK = ['Asparagus','Strawberries','Raspberries','Blueberries','Boysenberries','Artichoke','Peas','Radishes'];
+  VARIANTS = { Raspberries:['small','large'] };
+  MASTER = ['Asparagus','Strawberries','Raspberries','Blueberries','Boysenberries','Blackberries','Artichoke','Radishes','Peas','Mushrooms','Tomatoes Cherry','Tomatoes','Cucumber','Zucchini','Kale','Lettuce','Carrots','Green Beans','Peppers','Bell Peppers','Squash','Basil','Corn','Onions','Garlic','Potatoes','Beets','Chard','Spinach','Broccoli','Cauliflower','Cabbage','Eggplant','Cherries','Figs','Plums','Apples','Pears','Grapes','Melon','Watermelon','Cantaloupe','Pumpkin','Rhubarb','Gooseberries','Currants','Leeks','Celery','Fennel','Turnips','Parsnips','Okra','Cilantro','Parsley','Mint','Sweet Potatoes'];
+
+  RAW = `03-10|Asparagus|18|
+03-12|Mushrooms|8|
+04-07|Asparagus|31|
+04-13|Asparagus|36|14 oz woody
+04-15|Asparagus|14|
+04-19|Asparagus|12|
+04-21|Asparagus|8|
+04-23|Asparagus|12|
+04-26|Asparagus|8|
+04-28|Asparagus|8|
+04-30|Asparagus|16|
+05-02|Asparagus|6|
+05-04|Asparagus|14.5|
+05-07|Asparagus|6|
+05-09|Asparagus|4|
+05-09|Strawberries|1|
+05-11|Strawberries|1|
+05-12|Asparagus|19.5|
+05-12|Artichoke|11.5|
+05-12|Radishes|6.75|
+05-12|Strawberries|1|
+05-13|Strawberries|0.75|
+05-14|Asparagus|13|
+05-15|Strawberries|3.5|
+05-16|Asparagus|3|
+05-16|Strawberries|2.75|
+05-18|Asparagus|1.5|
+05-18|Strawberries|1|
+05-19|Strawberries|4|
+05-20|Strawberries|1.5|
+05-20|Asparagus|8|
+05-23|Asparagus|12|
+05-23|Strawberries|4.5|
+05-23|Radishes|2.75|
+05-23|Artichoke|10.25|
+05-25|Strawberries|10.75|
+05-27|Asparagus|4|
+05-27|Strawberries|8.5|
+05-30|Asparagus|3|
+05-30|Strawberries|14|
+05-31|Strawberries|10|
+06-01|Strawberries|1.5|
+06-03|Strawberries|3.5|
+06-03|Asparagus|2|
+06-04|Strawberries|1|
+06-04|Blueberries|2|
+06-06|Asparagus|2|
+06-06|Strawberries|3.5|
+06-06|Raspberries|4|
+06-09|Asparagus|1.75|
+06-09|Strawberries|10.75|
+06-09|Raspberries|9.5|
+06-09|Blueberries|3|
+06-09|Artichoke|9|
+06-09|Artichoke|11.5|
+06-11|Raspberries|7.6|small
+06-11|Strawberries|9|
+06-11|Blueberries|1.2|
+06-11|Asparagus|5.2|
+06-11|Raspberries|1|large
+06-11|Boysenberries|2.15|
+06-13|Strawberries|5.5|
+06-13|Blueberries|1.2|
+06-13|Asparagus|1.1|
+06-13|Raspberries|0.6|large
+06-13|Boysenberries|0.75|
+06-14|Raspberries|4.5|small
+06-14|Raspberries|1|large
+06-14|Boysenberries|0.55|
+06-15|Blueberries|5|
+06-15|Raspberries|4.75|small
+06-15|Raspberries|0.75|large
+06-15|Strawberries|5|
+06-16|Boysenberries|1|
+06-16|Raspberries|4|small
+06-16|Raspberries|1.7|large
+06-16|Strawberries|0.7|
+06-17|Blueberries|2|
+06-17|Boysenberries|1.8|
+06-17|Raspberries|6.5|small
+06-17|Raspberries|5.75|large
+06-17|Strawberries|2.2|
+06-18|Peas|6.5|
+06-20|Raspberries|5|
+06-21|Strawberries|3.4|
+06-21|Blueberries|1.1|
+06-21|Raspberries|7.4|small
+06-21|Raspberries|9.8|large
+06-21|Peas|3.9|
+06-21|Artichoke|10.8|
+06-22|Boysenberries|3.4|
+06-23|Strawberries|3.2|
+06-23|Blueberries|2|
+06-23|Raspberries|3.4|small
+06-23|Raspberries|12.4|large
+06-23|Peas|4|
+06-23|Tomatoes Cherry|0.63|
+06-23|Boysenberries|0.5|
+06-25|Blueberries|0.75|
+06-25|Raspberries|3.5|small
+06-25|Raspberries|8.75|large
+06-25|Strawberries|3.4|
+06-25|Boysenberries|1|
+06-27|Blueberries|0.75|
+06-27|Raspberries|1|small
+06-27|Raspberries|12|large
+06-27|Strawberries|7.9|
+06-27|Peas|9.5|
+06-28|Raspberries|4.3|large
+06-28|Strawberries|3.6|`;
+
+  parse(){
+    return this.RAW.trim().split('\n').map(line=>{
+      const [md, crop, oz, note] = line.split('|');
+      return { crop, oz: parseFloat(oz), date: '2026-'+md, note: note||'' };
+    });
+  }
+  newDraft(){ return { oz:'', note:'', dayOff:0, date:'2026-07-03', photo:false, variant:null }; }
+  initApp(){ return { screen:'home', entries:this.parse(), quick:[...this.QUICK], sel:null, draft:this.newDraft(), toast:null, addName:'', addToQuick:true }; }
+  state = { apps: { a:this.initApp(), b:this.initApp(), c:this.initApp(), d:this.initApp() } };
+  timers = {};
+
+  fmt(n){ n=Math.round(n*10)/10; return (n%1===0)? String(n): n.toFixed(1); }
+  shiftDate(off){ const b=new Date(2026,6,3); b.setDate(b.getDate()-off); const m=String(b.getMonth()+1).padStart(2,'0'); const d=String(b.getDate()).padStart(2,'0'); return b.getFullYear()+'-'+m+'-'+d; }
+  updApp(id,patch){ this.setState(p=>{ const apps={...p.apps}; apps[id]={...apps[id],...patch}; return {apps}; }); }
+  updDraft(id,patch){ this.setState(p=>{ const apps={...p.apps}; apps[id]={...apps[id], draft:{...apps[id].draft, ...patch}}; return {apps}; }); }
+  pingToast(id){ clearTimeout(this.timers[id]); this.timers[id]=setTimeout(()=>this.updApp(id,{toast:null}),2400); }
+
+  bundle(id){
+    return {
+      onSelect:(name)=>this.updApp(id,{screen:'entry', sel:name, draft:this.newDraft()}),
+      onNav:(scr)=>this.updApp(id,{screen:scr}),
+      onKey:(k)=>{ const cur=String(this.state.apps[id].draft.oz||''); let v; if(k==='del') v=cur.slice(0,-1); else if(k==='.') v=cur.includes('.')?cur:((cur||'0')+'.'); else v=cur+k; if(v.replace('.','').length>5) v=cur; this.updDraft(id,{oz:v}); },
+      onBump:(d)=>{ const cur=parseFloat(this.state.apps[id].draft.oz)||0; const v=Math.max(0,Math.round((cur+d)*10)/10); this.updDraft(id,{oz: v===0?'':String(v)}); },
+      onNote:(v)=>this.updDraft(id,{note:v}),
+      onDate:(off)=>this.updDraft(id,{dayOff:off, date:this.shiftDate(off)}),
+      onPhoto:(p)=>this.updDraft(id,{photo: p||null}),
+      onVariant:(v)=>this.updDraft(id,{variant: this.state.apps[id].draft.variant===v? null : v}),
+      onSave:()=>{ const a=this.state.apps[id]; const oz=parseFloat(a.draft.oz)||0; if(oz<=0) return; const note=[a.draft.variant,a.draft.note].filter(Boolean).join(' · '); const entry={crop:a.sel,oz,date:a.draft.date,note,photo:a.draft.photo}; this.updApp(id,{entries:[...a.entries,entry], screen:'home', sel:null, draft:this.newDraft(), toast:'🌱 Logged '+this.fmt(oz)+' oz '+a.sel}); this.pingToast(id); },
+      onBack:()=>this.updApp(id,{screen:'home'}),
+      onStartAdd:()=>this.updApp(id,{screen:'add', addName:'', addToQuick:true}),
+      onAddName:(v)=>this.updApp(id,{addName:v}),
+      onPickSuggest:(n)=>this.updApp(id,{addName:n}),
+      onToggleQuick:()=>this.updApp(id,{addToQuick: this.state.apps[id].addToQuick===false}),
+      onCommitAdd:()=>{ const a=this.state.apps[id]; let name=(a.addName||'').trim(); if(!name) return; const hit=this.MASTER.find(m=>m.toLowerCase()===name.toLowerCase()); if(hit) name=hit; let quick=a.quick; if(a.addToQuick!==false && !quick.includes(name)) quick=[...quick,name]; this.updApp(id,{quick, screen:'entry', sel:name, addName:'', draft:this.newDraft()}); },
+      onShare:()=>{ this.updApp(id,{toast:'✨ Harvest card ready to share'}); this.pingToast(id); }
+    };
+  }
+
+  themeA(){ return { name:'Fresh', dark:false, grid:true, radius:24, tileRadius:22, panel:'linear-gradient(180deg,#f0f8e8,#e2f2d3)', card:'#ffffff', ink:'#22381c', sub:'#6a8560', line:'rgba(34,56,28,.10)', accent:'#ff6a4d', accentInk:'#ffffff', accent2:'#4caf50', statusInk:'#22381c', font:'Nunito, sans-serif', head:'"Baloo 2", sans-serif', mono:'"DM Mono", monospace' }; }
+  themeB(){ return { name:'Botanical', dark:false, grid:false, radius:18, tileRadius:16, panel:'#f3efe4', card:'#fbf9f2', ink:'#33402c', sub:'#7c8a6f', line:'rgba(51,64,44,.13)', accent:'#6f8f5f', accentInk:'#ffffff', accent2:'#c07d4a', statusInk:'#33402c', font:'"Nunito Sans", sans-serif', head:'"DM Serif Display", serif', mono:'"DM Mono", monospace' }; }
+  themeC(){ return { name:'Bold', dark:true, grid:true, radius:20, tileRadius:16, panel:'#15180f', card:'#21261a', ink:'#f2efe2', sub:'#9aa286', line:'rgba(255,255,255,.13)', accent:'#c9f24e', accentInk:'#15180f', accent2:'#ff7a3d', statusInk:'#f2efe2', font:'"Space Grotesk", sans-serif', head:'"Space Grotesk", sans-serif', mono:'"Space Mono", monospace' }; }
+  themeD(){ return { name:'Garden', dark:false, grid:true, radius:24, tileRadius:22, panel:'linear-gradient(180deg,#f0f8e8,#e2f2d3)', card:'#ffffff', ink:'#22381c', sub:'#6a8560', line:'rgba(34,56,28,.10)', accent:'#ff6a4d', accentInk:'#ffffff', accent2:'#4caf50', statusInk:'#22381c', font:'"Nunito Sans", sans-serif', head:'"DM Serif Display", serif', mono:'"DM Mono", monospace' }; }
+
+  renderVals(){
+    return {
+      appA:this.state.apps.a, appB:this.state.apps.b, appC:this.state.apps.c, appD:this.state.apps.d,
+      themeA:this.themeA(), themeB:this.themeB(), themeC:this.themeC(), themeD:this.themeD(),
+      colors:this.COLORS, variants:this.VARIANTS, master:this.MASTER,
+      hA:this.bundle('a'), hB:this.bundle('b'), hC:this.bundle('c'), hD:this.bundle('d')
+    };
+  }
+}
+</script>
+</body>
+</html>
