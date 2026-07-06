@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Everything the shareable harvest card needs, snapshotted from the Report
 /// so the card can also be rendered offscreen into an image.
@@ -176,31 +177,55 @@ struct HarvestShareCardView: View {
     }
 }
 
-/// Full-screen scrim presenting the harvest card with "Save image" (renders
-/// the card to a PNG and opens the share sheet) and "Close".
+/// Full-screen scrim presenting the harvest card with "Save image" (opens the
+/// share sheet with a pre-rendered PNG) and "Close".
+///
+/// The PNG is rendered and written to a temp file as soon as the overlay
+/// appears, so tapping "Save image" only has to present the sheet — the
+/// encode never runs at tap time on the main thread. If the tap beats the
+/// background encode, the button shows a spinner and the sheet opens the
+/// moment the file lands.
 struct HarvestShareOverlay: View {
     let model: HarvestShareCardModel
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.displayScale) private var displayScale
-    @State private var cardImage: Image?
+    /// Encoded PNG on disk, named for the season so the share sheet shows a
+    /// sensible filename.
+    @State private var shareURL: URL?
+    /// Tap arrived before the PNG finished encoding.
+    @State private var waitingForImage = false
+    @State private var showShareSheet = false
 
     var body: some View {
         VStack(spacing: 14) {
             HarvestShareCardView(model: model)
                 .shadow(color: .black.opacity(0.42), radius: 32, y: 24)
             HStack(spacing: 10) {
-                if let cardImage {
-                    ShareLink(
-                        item: cardImage,
-                        preview: SharePreview("\(String(model.season)) Harvest Report", image: cardImage)
-                    ) {
-                        actionLabel("Save image")
+                Button {
+                    if shareURL != nil {
+                        showShareSheet = true
+                    } else {
+                        waitingForImage = true
                     }
-                    .buttonStyle(.plain)
-                } else {
-                    actionLabel("Save image").opacity(0.6)
+                } label: {
+                    HStack(spacing: 8) {
+                        if waitingForImage {
+                            ProgressView()
+                                .tint(.white)
+                                .scaleEffect(0.8)
+                        }
+                        Text("Save image")
+                            .font(Theme.Font.body(14.5, weight: .heavy))
+                    }
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(Theme.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
+                .buttonStyle(.plain)
+                .disabled(waitingForImage)
                 Button {
                     dismiss()
                 } label: {
@@ -223,25 +248,49 @@ struct HarvestShareOverlay: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 22)
         .onAppear(perform: renderCardImage)
+        .onChange(of: shareURL) { _, url in
+            if waitingForImage, url != nil {
+                waitingForImage = false
+                showShareSheet = true
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let shareURL {
+                ActivityShareSheet(items: [shareURL])
+                    .ignoresSafeArea()
+            }
+        }
     }
 
-    private func actionLabel(_ text: String) -> some View {
-        Text(text)
-            .font(Theme.Font.body(14.5, weight: .heavy))
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(Theme.accent)
-            .clipShape(RoundedRectangle(cornerRadius: 15))
-    }
-
-    /// Renders the card offscreen at screen scale so the shared PNG matches
-    /// what's presented.
+    /// Renders the card offscreen at screen scale (main actor, cheap), then
+    /// encodes the PNG and writes the temp file off the main thread.
     private func renderCardImage() {
         let renderer = ImageRenderer(content: HarvestShareCardView(model: model))
         renderer.scale = max(displayScale, 2)
-        if let uiImage = renderer.uiImage {
-            cardImage = Image(uiImage: uiImage)
+        guard let uiImage = renderer.uiImage else { return }
+        let season = model.season
+        Task.detached(priority: .userInitiated) {
+            guard let data = uiImage.pngData() else { return }
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent("\(season)-harvest-report.png")
+            do {
+                try data.write(to: url)
+            } catch {
+                return
+            }
+            await MainActor.run { shareURL = url }
         }
     }
+}
+
+/// Bare UIActivityViewController wrapper; presenting it ourselves (instead of
+/// ShareLink) lets the button react instantly and show progress.
+private struct ActivityShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
