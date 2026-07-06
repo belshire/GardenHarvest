@@ -1,7 +1,5 @@
 import SwiftUI
 import SwiftData
-import PhotosUI
-import UIKit
 
 struct EntryView: View {
     let cropName: String
@@ -15,12 +13,7 @@ struct EntryView: View {
     @State private var note: String = ""
     @State private var selectedVariant: String?
     @State private var selectedDateChip: DateChip = .today
-    @State private var photoData: Data?
-    @State private var photoSource: String?
-    @State private var showPhotoDialog = false
-    @State private var showPhotosPicker = false
-    @State private var photoPickerItem: PhotosPickerItem?
-    @State private var showCamera = false
+    @State private var customDate: Date = .now
 
     private var crop: Crop? {
         crops.first { $0.name == cropName }
@@ -42,10 +35,7 @@ struct EntryView: View {
                 }
                 keypad
                 dateChips
-                photoAndNoteRow
-                if photoData != nil {
-                    photoPreview
-                }
+                noteRow
                 saveButton
             }
             .padding(.horizontal, 20)
@@ -54,35 +44,6 @@ struct EntryView: View {
         }
         .background(Theme.panelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
-        .confirmationDialog("Add a photo of this pick", isPresented: $showPhotoDialog, titleVisibility: .visible) {
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button("Take Photo") { showCamera = true }
-            }
-            Button("Choose from Library") { showPhotosPicker = true }
-            Button("Cancel", role: .cancel) { }
-        }
-        .photosPicker(isPresented: $showPhotosPicker, selection: $photoPickerItem, matching: .images)
-        .onChange(of: photoPickerItem) { _, newValue in
-            guard let newValue else { return }
-            Task {
-                if let data = try? await newValue.loadTransferable(type: Data.self) {
-                    photoData = data
-                    photoSource = "Library"
-                }
-                photoPickerItem = nil
-            }
-        }
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraPicker(
-                onCapture: { data in
-                    photoData = data
-                    photoSource = "Camera"
-                    showCamera = false
-                },
-                onCancel: { showCamera = false }
-            )
-            .ignoresSafeArea()
-        }
     }
 
     private var topBar: some View {
@@ -102,14 +63,13 @@ struct EntryView: View {
 
     private var cropHeader: some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(Color(hex: crop?.colorHex ?? "#999999"))
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text(cropName.cropInitials)
-                        .font(Theme.Font.mono(12, weight: .bold))
-                        .foregroundStyle(.white)
-                )
+            CropIconPlate(
+                cropName: cropName,
+                colorHex: crop?.colorHex ?? "#999999",
+                plateSize: 46,
+                iconSize: 36,
+                discSize: 40
+            )
             Text(cropName)
                 .font(Theme.Font.heading(24, weight: .heavy))
                 .foregroundStyle(Theme.ink)
@@ -168,77 +128,41 @@ struct EntryView: View {
     }
 
     private var dateChips: some View {
-        HStack(spacing: 8) {
-            ForEach(DateChip.allCases, id: \.self) { chip in
-                Button(chip.label) { selectedDateChip = chip }
-                    .buttonStyle(ChipButtonStyle(isSelected: selectedDateChip == chip))
-            }
-        }
-    }
-
-    private var photoAndNoteRow: some View {
-        HStack(spacing: 9) {
-            Button {
-                if photoData == nil {
-                    showPhotoDialog = true
-                } else {
-                    photoData = nil
-                    photoSource = nil
+        VStack(spacing: 10) {
+            HStack(spacing: 8) {
+                ForEach(DateChip.allCases, id: \.self) { chip in
+                    Button(chip.label) { selectedDateChip = chip }
+                        .buttonStyle(ChipButtonStyle(isSelected: selectedDateChip == chip))
                 }
-            } label: {
-                Text(photoData != nil ? "✓ Photo" : "＋ Photo")
-                    .font(Theme.Font.body(13.5, weight: .bold))
-                    .foregroundStyle(photoData != nil ? .white : Theme.sub)
-                    .padding(.horizontal, 15)
-                    .frame(height: 44)
             }
-            .background(photoData != nil ? Theme.accent2 : Theme.card)
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(photoData != nil ? Theme.accent2 : Theme.hairline, lineWidth: 1))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-
-            TextField("Note — e.g. some woody", text: $note)
-                .font(Theme.Font.body(13.5))
+            if selectedDateChip == .custom {
+                HStack {
+                    Text("Harvest date")
+                        .font(Theme.Font.body(13.5, weight: .bold))
+                        .foregroundStyle(Theme.sub)
+                    Spacer()
+                    DatePicker("", selection: $customDate, in: ...Date.now, displayedComponents: .date)
+                        .labelsHidden()
+                        .tint(Theme.accent)
+                }
                 .padding(.horizontal, 13)
                 .frame(height: 44)
                 .background(Theme.card)
                 .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
         }
     }
 
-    private var photoPreview: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Theme.card)
-                .frame(width: 52, height: 52)
-                .overlay {
-                    if let photoData, let uiImage = UIImage(data: photoData) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFill()
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-                }
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Photo attached")
-                    .font(Theme.Font.body(13.5, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                Text("From \(photoSource ?? "Library")")
-                    .font(Theme.Font.mono(11.5))
-                    .foregroundStyle(Theme.sub)
-            }
-            Spacer()
-            Button("Remove") {
-                photoData = nil
-                photoSource = nil
-            }
-            .font(Theme.Font.body(13, weight: .bold))
-            .foregroundStyle(Theme.accent)
-        }
-        .padding(12)
-        .background(Theme.card)
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+    private var noteRow: some View {
+        TextField("Note — e.g. some woody", text: $note)
+            .font(Theme.Font.body(13.5))
+            .padding(.horizontal, 13)
+            .frame(height: 44)
+            .frame(maxWidth: .infinity)
+            .background(Theme.card)
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var saveButton: some View {
@@ -282,11 +206,9 @@ struct EntryView: View {
         let entry = HarvestEntry(
             cropName: cropName,
             ounces: roundedOunces,
-            date: selectedDateChip.date(),
+            date: selectedDateChip.date(customDate: customDate),
             note: note,
-            variant: selectedVariant,
-            photoData: photoData,
-            photoSource: photoSource
+            variant: selectedVariant
         )
         modelContext.insert(entry)
         do {
