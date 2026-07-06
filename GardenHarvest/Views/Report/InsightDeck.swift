@@ -28,7 +28,7 @@ struct InsightDeck: View {
                 dots
             }
         }
-        .onChange(of: insights.count) { _, _ in page = 0 }
+        .onChange(of: insights.count) { _, _ in page = min(page, max(0, insights.count - 1)) }
     }
 
     private var header: some View {

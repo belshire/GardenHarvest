@@ -25,7 +25,6 @@
 		2B8D551CE00FE231AC64C00A /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00A /* ReportView.swift */; };
 		2B8D551CE00FE231AC64C00B /* TopCropRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00B /* TopCropRow.swift */; };
 		2B8D551CE00FE231AC64C00C /* SeasonTimelineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00C /* SeasonTimelineChart.swift */; };
-		2B8D551CE00FE231AC64C00D /* AIInsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00D /* AIInsightCard.swift */; };
 		2B8D551CE00FE231AC64C00E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00E /* ShareCardView.swift */; };
 		2B8D551CE00FE231AC64C00F /* ReportStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00F /* ReportStatsTests.swift */; };
 		2B8D551CE00FE231AC64C011 /* DateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B011 /* DateProvider.swift */; };
@@ -97,7 +96,6 @@
 		1A7C440BD90FE231AC64B00A /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00B /* TopCropRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCropRow.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00C /* SeasonTimelineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonTimelineChart.swift; sourceTree = "<group>"; };
-		1A7C440BD90FE231AC64B00D /* AIInsightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightCard.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00E /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00F /* ReportStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportStatsTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B011 /* DateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateProvider.swift; sourceTree = "<group>"; };
@@ -306,7 +304,6 @@
 		1A7C440BD90FE231AC64B010 /* Report */ = {
 			isa = PBXGroup;
 			children = (
-				1A7C440BD90FE231AC64B00D /* AIInsightCard.swift */,
 				1A7C440BD90FE231AC64B00A /* ReportView.swift */,
 				1A7C440BD90FE231AC64B00C /* SeasonTimelineChart.swift */,
 				1A7C440BD90FE231AC64B00E /* ShareCardView.swift */,
@@ -466,7 +463,6 @@
 				2B8D551CE00FE231AC64C00A /* ReportView.swift in Sources */,
 				2B8D551CE00FE231AC64C00B /* TopCropRow.swift in Sources */,
 				2B8D551CE00FE231AC64C00C /* SeasonTimelineChart.swift in Sources */,
-				2B8D551CE00FE231AC64C00D /* AIInsightCard.swift in Sources */,
 				2B8D551CE00FE231AC64C00E /* ShareCardView.swift in Sources */,
 				2B8D551CE00FE231AC64C005 /* LogMonthSection.swift in Sources */,
 				2B8D551CE00FE231AC64C006 /* LogView.swift in Sources */,

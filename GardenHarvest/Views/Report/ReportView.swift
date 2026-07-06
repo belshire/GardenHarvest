@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// Season harvest report ("unwrapped"): hero total, Season MVP, expandable
-/// top-crop bars, the "When it peaked" timeline, an AI-insight placeholder,
+/// top-crop bars, the "When it peaked" timeline, the AI insight deck,
 /// and the shareable harvest card.
 struct ReportView: View {
     @Query private var allEntries: [HarvestEntry]
@@ -15,6 +15,11 @@ struct ReportView: View {
     /// through `availableYears`. Everything below (rankings, totals, MVP,
     /// timeline, share payload) derives from this, not the wall clock.
     @State private var season = DateProvider.currentYear
+
+    /// Insight cards for the current season: instant template wording,
+    /// upgraded in place by the on-device model when available. Regenerated
+    /// whenever the season's entries change (see insightKey).
+    @State private var insights: [Insight] = []
 
     /// Years with entries plus the current year, newest first, so a fresh
     /// January can still step back to last season's report.
@@ -57,7 +62,10 @@ struct ReportView: View {
                     SeasonTimelineChart(buckets: ReportStats.halfMonthBuckets(of: seasonEntries))
                 }
 
-                AIInsightCard()
+                if !insights.isEmpty {
+                    InsightDeck(insights: insights, colorHex: colorHex(for:))
+                        .id(season)
+                }
 
                 Button {
                     showShareCard = true
@@ -81,6 +89,7 @@ struct ReportView: View {
             HarvestShareOverlay(model: shareCardModel)
                 .presentationBackground(Color(hex: "#121a0e").opacity(0.62))
         }
+        .task(id: insightKey) { await refreshInsights() }
     }
 
     // MARK: Hero
@@ -166,6 +175,45 @@ struct ReportView: View {
     private func toggleCrop(_ name: String) {
         withAnimation(.easeInOut(duration: 0.15)) {
             expandedCrop = expandedCrop == name ? nil : name
+        }
+    }
+
+    /// Changes whenever the viewed season or its data changes, driving
+    /// .task(id:) so insights regenerate mid-season as new harvests land.
+    private var insightKey: String {
+        "\(season)|\(InsightStore.fingerprint(of: seasonEntries))"
+    }
+
+    @MainActor
+    private func refreshInsights() async {
+        let entries = seasonEntries
+        let facts = InsightFacts.topFacts(in: entries)
+        guard !facts.isEmpty else {
+            insights = []
+            return
+        }
+        let fingerprint = InsightStore.fingerprint(of: entries)
+
+        if let cached = InsightStore.load(season: season), cached.fingerprint == fingerprint {
+            insights = cached.insights
+            if cached.aiComposed { return }
+        } else {
+            insights = TemplateComposer().compose(facts: facts, season: season)
+            InsightStore.save(
+                .init(fingerprint: fingerprint, insights: insights, aiComposed: false),
+                season: season
+            )
+        }
+
+        if #available(iOS 26.0, *), FoundationModelComposer.isAvailable {
+            guard let ai = await FoundationModelComposer.compose(facts: facts, season: season),
+                  fingerprint == InsightStore.fingerprint(of: seasonEntries)
+            else { return }
+            withAnimation(.easeInOut(duration: 0.3)) { insights = ai }
+            InsightStore.save(
+                .init(fingerprint: fingerprint, insights: ai, aiComposed: true),
+                season: season
+            )
         }
     }
 
