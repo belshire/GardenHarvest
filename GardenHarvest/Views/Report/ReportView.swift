@@ -1,9 +1,9 @@
 import SwiftUI
 import SwiftData
 
-/// Season harvest report ("unwrapped"): hero total, Season MVP, expandable
-/// top-crop bars, the "When it peaked" timeline, the Fun Facts deck, the
-/// AI story of the season, and the shareable harvest card.
+/// Season harvest report ("unwrapped"): hero total, the expandable Season
+/// MVP card, runner-up crop bars, the "When it peaked" timeline, the Fun
+/// Facts deck, the AI story of the season, and the shareable harvest card.
 struct ReportView: View {
     @Query private var allEntries: [HarvestEntry]
     @Query private var crops: [Crop]
@@ -53,10 +53,10 @@ struct ReportView: View {
                 hero
 
                 if let mvp = rankedCrops.first {
-                    mvpCard(for: mvp.name)
+                    mvpCard(for: mvp)
                 }
 
-                if !rankedCrops.isEmpty {
+                if rankedCrops.count > 1 {
                     sectionLabel("Top crops")
                     topCropList
                 }
@@ -121,42 +121,83 @@ struct ReportView: View {
 
     // MARK: Season MVP
 
-    private func mvpCard(for crop: String) -> some View {
-        VStack(spacing: 0) {
-            Text("Season MVP")
-                .font(Theme.Font.mono(10.5, weight: .bold))
-                .textCase(.uppercase)
-                .tracking(2)
-                .opacity(0.85)
-            CropIconPlate(
-                cropName: crop,
-                colorHex: colorHex(for: crop),
-                plateSize: 78,
-                iconSize: 58,
-                discSize: 62
-            )
-            .padding(.top, 13)
-            .padding(.bottom, 6)
-            Text(crop)
-                .font(Theme.Font.heading(26, weight: .heavy))
-                .padding(.bottom, 2)
-            Text(ReportStats.superlativeTitle(for: crop, year: season))
-                .font(Theme.Font.body(13.5, weight: .semibold))
-                .opacity(0.95)
+    /// The season leader: big green card with the crop's weight, doubling as
+    /// the crop's expandable timeline toggle now that it no longer appears in
+    /// the Top crops list below.
+    private func mvpCard(for crop: (name: String, total: Double)) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button {
+                toggleCrop(crop.name)
+            } label: {
+                VStack(spacing: 0) {
+                    Text("Season MVP")
+                        .font(Theme.Font.mono(10.5, weight: .bold))
+                        .textCase(.uppercase)
+                        .tracking(2)
+                        .opacity(0.85)
+                    CropIconPlate(
+                        cropName: crop.name,
+                        colorHex: colorHex(for: crop.name),
+                        plateSize: 78,
+                        iconSize: 58,
+                        discSize: 62
+                    )
+                    .padding(.top, 13)
+                    .padding(.bottom, 6)
+                    Text(crop.name)
+                        .font(Theme.Font.heading(26, weight: .heavy))
+                        .padding(.bottom, 2)
+                    Text(WeightFormatter.poundsAndOunces(crop.total))
+                        .font(Theme.Font.mono(15, weight: .heavy))
+                        .padding(.bottom, 5)
+                    Text(ReportStats.superlativeTitle(for: crop.name, year: season))
+                        .font(Theme.Font.body(13.5, weight: .semibold))
+                        .opacity(0.95)
+                }
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(18)
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .rotationEffect(.degrees(expandedCrop == crop.name ? 90 : 0))
+                        .padding(14)
+                }
+                .background(Theme.accent2)
+                .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+            }
+            .buttonStyle(.plain)
+
+            if expandedCrop == crop.name,
+               let timeline = ReportStats.cropTimeline(for: crop.name, seasonEntries: seasonEntries) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(timeline.statLine)
+                        .font(Theme.Font.mono(11))
+                        .foregroundStyle(Theme.sub)
+                    PickingTimelineChart(
+                        timeline: timeline,
+                        color: Color(hex: colorHex(for: crop.name))
+                    )
+                    .frame(height: 74)
+                }
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Theme.card)
+                .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+                .padding(.top, 8)
+            }
         }
-        .foregroundStyle(.white)
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
-        .padding(18)
-        .background(Theme.accent2)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     // MARK: Top crops
 
+    /// Ranks 2–5; the MVP has its own card above, so it stays out of the
+    /// list. Bars remain proportional to the MVP's total.
     private var topCropList: some View {
-        let top = rankedCrops.prefix(6)
-        let maxTotal = max(top.first?.total ?? 0, 1)
+        let top = rankedCrops.dropFirst().prefix(4)
+        let maxTotal = max(rankedCrops.first?.total ?? 0, 1)
         return VStack(alignment: .leading, spacing: 12) {
             ForEach(top, id: \.name) { crop in
                 TopCropRow(
@@ -237,13 +278,18 @@ struct ReportView: View {
     // MARK: Share card
 
     private var shareCardModel: HarvestShareCardModel {
-        let top = rankedCrops.prefix(3).map { crop in
+        let runnersUp = rankedCrops.dropFirst().prefix(4).map { crop in
             HarvestShareCardModel.TopCrop(
                 name: crop.name,
                 valueString: WeightFormatter.poundsAndOunces(crop.total),
                 colorHex: colorHex(for: crop.name)
             )
         }
+        // Always template wording so the shared card is identical on every
+        // device and never waits on (or varies with) the on-device model.
+        let funFact = TemplateComposer()
+            .compose(facts: InsightFacts.topFacts(in: seasonEntries), season: season)
+            .first?.text
         return HarvestShareCardModel(
             season: season,
             totalString: WeightFormatter.poundsAndOunces(seasonTotal),
@@ -251,7 +297,9 @@ struct ReportView: View {
             mvpName: rankedCrops.first?.name,
             mvpTitle: rankedCrops.first.map { ReportStats.superlativeTitle(for: $0.name, year: season) },
             mvpColorHex: rankedCrops.first.map { colorHex(for: $0.name) },
-            topCrops: top,
+            mvpValueString: rankedCrops.first.map { WeightFormatter.poundsAndOunces($0.total) },
+            topCrops: runnersUp,
+            funFact: funFact,
             peakLabel: ReportStats.peakLabel(of: seasonEntries) ?? "—"
         )
     }

@@ -15,7 +15,13 @@ struct HarvestShareCardModel {
     let mvpName: String?
     let mvpTitle: String?
     let mvpColorHex: String?
+    /// The MVP's season total, shown on its merged row.
+    let mvpValueString: String?
+    /// Ranks 2–5; the MVP row above covers #1.
     let topCrops: [TopCrop]
+    /// The season's top-priority fun fact in template wording, nil for
+    /// seasons too sparse to trigger any extractor.
+    let funFact: String?
     let peakLabel: String
 }
 
@@ -58,7 +64,7 @@ struct HarvestShareCardView: View {
                 .padding(.bottom, 15)
 
             if let mvpName = model.mvpName {
-                sectionLabel("Season MVP")
+                sectionLabel("Top crops")
                 HStack(spacing: 13) {
                     CropIconPlate(
                         cropName: mvpName,
@@ -77,17 +83,21 @@ struct HarvestShareCardView: View {
                                 .foregroundStyle(Theme.sub)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    if let mvpValueString = model.mvpValueString {
+                        Text(mvpValueString)
+                            .font(Theme.Font.mono(12.5, weight: .heavy))
+                            .foregroundStyle(Theme.accent2)
+                    }
                 }
                 .padding(.top, 9)
-                .padding(.bottom, 17)
+                .padding(.bottom, model.topCrops.isEmpty ? 0 : 7)
             }
 
             if !model.topCrops.isEmpty {
-                sectionLabel("Top crops")
-                    .padding(.bottom, 3)
                 ForEach(Array(model.topCrops.enumerated()), id: \.offset) { index, crop in
                     HStack(spacing: 10) {
-                        Text("#\(index + 1)")
+                        Text("#\(index + 2)")
                             .font(Theme.Font.mono(11.5, weight: .bold))
                             .foregroundStyle(Theme.sub)
                             .frame(width: 18, alignment: .leading)
@@ -102,6 +112,17 @@ struct HarvestShareCardView: View {
                     }
                     .padding(.vertical, 6)
                 }
+            }
+
+            if let funFact = model.funFact {
+                sectionLabel("Fun fact")
+                    .padding(.top, 11)
+                Text(funFact)
+                    .font(Theme.Font.body(12, weight: .semibold))
+                    .italic()
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 5)
             }
 
             HStack(alignment: .firstTextBaseline) {
