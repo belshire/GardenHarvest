@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "launch-static.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

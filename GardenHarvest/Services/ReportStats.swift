@@ -17,6 +17,21 @@ enum ReportStats {
             .sorted { $0.total == $1.total ? $0.name < $1.name : $0.total > $1.total }
     }
 
+    // MARK: Available report years
+
+    /// Years the Report can browse, newest first: every year with at least
+    /// one entry, plus the current year — so a fresh January (no entries yet)
+    /// still opens on "this season" and can step back to years with data.
+    static func availableReportYears(
+        in entries: [HarvestEntry],
+        currentYear: Int,
+        calendar: Calendar = .current
+    ) -> [Int] {
+        var years = Set(entries.map { calendar.component(.year, from: $0.date) })
+        years.insert(currentYear)
+        return years.sorted(by: >)
+    }
+
     // MARK: Season MVP
 
     static let superlativeTitles: [String: String] = [

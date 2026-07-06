@@ -6,6 +6,7 @@ struct GardenHarvestApp: App {
     let container: ModelContainer
 
     init() {
+        DateProvider.applyLaunchArguments()
         do {
             container = try ModelContainer(for: HarvestEntry.self, Crop.self)
         } catch {
@@ -20,7 +21,7 @@ struct GardenHarvestApp: App {
                 .task {
                     SeedDataService.seedIfNeeded(
                         context: container.mainContext,
-                        currentYear: Calendar.current.component(.year, from: .now)
+                        currentYear: DateProvider.currentYear
                     )
                 }
         }

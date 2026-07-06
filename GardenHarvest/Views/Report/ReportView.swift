@@ -11,7 +11,16 @@ struct ReportView: View {
     @State private var expandedCrop: String?
     @State private var showShareCard = false
 
-    private var season: Int { Calendar.current.component(.year, from: .now) }
+    /// The season being viewed; defaults to the current one and is stepped
+    /// through `availableYears`. Everything below (rankings, totals, MVP,
+    /// timeline, share payload) derives from this, not the wall clock.
+    @State private var season = DateProvider.currentYear
+
+    /// Years with entries plus the current year, newest first, so a fresh
+    /// January can still step back to last season's report.
+    private var availableYears: [Int] {
+        ReportStats.availableReportYears(in: allEntries, currentYear: DateProvider.currentYear)
+    }
 
     private var seasonEntries: [HarvestEntry] {
         LogGrouping.entries(in: season, from: allEntries)
@@ -28,8 +37,9 @@ struct ReportView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                PageHeaderTitle(eyebrow: "\(String(season)) season", title: "Harvest report")
-                    .frame(maxWidth: .infinity)
+                YearStepper(years: availableYears, selectedYear: season, onSelect: setSeason) {
+                    PageHeaderTitle(eyebrow: "\(String(season)) season", title: "Harvest report")
+                }
 
                 hero
 
@@ -143,6 +153,13 @@ struct ReportView: View {
                     onToggle: { toggleCrop(crop.name) }
                 )
             }
+        }
+    }
+
+    private func setSeason(_ year: Int) {
+        withAnimation(.easeInOut(duration: 0.25)) {
+            season = year
+            expandedCrop = nil
         }
     }
 

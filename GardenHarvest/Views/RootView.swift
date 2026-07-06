@@ -38,6 +38,9 @@ struct RootView: View {
         .overlay {
             if isLaunching {
                 LaunchView()
+                    // Lay out against the full screen, not the safe area, so
+                    // the pose lines up exactly with the static launch image.
+                    .ignoresSafeArea()
                     .transition(.opacity)
             }
         }

@@ -7,7 +7,7 @@ struct LogView: View {
     @Query private var allEntries: [HarvestEntry]
     @Query private var crops: [Crop]
 
-    @State private var logYear = Calendar.current.component(.year, from: .now)
+    @State private var logYear = DateProvider.currentYear
     @State private var logCrop: String?
     @State private var expandedMonths: Set<String> = []
     @State private var didExpandLatestMonth = false
@@ -108,25 +108,10 @@ struct LogView: View {
 
     // MARK: Year stepper
 
-    private var yearIndex: Int? { years.firstIndex(of: logYear) }
-    private var canGoOlder: Bool {
-        guard let yearIndex else { return false }
-        return yearIndex < years.count - 1
-    }
-    private var canGoNewer: Bool { (yearIndex ?? 0) > 0 }
-
     private var yearStepper: some View {
-        HStack(spacing: 10) {
-            stepButton(glyph: "‹", enabled: canGoOlder) {
-                if let yearIndex, canGoOlder { setYear(years[yearIndex + 1]) }
-            }
+        YearStepper(years: years, selectedYear: logYear, onSelect: setYear) {
             PageHeaderTitle(eyebrow: "Harvest log", title: String(logYear))
-                .frame(maxWidth: .infinity)
-            stepButton(glyph: "›", enabled: canGoNewer) {
-                if let yearIndex, canGoNewer { setYear(years[yearIndex - 1]) }
-            }
         }
-        .padding(.top, 2)
     }
 
     /// Animated so the year pager slides when the year is changed from the
@@ -135,22 +120,6 @@ struct LogView: View {
         withAnimation(.easeInOut(duration: 0.25)) {
             logYear = year
         }
-    }
-
-    private func stepButton(glyph: String, enabled: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(glyph)
-                .font(.system(size: 24, weight: .heavy))
-                .foregroundStyle(enabled ? Theme.accent : Theme.ink.opacity(0.16))
-                .padding(.bottom, 2)
-                .frame(width: 46, height: 46)
-                .background(enabled ? Theme.card : Color.clear)
-                .overlay(Circle().stroke(enabled ? Theme.ink.opacity(0.16) : Theme.hairline, lineWidth: 1.5))
-                .clipShape(Circle())
-                .shadow(color: Color(hex: "#1e3214").opacity(enabled ? 0.08 : 0), radius: 9, y: 6)
-        }
-        .buttonStyle(.plain)
-        .disabled(!enabled)
     }
 
     // MARK: Year pager

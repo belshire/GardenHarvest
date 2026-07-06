@@ -133,3 +133,54 @@ struct ReportStatsTests {
         #expect(ReportStats.cropTimeline(for: "Kale", seasonEntries: entries) == nil)
     }
 }
+
+/// Which years the Report's stepper can browse to — every year with data plus
+/// the current one, so the default season is always reachable.
+struct AvailableReportYearsTests {
+    private func entry(_ crop: String, year: Int, month: Int, day: Int) -> HarvestEntry {
+        let date = Calendar.current.date(from: DateComponents(year: year, month: month, day: day))!
+        return HarvestEntry(cropName: crop, ounces: 4, date: date)
+    }
+
+    @Test func yearsWithDataSplitAcrossDecJanBoundary() {
+        let entries = [
+            entry("Kale", year: 2026, month: 12, day: 30),
+            entry("Carrots", year: 2026, month: 12, day: 31),
+            entry("Kale", year: 2027, month: 1, day: 1),
+            entry("Parsnips", year: 2027, month: 1, day: 2)
+        ]
+        #expect(ReportStats.availableReportYears(in: entries, currentYear: 2027) == [2027, 2026])
+    }
+
+    @Test func currentYearWithoutEntriesIsStillBrowsable() {
+        // Fresh January: nothing logged in 2027 yet, but the report defaults
+        // to 2027 and the stepper must be able to reach 2026 and 2025.
+        let entries = [
+            entry("Raspberries", year: 2025, month: 7, day: 4),
+            entry("Kale", year: 2026, month: 12, day: 30)
+        ]
+        #expect(ReportStats.availableReportYears(in: entries, currentYear: 2027) == [2027, 2026, 2025])
+    }
+
+    @Test func currentYearWithEntriesIsNotDuplicated() {
+        let entries = [
+            entry("Kale", year: 2026, month: 6, day: 1),
+            entry("Peas", year: 2026, month: 6, day: 2)
+        ]
+        #expect(ReportStats.availableReportYears(in: entries, currentYear: 2026) == [2026])
+    }
+
+    @Test func noEntriesYieldsJustTheCurrentYear() {
+        #expect(ReportStats.availableReportYears(in: [], currentYear: 2026) == [2026])
+    }
+
+    @Test func defaultYearIsAlwaysFirstAndSelectable() {
+        // The view seeds its selection from DateProvider.currentYear and the
+        // list is newest-first, so the default season is always the first
+        // stepper position even when it has no data yet.
+        let entries = [entry("Kale", year: 2026, month: 12, day: 30)]
+        let years = ReportStats.availableReportYears(in: entries, currentYear: 2027)
+        #expect(years.first == 2027)
+        #expect(years.contains(2027))
+    }
+}

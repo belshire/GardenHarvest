@@ -12,10 +12,10 @@ struct HomeView: View {
 
     let onSelectCrop: (String) -> Void
 
-    private var season: Int { Calendar.current.component(.year, from: .now) }
+    private var season: Int { DateProvider.currentYear }
 
     private var seasonEntries: [HarvestEntry] {
-        allEntries.filter { Calendar.current.component(.year, from: $0.date) == season }
+        LogGrouping.entries(in: season, from: allEntries)
     }
 
     private var totalsByCrop: [String: Double] {
@@ -71,7 +71,7 @@ struct HomeView: View {
     private var seasonLabel: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d"
-        return "\(season) season · \(formatter.string(from: .now))"
+        return "\(season) season · \(formatter.string(from: DateProvider.now))"
     }
 
     private var totalCard: some View {

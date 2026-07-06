@@ -13,7 +13,7 @@ struct EntryView: View {
     @State private var note: String = ""
     @State private var selectedVariant: String?
     @State private var selectedDateChip: DateChip = .today
-    @State private var customDate: Date = .now
+    @State private var customDate: Date = DateProvider.now
     @FocusState private var noteFocused: Bool
 
     private var crop: Crop? {
@@ -169,7 +169,7 @@ struct EntryView: View {
                         .font(Theme.Font.body(13.5, weight: .bold))
                         .foregroundStyle(Theme.sub)
                     Spacer()
-                    DatePicker("", selection: $customDate, in: ...Date.now, displayedComponents: .date)
+                    DatePicker("", selection: $customDate, in: ...DateProvider.now, displayedComponents: .date)
                         .labelsHidden()
                         .tint(Theme.accent)
                 }
@@ -236,7 +236,7 @@ struct EntryView: View {
         let entry = HarvestEntry(
             cropName: cropName,
             ounces: roundedOunces,
-            date: selectedDateChip.date(customDate: customDate),
+            date: selectedDateChip.date(customDate: customDate, from: DateProvider.now),
             note: note,
             variant: selectedVariant
         )

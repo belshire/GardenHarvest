@@ -28,6 +28,9 @@
 		2B8D551CE00FE231AC64C00D /* AIInsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00D /* AIInsightCard.swift */; };
 		2B8D551CE00FE231AC64C00E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00E /* ShareCardView.swift */; };
 		2B8D551CE00FE231AC64C00F /* ReportStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B00F /* ReportStatsTests.swift */; };
+		2B8D551CE00FE231AC64C011 /* DateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B011 /* DateProvider.swift */; };
+		2B8D551CE00FE231AC64C012 /* YearRolloverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B012 /* YearRolloverTests.swift */; };
+		2B8D551CE00FE231AC64C013 /* YearStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B013 /* YearStepper.swift */; };
 		2D37BC2A659551ED8CADEF9F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66F3A9BE72042DDDB464608 /* HomeView.swift */; };
 		31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */; };
 		3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F214A547210FBEEFBA4D6 /* CropTileView.swift */; };
@@ -43,6 +46,7 @@
 		71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */; };
 		9B4DC2AE0775F51E774E09FE /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */; };
 		AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */; };
+		AFAE4A6DDD94238D8AE0FF41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A1 /* LaunchScreen.storyboard */; };
 		B28BA66E5A9082AC2C892001 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D29EA0A52F056B6C5E121BC /* RootView.swift */; };
 		7E2C51B8F09A4D33E6B5C871 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3A9D21C4E87B60D1A2F340 /* LaunchView.swift */; };
 		B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5449C088D712A3599D41170 /* CropColorAssigner.swift */; };
@@ -88,6 +92,9 @@
 		1A7C440BD90FE231AC64B00D /* AIInsightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightCard.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00E /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B00F /* ReportStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportStatsTests.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B011 /* DateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateProvider.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B012 /* YearRolloverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearRolloverTests.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B013 /* YearStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearStepper.swift; sourceTree = "<group>"; };
 		241BD037D0F81D70CC20B4BE /* ChipButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipButtonStyle.swift; sourceTree = "<group>"; };
 		27A2BEA23B393E224BAFDBDC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssigner.swift; sourceTree = "<group>"; };
@@ -122,6 +129,7 @@
 		DFF76E17B753CE23FCB985A4 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		E77F214A547210FBEEFBA4D6 /* CropTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropTileView.swift; sourceTree = "<group>"; };
 		EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EFF8D4FDE50F39B1D36234A1 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -132,6 +140,7 @@
 				EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */,
 				599C86015BCE19741443A328 /* GardenHarvestApp.swift */,
 				24FC80BA12064EECA717A50B /* Info.plist */,
+				EFF8D4FDE50F39B1D36234A1 /* LaunchScreen.storyboard */,
 				B37B8D327911F78A20CCA529 /* Models */,
 				FF03A5CBCCF31A387FF8D464 /* Seed */,
 				2A175997EFAA09A17061632A /* Services */,
@@ -165,6 +174,7 @@
 				2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */,
 				0326D752E09E8676C5366250 /* CropInitials.swift */,
 				45B0648B2D125D047F6E2A44 /* DateChip.swift */,
+				1A7C440BD90FE231AC64B011 /* DateProvider.swift */,
 				1A7C440BD90FE231AC64B001 /* LogGrouping.swift */,
 				1A7C440BD90FE231AC64B009 /* ReportStats.swift */,
 				7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */,
@@ -233,6 +243,7 @@
 				C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */,
 				906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */,
 				CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */,
+				1A7C440BD90FE231AC64B012 /* YearRolloverTests.swift */,
 			);
 			path = GardenHarvestTests;
 			sourceTree = "<group>";
@@ -247,6 +258,7 @@
 				9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */,
 				0D29EA0A52F056B6C5E121BC /* RootView.swift */,
 				AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */,
+				1A7C440BD90FE231AC64B013 /* YearStepper.swift */,
 				25EF93C51C63DBFA98CB4ED4 /* Add */,
 				68D01B2AE68D1EE288C3B9CD /* Entry */,
 				CF22C8A470A8261DBA80F1EB /* Home */,
@@ -368,6 +380,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AFAE4A6DDD94238D8AE0FF40 /* Assets.xcassets in Resources */,
+				AFAE4A6DDD94238D8AE0FF41 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +402,7 @@
 				F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */,
 				3E50C502E5AF3A7DEE2F509D /* SeedIfNeededTests.swift in Sources */,
 				1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */,
+				2B8D551CE00FE231AC64C012 /* YearRolloverTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,10 +423,12 @@
 				474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */,
 				559B4F451A26BF05C1747C2E /* CropIconPlate.swift in Sources */,
 				5D8E2A4C1B7F60931EAD5C02 /* PageHeaderTitle.swift in Sources */,
+				2B8D551CE00FE231AC64C013 /* YearStepper.swift in Sources */,
 				6E9F3B5D2C8A71042FBE6D13 /* TotalInfoCard.swift in Sources */,
 				674301C41838220F87BB3474 /* CropInitials.swift in Sources */,
 				3BB131A44D5F3DB9531DC618 /* CropTileView.swift in Sources */,
 				D46E0CEAE4B9C7526B1A9BF6 /* DateChip.swift in Sources */,
+				2B8D551CE00FE231AC64C011 /* DateProvider.swift in Sources */,
 				DBE92658C53E2EC985F4EDD7 /* EntryView.swift in Sources */,
 				1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */,
 				71C0F495F459696C815B0EDF /* HarvestEntry.swift in Sources */,

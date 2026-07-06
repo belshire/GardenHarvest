@@ -1,14 +1,26 @@
 import SwiftUI
 
-/// "Waking the garden" launch screen: floating journal, serif wordmark,
+/// "Waking the garden" launch screen: journal, serif wordmark,
 /// and rising harvest dots while data loads.
 struct LaunchView: View {
+    /// Renders the static pose without animating (and with no dots). Used to
+    /// generate the static system launch image so the handoff into the live
+    /// view is seamless.
+    var frozen = false
+
     private let dotPeriod: Double = 1.4
-    private let floatPeriod: Double = 6.0
+    /// Phase the dot clock starts at, chosen so the first live frame shows
+    /// all three dots mid-rise.
+    private let posePhase: Double = 0.7
+    /// How long the dots row takes to fade in when the live view appears.
+    private let dotsFadeIn: Double = 0.35
+
+    @State private var start = Date()
 
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let t = timeline.date.timeIntervalSinceReferenceDate
+        TimelineView(.animation(paused: frozen)) { timeline in
+            let elapsed = frozen ? 0 : timeline.date.timeIntervalSince(start)
+            let t = elapsed + posePhase
 
             ZStack {
                 LinearGradient(
@@ -51,7 +63,6 @@ struct LaunchView: View {
                             .frame(width: 186)
                             .shadow(color: Color(hex: "#1e3214").opacity(0.26), radius: 13, x: 0, y: 22)
                     }
-                    .offset(y: floatOffset(t))
 
                     Text("Garden\nHarvest")
                         .font(Theme.Font.heading(38))
@@ -68,27 +79,24 @@ struct LaunchView: View {
                 }
                 .padding(.horizontal, 40)
 
-                VStack {
-                    Spacer()
-                    HStack(spacing: 9) {
-                        dot(Theme.accent, t: t, delay: 0)
-                        dot(Theme.accent2, t: t, delay: 0.18)
-                        dot(Theme.accent, t: t, delay: 0.36)
+                if !frozen {
+                    VStack {
+                        Spacer()
+                        HStack(spacing: 9) {
+                            dot(Theme.accent, t: t, delay: 0)
+                            dot(Theme.accent2, t: t, delay: 0.18)
+                            dot(Theme.accent, t: t, delay: 0.36)
+                        }
+                        .padding(.bottom, 96)
                     }
-                    .padding(.bottom, 96)
+                    .opacity(min(1, elapsed / dotsFadeIn))
                 }
             }
         }
     }
 
-    private func floatOffset(_ t: Double) -> CGFloat {
-        // 0 → -9 → 0 over the period, sine-eased
-        let phase = t.truncatingRemainder(dividingBy: floatPeriod) / floatPeriod
-        return CGFloat(-4.5 * (1 - cos(2 * .pi * phase)))
-    }
-
     private func dot(_ color: Color, t: Double, delay: Double) -> some View {
-        let phase = (t - delay).truncatingRemainder(dividingBy: dotPeriod) / dotPeriod
+        let phase = wrap(t - delay, period: dotPeriod)
         let y = 6 - 12 * phase
         let opacity = phase < 0.5 ? 0.2 + 1.6 * phase : 1.8 - 1.6 * phase
         return Circle()
@@ -96,6 +104,13 @@ struct LaunchView: View {
             .frame(width: 7, height: 7)
             .offset(y: y)
             .opacity(opacity)
+    }
+
+    /// Normalized [0, 1) phase that stays continuous for negative inputs,
+    /// so staggered dots have a well-defined pose at t = 0.
+    private func wrap(_ t: Double, period: Double) -> Double {
+        let r = t.truncatingRemainder(dividingBy: period)
+        return (r < 0 ? r + period : r) / period
     }
 }
 
