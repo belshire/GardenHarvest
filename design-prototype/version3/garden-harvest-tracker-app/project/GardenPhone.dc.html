@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="{{ s.screen }}">
+  <div style="{{ s.status }}">
+    <span>9:41</span>
+    <span style="{{ s.statusR }}">{{ statusGlyph }}</span>
+  </div>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ s.body }}">
+      <div style="{{ s.homeHead }}">
+        <div>
+          <div style="{{ s.kicker }}">{{ seasonLabel }}</div>
+          <div style="{{ s.h1 }}">{{ prompt }}</div>
+        </div>
+      </div>
+      <div style="{{ s.totalCard }}">
+        <div style="{{ s.totalNum }}">{{ totalStr }}</div>
+        <div style="{{ s.totalLbl }}">picked this season across {{ cropCount }} crops</div>
+      </div>
+      <sc-if value="{{ showQuickLogLabel }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ s.sectionLbl }}">Quick log — tap to add</div>
+      </sc-if>
+      <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ s.grid }}">
+          <sc-for list="{{ tiles }}" as="tile" hint-placeholder-count="6">
+            <button onClick="{{ tile.onTap }}" style="{{ tile.card }}">
+              <div style="{{ s.iconPlate }}">
+                <sc-if value="{{ tile.hasIcon }}" hint-placeholder-val="{{ true }}">
+                  <img src="{{ tile.iconSrc }}" alt="{{ tile.name }}" style="{{ s.iconImg }}" />
+                </sc-if>
+                <sc-if value="{{ tile.noIcon }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ tile.disc }}">{{ tile.initial }}</div>
+                </sc-if>
+              </div>
+              <div style="{{ s.tileName }}">{{ tile.name }}</div>
+              <div style="{{ s.tileTot }}">{{ tile.totalStr }}</div>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ s.list }}">
+          <sc-for list="{{ tiles }}" as="tile" hint-placeholder-count="8">
+            <button onClick="{{ tile.onTap }}" style="{{ s.listRow }}">
+              <div style="{{ tile.disc }}">{{ tile.initial }}</div>
+              <div style="{{ s.listMid }}">
+                <div style="{{ s.listName }}">{{ tile.name }}</div>
+                <div style="{{ s.listSub }}">{{ tile.countStr }}</div>
+              </div>
+              <div style="{{ s.listTot }}">{{ tile.totalStr }}</div>
+            </button>
+          </sc-for>
+          <button onClick="{{ onStartAdd }}" style="{{ s.listAdd }}">+  Add a vegetable</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.bodyEntry }}">
+      <div style="{{ s.entryTop }}">
+        <button onClick="{{ onBack }}" style="{{ s.back }}">‹ Back</button>
+        <div style="{{ s.entryTitle }}">Log harvest</div>
+        <div style="{{ s.back0 }}"></div>
+      </div>
+      <div style="{{ s.entryCropRow }}">
+        <div style="{{ s.entryIconPlate }}">
+          <sc-if value="{{ selHasIcon }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ selIconSrc }}" alt="{{ app.sel }}" style="{{ s.entryIconImg }}" />
+          </sc-if>
+          <sc-if value="{{ selNoIcon }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ selDisc }}">{{ selInitial }}</div>
+          </sc-if>
+        </div>
+        <div style="{{ s.entryCropName }}">{{ app.sel }}</div>
+      </div>
+      <div style="{{ s.ozWrap }}">
+        <div style="{{ s.ozNum }}">{{ ozDisplay }}</div>
+        <div style="{{ s.ozUnit }}">oz</div>
+      </div>
+      <div style="{{ s.chipRow }}">
+        <sc-for list="{{ ozChips }}" as="c" hint-placeholder-count="4">
+          <button onClick="{{ c.onTap }}" style="{{ s.chip }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ hasVariants }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ s.chipRow }}">
+          <sc-for list="{{ variantChips }}" as="v" hint-placeholder-count="2">
+            <button onClick="{{ v.onTap }}" style="{{ v.style }}">{{ v.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="{{ s.pad }}">
+        <sc-for list="{{ padKeys }}" as="k" hint-placeholder-count="12">
+          <button onClick="{{ k.onTap }}" style="{{ k.style }}">{{ k.label }}</button>
+        </sc-for>
+      </div>
+      <div style="{{ s.metaRow }}">
+        <sc-for list="{{ dateChips }}" as="d" hint-placeholder-count="3">
+          <button onClick="{{ d.onTap }}" style="{{ d.style }}">{{ d.label }}</button>
+        </sc-for>
+      </div>
+      <div style="{{ s.metaRow2 }}">
+        <button onClick="{{ openPhoto }}" style="{{ photoStyle }}">{{ photoLabel }}</button>
+        <input value="{{ app.draft.note }}" onChange="{{ noteChange }}" placeholder="Note — e.g. some woody" style="{{ s.noteInput }}" />
+      </div>
+      <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ s.photoPreview }}">
+          <div style="{{ photoThumb }}"><span style="{{ s.photoThumbTag }}">IMG</span></div>
+          <div style="{{ s.photoMeta }}">
+            <div style="{{ s.photoMetaTitle }}">Photo attached</div>
+            <div style="{{ s.photoMetaSub }}">{{ photoSourceLabel }}</div>
+          </div>
+          <button onClick="{{ removePhoto }}" style="{{ s.photoRemove }}">Remove</button>
+        </div>
+      </sc-if>
+      <button onClick="{{ onSave }}" style="{{ saveStyle }}">{{ saveLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.body }}">
+      <div style="{{ s.logStepRow }}">
+        <button onClick="{{ onPrevLogY }}" style="{{ prevLogStyle }}">‹</button>
+        <div style="{{ s.logStepMid }}">
+          <div style="{{ s.logStepKick }}">Harvest log</div>
+          <div style="{{ s.logStepYear }}">{{ logYear }}</div>
+        </div>
+        <button onClick="{{ onNextLogY }}" style="{{ nextLogStyle }}">›</button>
+      </div>
+      <div style="{{ s.logSumCard }}">
+        <div style="{{ s.logSumTotal }}">{{ logSumTotal }}</div>
+        <div style="{{ s.logSumSub }}">{{ logSumSub }}</div>
+      </div>
+      <button onClick="{{ onOpenCropSheet }}" style="{{ s.logCropPill }}"><span style="{{ logCropDot }}"></span><span style="{{ s.logCropPillLbl }}">{{ logCropLabel }}</span><span style="{{ s.logCaret }}">⌄</span></button>
+      <sc-if value="{{ logHasCrop }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ s.chWrap }}">
+          <div style="{{ s.chHead }}">Across the years</div>
+          <sc-for list="{{ chYears }}" as="y" hint-placeholder-count="3">
+            <button onClick="{{ y.onTap }}" style="{{ y.rowStyle }}">
+              <div style="{{ y.yearStyle }}">{{ y.year }}</div>
+              <div style="{{ s.chTrack }}"><div style="{{ y.bar }}"></div></div>
+              <div style="{{ s.chVal }}">{{ y.valStr }}</div>
+            </button>
+          </sc-for>
+        </div>
+        <div style="{{ s.chSectLbl }}">{{ chSectLbl }}</div>
+      </sc-if>
+      <sc-for list="{{ logMonths }}" as="m" hint-placeholder-count="4">
+        <button onClick="{{ m.onToggle }}" style="{{ m.headerStyle }}">
+          <div style="{{ s.mName }}">{{ m.name }}</div>
+          <div style="{{ s.mBarTrack }}"><div style="{{ m.bar }}"></div></div>
+          <div style="{{ s.mTot }}">{{ m.totalStr }}</div>
+          <div style="{{ m.chevStyle }}">›</div>
+        </button>
+        <sc-if value="{{ m.expanded }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ s.monthDays }}">
+            <sc-for list="{{ m.days }}" as="day" hint-placeholder-count="3">
+              <div style="{{ s.logDate }}">{{ day.label }}</div>
+              <sc-for list="{{ day.items }}" as="it" hint-placeholder-count="2">
+                <div style="{{ s.logRow }}">
+                  <div style="{{ s.logIconPlate }}">
+                    <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ true }}">
+                      <img src="{{ it.iconSrc }}" alt="{{ it.name }}" style="{{ s.logIconImg }}" />
+                    </sc-if>
+                    <sc-if value="{{ it.noIcon }}" hint-placeholder-val="{{ false }}">
+                      <div style="{{ it.disc }}">{{ it.initial }}</div>
+                    </sc-if>
+                  </div>
+                  <div style="{{ s.logMid }}">
+                    <div style="{{ s.logName }}">{{ it.name }}</div>
+                    <sc-if value="{{ it.hasNote }}" hint-placeholder-val="{{ false }}"><div style="{{ s.logNote }}">{{ it.note }}</div></sc-if>
+                  </div>
+                  <sc-if value="{{ it.hasPhoto }}" hint-placeholder-val="{{ false }}"><div style="{{ it.thumb }}"><span style="{{ s.logThumbTag }}">IMG</span></div></sc-if>
+                  <div style="{{ s.logOz }}">{{ it.ozStr }}</div>
+                </div>
+              </sc-for>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-for>
+      <sc-if value="{{ logEmpty }}" hint-placeholder-val="{{ false }}"><div style="{{ s.logEmpty }}">{{ logEmptyLabel }}</div></sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isUnwrapped }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.uwBody }}">
+      <div style="{{ s.uwKicker }}">2026 harvest, unwrapped</div>
+      <div style="{{ s.uwHero }}">
+        <div style="{{ s.uwBig }}">{{ totalStr }}</div>
+        <div style="{{ s.uwHeroLbl }}">of homegrown goodness</div>
+      </div>
+      <div style="{{ s.superCard }}">
+        <div style="{{ s.superKick }}">Season MVP</div>
+        <div style="{{ s.superName }}">{{ superName }}</div>
+        <div style="{{ s.superTitle }}">{{ superTitle }}</div>
+      </div>
+      <div style="{{ s.uwSectLbl }}">Top crops</div>
+      <sc-for list="{{ top }}" as="c" hint-placeholder-count="6">
+        <div style="{{ s.barRow }}">
+          <div style="{{ s.barName }}">{{ c.name }}</div>
+          <div style="{{ s.barTrack }}"><div style="{{ c.bar }}"></div></div>
+          <div style="{{ s.barVal }}">{{ c.valStr }}</div>
+        </div>
+      </sc-for>
+      <div style="{{ s.uwSectLbl }}">When it peaked</div>
+      <div style="{{ s.timeline }}">
+        <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="10">
+          <div style="{{ s.tlCol }}"><div style="{{ s.tlBarWrap }}"><div style="{{ w.bar }}"></div></div><div style="{{ s.tlLbl }}">{{ w.label }}</div></div>
+        </sc-for>
+      </div>
+      <div style="{{ s.cmpCard }}">
+        <div style="{{ s.cmpLbl }}">vs last year</div>
+        <div style="{{ s.cmpVal }}">{{ deltaStr }}</div>
+        <div style="{{ s.cmpSub }}">{{ lastYearStr }} in 2025 (est.)</div>
+      </div>
+      <button onClick="{{ onShare }}" style="{{ s.shareBtn }}">Share my harvest card</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.body }}">
+      <div style="{{ s.entryTop }}">
+        <button onClick="{{ onBack }}" style="{{ s.back }}">‹ Back</button>
+        <div style="{{ s.entryTitle }}">New vegetable</div>
+        <div style="{{ s.back0 }}"></div>
+      </div>
+      <div style="{{ s.addLbl }}">What did you grow?</div>
+      <div style="{{ s.addPreviewWrap }}">
+        <div style="{{ addPlateStyle }}">
+          <sc-if value="{{ addHasIcon }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ addIconSrc }}" alt="{{ app.addName }}" style="{{ s.addPreviewImg }}" />
+          </sc-if>
+          <sc-if value="{{ addShowInitial }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ addDisc }}">{{ addInitial }}</div>
+          </sc-if>
+          <sc-if value="{{ addEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ s.addSeed }}">🌱</div>
+          </sc-if>
+        </div>
+        <div style="{{ s.addPreviewCap }}">{{ addPreviewCap }}</div>
+      </div>
+      <input value="{{ app.addName }}" onChange="{{ addNameChange }}" placeholder="Type a vegetable…" style="{{ s.addInput }}" />
+      <sc-if value="{{ hasSuggest }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ s.suggestWrap }}">
+          <sc-for list="{{ suggestions }}" as="sug" hint-placeholder-count="5">
+            <button onClick="{{ sug.onTap }}" style="{{ s.suggestItem }}">
+              <div style="{{ s.suggestIconPlate }}">
+                <sc-if value="{{ sug.hasIcon }}" hint-placeholder-val="{{ true }}">
+                  <img src="{{ sug.iconSrc }}" alt="{{ sug.name }}" style="{{ s.suggestIconImg }}" />
+                </sc-if>
+                <sc-if value="{{ sug.noIcon }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ sug.disc }}">{{ sug.initial }}</div>
+                </sc-if>
+              </div>
+              <div style="{{ s.suggestName }}">{{ sug.name }}</div>
+              <sc-if value="{{ sug.known }}" hint-placeholder-val="{{ false }}"><div style="{{ s.suggestTag }}">grown before</div></sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="{{ s.addQuickRow }}">
+        <div>
+          <div style="{{ s.addQuickLbl }}">Add to quick log</div>
+          <div style="{{ s.addQuickSub }}">Show it on your home screen</div>
+        </div>
+        <button onClick="{{ onToggleQuick }}" style="{{ toggleStyle }}"><div style="{{ toggleKnob }}"></div></button>
+      </div>
+      <button onClick="{{ onCommitAdd }}" style="{{ commitStyle }}">{{ commitLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ onStartAdd }}" style="{{ s.fab }}"><span style="{{ s.fabPlus }}">＋</span><span style="{{ s.fabLbl }}">Add veg</span></button>
+  </sc-if>
+
+  <sc-if value="{{ navShown }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ s.nav }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+        <button onClick="{{ n.onTap }}" style="{{ n.style }}"><div style="{{ n.iconStyle }}">{{ n.icon }}</div><div style="{{ n.lblStyle }}">{{ n.label }}</div></button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showCropSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.sheetScrim }}" onClick="{{ onCloseCropSheet }}"></div>
+    <div style="{{ s.cropSheet }}">
+      <div style="{{ s.cropSheetTitleWrap }}">
+        <div style="{{ s.cropSheetTitle }}">Filter by crop</div>
+        <div style="{{ s.cropSheetSub }}">{{ cropSheetSub }}</div>
+      </div>
+      <div style="{{ s.cropSheetScroll }}">
+        <sc-for list="{{ cropSheetItems }}" as="it" hint-placeholder-count="8">
+          <button onClick="{{ it.onTap }}" style="{{ it.style }}">
+            <div style="{{ s.sheetIconPlate }}">
+              <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ it.iconSrc }}" alt="{{ it.name }}" style="{{ s.sheetIconImg }}" />
+              </sc-if>
+              <sc-if value="{{ it.noIcon }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ it.disc }}">{{ it.initial }}</div>
+              </sc-if>
+            </div>
+            <div style="{{ s.cropSheetName }}">{{ it.name }}</div>
+            <div style="{{ s.cropSheetVal }}">{{ it.valStr }}</div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showPhotoSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.sheetScrim }}" onClick="{{ closePhoto }}"></div>
+    <div style="{{ s.sheet }}">
+      <div style="{{ s.sheetGroup }}">
+        <div style="{{ s.sheetTitle }}">Add a photo of this pick</div>
+        <button onClick="{{ pickCamera }}" style="{{ s.sheetBtn }}">Take Photo</button>
+        <button onClick="{{ pickLibrary }}" style="{{ s.sheetBtnLast }}">Choose from Library</button>
+      </div>
+      <button onClick="{{ closePhoto }}" style="{{ s.sheetCancel }}">Cancel</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ s.toast }}">{{ app.toast }}</div>
+  </sc-if>
+
+  <div style="{{ s.homeInd }}"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  cc(name){ const c=this.props.colors||{}; if(c[name]) return c[name]; let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0; return 'hsl('+(h%360)+' 52% 55%)'; }
+  ini(name){ return (name||'?').replace(/[^A-Za-z]/g,'').slice(0,2) || '?'; }
+  ICON_MAP = {
+    'asparagus':'asparagus','strawberries':'strawberry','strawberry':'strawberry',
+    'raspberries':'raspberry','raspberry':'raspberry','blueberries':'blueberries','blueberry':'blueberries',
+    'boysenberries':'blackberry','blackberries':'blackberry','blackberry':'blackberry',
+    'artichoke':'artichoke','artichokes':'artichoke','radishes':'radish','radish':'radish',
+    'peas':'peas','pea':'peas','snap peas':'peas','snow peas':'peas',
+    'mushrooms':'champignon-mushroom','mushroom':'champignon-mushroom','shiitake':'shiitake-mushroom','oyster mushroom':'oyster-mushroom',
+    'tomatoes cherry':'cherry-tomatoes','cherry tomatoes':'cherry-tomatoes','cherry tomato':'cherry-tomatoes',
+    'tomatoes':'tomato','tomato':'tomato','cucumber':'cucumber','cucumbers':'cucumber',
+    'zucchini':'zucchini','courgette':'zucchini','kale':'kale','carrots':'carrot','carrot':'carrot',
+    'green beans':'green-beans','beans':'green-beans','string beans':'green-beans',
+    'peppers':'chili-pepper','pepper':'chili-pepper','chili':'chili-pepper','chilli':'chili-pepper',
+    'bell peppers':'red-bell-pepper','bell pepper':'red-bell-pepper',
+    'squash':'butternut-squash','butternut':'butternut-squash','basil':'basil','corn':'corn',
+    'onions':'onion','onion':'onion','red onion':'red-onion','garlic':'garlic',
+    'potatoes':'potato','potato':'potato','beets':'beet','beet':'beet','beetroot':'beet',
+    'spinach':'spinach','broccoli':'broccoli','cauliflower':'cauliflower','cabbage':'cabbage',
+    'eggplant':'eggplant','aubergine':'eggplant','apples':'apple','apple':'apple',
+    'pears':'pear','pear':'pear','melon':'cantaloupe','watermelon':'watermelon','cantaloupe':'cantaloupe',
+    'pumpkin':'pumpkin','pumpkins':'pumpkin','leeks':'leek','leek':'leek','celery':'celeriac','celeriac':'celeriac',
+    'turnips':'turnip','turnip':'turnip','parsnips':'parsnip','parsnip':'parsnip',
+    'sweet potatoes':'sweet-potato','sweet potato':'sweet-potato','arugula':'arugula','rocket':'arugula',
+    'avocado':'avocado','avocados':'avocado','banana':'banana','bananas':'banana','edamame':'edamame',
+    'ginger':'ginger','kiwi':'kiwi','lime':'lime','limes':'lime','mango':'mango','mangoes':'mango',
+    'orange':'orange','oranges':'orange','pomegranate':'pomegranate','passion fruit':'passion-fruit',
+    'brussels sprouts':'brussels-sprout','brussel sprouts':'brussels-sprout','daikon':'daikon','turmeric':'turmeric'
+  };
+  iconFor(name){
+    if(!name) return null;
+    const key = String(name).toLowerCase().trim();
+    const m = this.ICON_MAP;
+    if(m[key]) return './veg-icons/'+m[key]+'.png';
+    let best=null, bestLen=0;
+    for(const k in m){ if(k.length>=3 && (key.includes(k)||k.includes(key)) && k.length>bestLen){ best=m[k]; bestLen=k.length; } }
+    return best? './veg-icons/'+best+'.png' : null;
+  }
+  fmt(n){ n=Math.round(n*10)/10; return (n%1===0)? String(n): n.toFixed(1); }
+  wt(oz){ oz=Math.round(oz*10)/10; if(oz>=16){ const lb=Math.floor(oz/16); const r=Math.round((oz-lb*16)*10)/10; return r>0? lb+' lb '+this.fmt(r)+' oz' : lb+' lb'; } return this.fmt(oz)+' oz'; }
+  mdl(iso){ const [y,m,d]=iso.split('-').map(Number); const M=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return M[m]+' '+d; }
+  monthName(m){ return ['','January','February','March','April','May','June','July','August','September','October','November','December'][m]; }
+  monShort(m){ return ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m]; }
+  dayLabel(iso){ const [y,m,d]=iso.split('-').map(Number); const W=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const dt=new Date(iso+'T00:00:00Z'); return W[dt.getUTCDay()]+' '+this.monShort(m)+' '+d; }
+  monthsOf(entries){ const byM={}; entries.forEach(e=>{ const m=+e.date.split('-')[1]; (byM[m]=byM[m]||[]).push(e); }); return Object.keys(byM).map(Number).sort((a,b)=>b-a).map(m=>{ const list=byM[m]; const byD={}; list.forEach(e=>{ (byD[e.date]=byD[e.date]||[]).push(e); }); const days=Object.keys(byD).sort().reverse().map(d=>({date:d, label:this.dayLabel(d), items:byD[d].slice()})); return { m, list, days, total:list.reduce((a,e)=>a+e.oz,0) }; }); }
+
+  state = { photoSheet:false };
+
+  renderVals(){
+    const t = this.props.theme || {};
+    const app = this.props.app || { screen:'home', entries:[], quick:[], draft:{} };
+    const P = this.props;
+    const entries = app.entries || [];
+    const draft = app.draft || {};
+    const season = String(P.season || 2026);
+    const seasonEntries = entries.filter(e=> String(e.date).slice(0,4)===season);
+    const dark = !!t.dark;
+    const R = t.radius || 22, TR = t.tileRadius || 20;
+
+    // ---- shared style atoms ----
+    const softShadow = dark ? '0 1px 0 rgba(255,255,255,.04)' : '0 6px 18px rgba(30,50,20,.08)';
+    const s = {};
+    s.screen = { position:'relative', height:'100%', width:'100%', display:'flex', flexDirection:'column', background:t.panel, color:t.ink, fontFamily:t.font, overflow:'hidden' };
+    s.status = { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 26px 4px', fontSize:13, fontWeight:700, color:t.statusInk, letterSpacing:.2, flex:'0 0 auto' };
+    s.statusR = { fontFamily:t.mono, fontSize:11, letterSpacing:1 };
+    s.body = { flex:'1 1 auto', overflowY:'auto', padding:'8px 20px 128px', display:'flex', flexDirection:'column', gap:14 };
+    s.bodyEntry = { flex:'1 1 auto', overflowY:'auto', padding:'6px 20px 28px', display:'flex', flexDirection:'column', gap:12 };
+    s.homeHead = { display:'flex', justifyContent:'space-between', alignItems:'flex-start', paddingTop:6 };
+    s.kicker = { fontFamily:t.mono, fontSize:13.5, textTransform:'uppercase', letterSpacing:1.8, color:t.accent, fontWeight:700, marginBottom:2 };
+    s.h1 = { fontFamily:t.head, fontSize:t.head.indexOf('Serif')>-1?30:27, lineHeight:1.05, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.ink, margin:'4px 0 0', letterSpacing:t.head.indexOf('Space')>-1?-.5:0 };
+    s.sub = { fontSize:13, color:t.sub, marginTop:-4 };
+    s.totalCard = { background:t.accent, color:t.accentInk, borderRadius:R, padding:'16px 18px', boxShadow:softShadow };
+    s.totalNum = { fontFamily:t.head, fontSize:34, fontWeight:t.head.indexOf('Serif')>-1?400:800, lineHeight:1 };
+    s.totalLbl = { fontSize:12.5, opacity:.9, marginTop:4, fontWeight:600 };
+    s.sectionLbl = { fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub, marginTop:2 };
+    s.grid = { display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 };
+    s.iconPlate = { width:104, height:104, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', boxShadow:'inset 0 -6px 14px rgba(34,56,28,.07), inset 0 2px 4px rgba(255,255,255,.9)', flex:'0 0 auto' };
+    s.iconImg = { width:82, height:82, objectFit:'contain', filter:'drop-shadow(0 4px 7px rgba(34,56,28,.22))' };
+    s.tileName = { fontSize:15, fontWeight:800, color:t.ink, textAlign:'center', lineHeight:1.1, fontFamily:t.head };
+    s.tileTot = { fontSize:12, color:t.sub, fontFamily:t.mono, marginTop:1 };
+    s.addTile = { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10, padding:'20px 6px', border:'1.5px dashed '+t.line, borderRadius:TR, background:'transparent', cursor:'pointer', color:t.sub, minHeight:172 };
+    s.addPlus = { width:54, height:54, borderRadius:'50%', border:'1.5px dashed '+t.line, display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, color:t.sub, lineHeight:1 };
+    s.addTileLbl = { fontSize:12, fontWeight:700, color:t.sub };
+    s.list = { display:'flex', flexDirection:'column', gap:9 };
+    s.listRow = { display:'flex', alignItems:'center', gap:13, padding:'11px 13px', background:t.card, border:'1px solid '+t.line, borderRadius:TR, cursor:'pointer', textAlign:'left', boxShadow:softShadow };
+    s.listMid = { flex:1, display:'flex', flexDirection:'column' };
+    s.listName = { fontSize:15.5, fontWeight:700, color:t.ink, fontFamily:t.head, letterSpacing:0 };
+    s.listSub = { fontSize:11.5, color:t.sub, marginTop:1 };
+    s.listTot = { fontSize:14, fontWeight:800, color:t.accent, fontFamily:t.mono };
+    s.listAdd = { padding:'13px', background:'transparent', border:'1.5px dashed '+t.line, borderRadius:TR, color:t.sub, fontSize:13.5, fontWeight:700, cursor:'pointer' };
+
+    // entry
+    s.entryTop = { display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:4 };
+    s.back = { background:'transparent', border:'none', color:t.accent, fontSize:15, fontWeight:700, cursor:'pointer', padding:'4px 2px' };
+    s.back0 = { width:44 };
+    s.entryTitle = { fontSize:13, fontWeight:800, color:t.sub, textTransform:'uppercase', letterSpacing:1.2 };
+    s.entryCropRow = { display:'flex', alignItems:'center', gap:12, justifyContent:'center' };
+    s.entryCropName = { fontFamily:t.head, fontSize:24, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.ink };
+    s.ozWrap = { display:'flex', alignItems:'baseline', justifyContent:'center', gap:8, padding:'2px 0' };
+    s.ozNum = { fontFamily:t.head, fontSize:64, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.ink, lineHeight:1, letterSpacing:-1 };
+    s.ozUnit = { fontFamily:t.mono, fontSize:18, color:t.sub, fontWeight:700 };
+    s.chipRow = { display:'flex', gap:8, justifyContent:'center', flexWrap:'wrap' };
+    s.chip = { padding:'7px 14px', borderRadius:999, border:'1px solid '+t.line, background:t.card, color:t.ink, fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:t.mono };
+    s.pad = { display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:9, marginTop:2 };
+    s.metaRow = { display:'flex', gap:8, justifyContent:'center', flexWrap:'wrap' };
+    s.metaRow2 = { display:'flex', gap:9, alignItems:'stretch' };
+    s.noteInput = { flex:1, padding:'11px 13px', borderRadius:14, border:'1px solid '+t.line, background:t.card, color:t.ink, fontSize:13.5, fontFamily:t.font, outline:'none' };
+
+    // log
+    s.logDate = { fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub, marginTop:8, fontFamily:t.mono };
+    s.logRow = { display:'flex', alignItems:'center', gap:12, padding:'9px 0', borderBottom:'1px solid '+t.line };
+    s.logIconPlate = { width:38, height:38, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', flex:'0 0 auto' };
+    s.logIconImg = { width:30, height:30, objectFit:'contain', filter:'drop-shadow(0 2px 3px rgba(34,56,28,.2))' };
+    s.sheetIconPlate = { width:34, height:34, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', flex:'0 0 auto' };
+    s.sheetIconImg = { width:27, height:27, objectFit:'contain', filter:'drop-shadow(0 2px 3px rgba(34,56,28,.2))' };
+    s.logMid = { flex:1 };
+    s.logName = { fontSize:14.5, fontWeight:700, color:t.ink, fontFamily:t.head };
+    s.logNote = { fontSize:11.5, color:t.sub, fontStyle:'italic', marginTop:1 };
+    s.logOz = { fontSize:14, fontWeight:800, color:t.ink, fontFamily:t.mono };
+
+    // unwrapped
+    s.uwBody = { flex:'1 1 auto', overflowY:'auto', padding:'8px 20px 96px', display:'flex', flexDirection:'column', gap:16, background: dark? t.panel : t.panel };
+    s.uwKicker = { fontFamily:t.mono, fontSize:11, textTransform:'uppercase', letterSpacing:2, color:t.accent, fontWeight:700, textAlign:'center', marginTop:6 };
+    s.uwHero = { textAlign:'center', padding:'14px 0 6px' };
+    s.uwBig = { fontFamily:t.head, fontSize:52, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.accent, lineHeight:.95, letterSpacing:-1 };
+    s.uwHeroLbl = { fontSize:14, color:t.sub, fontWeight:600, marginTop:6 };
+    s.superCard = { background:t.accent2, color:'#fff', borderRadius:R, padding:'18px 18px', textAlign:'center' };
+    s.superKick = { fontFamily:t.mono, fontSize:10.5, textTransform:'uppercase', letterSpacing:2, opacity:.85, fontWeight:700 };
+    s.superName = { fontFamily:t.head, fontSize:26, fontWeight:t.head.indexOf('Serif')>-1?400:800, margin:'4px 0 2px' };
+    s.superTitle = { fontSize:13.5, opacity:.95, fontWeight:600 };
+    s.uwSectLbl = { fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub, marginTop:4 };
+    s.barRow = { display:'flex', alignItems:'center', gap:10 };
+    s.barName = { width:92, fontSize:12.5, fontWeight:700, color:t.ink, flex:'0 0 auto', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' };
+    s.barTrack = { flex:1, height:12, background:t.line, borderRadius:999, overflow:'hidden' };
+    s.barVal = { width:64, textAlign:'right', fontSize:12, fontWeight:800, color:t.sub, fontFamily:t.mono, flex:'0 0 auto' };
+    s.timeline = { display:'flex', alignItems:'flex-end', gap:5, height:100, padding:'0 2px' };
+    s.tlCol = { flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:5, height:'100%', justifyContent:'flex-end' };
+    s.tlBarWrap = { flex:1, width:'100%', display:'flex', alignItems:'flex-end', justifyContent:'center' };
+    s.tlLbl = { fontSize:9, color:t.sub, fontFamily:t.mono, height:12 };
+    s.cmpCard = { background:t.card, border:'1px solid '+t.line, borderRadius:R, padding:'14px 16px', display:'flex', flexDirection:'column', gap:2 };
+    s.cmpLbl = { fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub };
+    s.cmpVal = { fontFamily:t.head, fontSize:26, fontWeight:800, color:t.accent };
+    s.cmpSub = { fontSize:12, color:t.sub };
+    s.shareBtn = { padding:'15px', borderRadius:16, background:t.accent, color:t.accentInk, border:'none', fontSize:15, fontWeight:800, cursor:'pointer', fontFamily:t.font };
+
+    // add
+    s.addLbl = { fontSize:13, fontWeight:700, color:t.sub, marginTop:6 };
+    s.addInput = { padding:'14px 15px', borderRadius:14, border:'1.5px solid '+t.accent, background:t.card, color:t.ink, fontSize:17, fontWeight:700, fontFamily:t.head, outline:'none' };
+    s.suggestWrap = { display:'flex', flexDirection:'column', gap:2, border:'1px solid '+t.line, borderRadius:14, overflow:'hidden', background:t.card };
+    s.suggestItem = { display:'flex', alignItems:'center', gap:12, padding:'11px 13px', background:'transparent', border:'none', borderBottom:'1px solid '+t.line, cursor:'pointer', textAlign:'left' };
+    s.suggestIconPlate = { width:40, height:40, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', flex:'0 0 auto' };
+    s.suggestIconImg = { width:32, height:32, objectFit:'contain', filter:'drop-shadow(0 2px 3px rgba(34,56,28,.2))' };
+    s.suggestName = { flex:1, fontSize:15, fontWeight:700, color:t.ink };
+    s.suggestTag = { fontSize:10.5, fontWeight:700, color:t.accent2, fontFamily:t.mono };
+    s.addQuickRow = { display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, padding:'12px 14px', background:t.card, border:'1px solid '+t.line, borderRadius:14, marginTop:4 };
+    s.addQuickLbl = { fontSize:14, fontWeight:700, color:t.ink };
+    s.addQuickSub = { fontSize:11.5, color:t.sub, marginTop:1 };
+
+    // nav + chrome
+    s.nav = { position:'absolute', left:0, right:0, bottom:0, display:'flex', justifyContent:'space-around', alignItems:'center', padding:'8px 12px 20px', background: dark? 'rgba(20,23,15,.82)' : 'rgba(255,255,255,.82)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderTop:'1px solid '+t.line };
+    s.fab = { position:'absolute', right:16, bottom:86, display:'flex', alignItems:'center', gap:8, padding:'14px 22px 14px 19px', borderRadius:999, background:t.accent, color:t.accentInk, border:'none', cursor:'pointer', fontFamily:t.font, boxShadow:'0 10px 26px -6px rgba(255,106,77,.6), 0 3px 8px rgba(30,50,20,.2)', zIndex:7 };
+    s.fabPlus = { fontSize:21, lineHeight:1, marginTop:-1, fontWeight:700 };
+    s.fabLbl = { fontSize:15.5, fontWeight:800, letterSpacing:.2 };
+    s.toast = { position:'absolute', left:'50%', bottom:96, transform:'translateX(-50%)', background: dark?'#f3f0e4':'#20361b', color: dark?'#20361b':'#fff', padding:'11px 18px', borderRadius:999, fontSize:13.5, fontWeight:700, boxShadow:'0 8px 24px rgba(0,0,0,.25)', whiteSpace:'nowrap', zIndex:5 };
+    s.homeInd = { position:'absolute', left:'50%', bottom:8, transform:'translateX(-50%)', width:134, height:5, borderRadius:999, background: dark?'rgba(255,255,255,.5)':'rgba(0,0,0,.35)', zIndex:6 };
+
+    // ---- derived data ----
+    const totalsBy = {}; const countBy = {};
+    seasonEntries.forEach(e=>{ totalsBy[e.crop]=(totalsBy[e.crop]||0)+e.oz; countBy[e.crop]=(countBy[e.crop]||0)+1; });
+    const total = seasonEntries.reduce((a,e)=>a+e.oz,0);
+    const totalStr = this.wt(total);
+    const cropCount = Object.keys(totalsBy).length;
+
+    const discBase = (color,size)=>({ width:size, height:size, borderRadius:'50%', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:t.mono, fontWeight:700, fontSize:size>44?15:12, flex:'0 0 auto', boxShadow:'inset 0 -3px 8px rgba(0,0,0,.12)' });
+    const makeThumb = (size)=>({ width:size, height:size, borderRadius: size>50?12:9, flex:'0 0 auto', border:'1px solid '+t.line, backgroundColor:t.card, backgroundImage:'repeating-linear-gradient(135deg, '+t.line+' 0, '+t.line+' 1.5px, transparent 1.5px, transparent 8px)', display:'flex', alignItems:'center', justifyContent:'center' });
+
+    const tiles = (app.quick||[]).map(name=>{
+      const color=this.cc(name); const tot=totalsBy[name]||0; const icon=this.iconFor(name);
+      return {
+        name, initial:this.ini(name), totalStr: tot>0? this.wt(tot):'—',
+        countStr: (countBy[name]||0)+' pickings',
+        onTap: ()=> P.onSelect && P.onSelect(name),
+        hasIcon: !!icon, noIcon: !icon, iconSrc: icon,
+        disc: discBase(color, 92),
+        card: { display:'flex', flexDirection:'column', alignItems:'center', gap:9, padding:'20px 10px 16px', background:t.card, border:'1px solid '+t.line, borderRadius:TR, cursor:'pointer', minHeight:172, justifyContent:'center', boxShadow:softShadow }
+      };
+    });
+
+    // ===== multi-year Almanac log =====
+    const years = [...new Set(entries.map(e=>String(e.date).slice(0,4)))].map(Number).sort((a,b)=>b-a);
+    const logYear = app.logYear || Number(season) || years[0] || 2026;
+    const logCrop = app.logCrop || null;
+    const yEntries = entries.filter(e=> String(e.date).slice(0,4)===String(logYear));
+    const logTotal = yEntries.reduce((a,e)=>a+e.oz,0);
+    const logCropSet = new Set(yEntries.map(e=>e.crop));
+    const yCropEntries = logCrop ? yEntries.filter(e=>e.crop===logCrop) : [];
+    const yCropTotal = yCropEntries.reduce((a,e)=>a+e.oz,0);
+    const logSumTotal = logCrop ? this.wt(yCropTotal) : this.wt(logTotal);
+    const logSumSub = logCrop
+      ? (yCropEntries.length+' '+logCrop+' pickings in '+logYear)
+      : (yEntries.length+' pickings · '+logCropSet.size+' crops');
+    const yi = years.indexOf(logYear);
+    const canOlder = yi>-1 && yi < years.length-1;
+    const canNewer = yi>0;
+    const onPrevLogY = ()=>{ if(canOlder) P.onLogYear && P.onLogYear(years[yi+1]); };
+    const onNextLogY = ()=>{ if(canNewer) P.onLogYear && P.onLogYear(years[yi-1]); };
+    const stepBtn=(on)=>({ width:46, height:46, borderRadius:'50%', border:'1.5px solid '+(on?'rgba(34,56,28,.16)':t.line), background:on?t.card:'transparent', color:on?t.accent:'rgba(34,56,28,.16)', fontSize:24, fontWeight:800, cursor:on?'pointer':'default', flex:'0 0 auto', boxShadow:on?softShadow:'none', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1, paddingBottom:2 });
+    const prevLogStyle=stepBtn(canOlder); const nextLogStyle=stepBtn(canNewer);
+    s.logStepRow={ display:'flex', alignItems:'center', gap:10, marginTop:2, flexShrink:0 };
+    s.logStepMid={ flex:1, textAlign:'center' };
+    s.logStepKick={ fontFamily:t.mono, fontSize:10.5, textTransform:'uppercase', letterSpacing:2, color:t.accent, fontWeight:700 };
+    s.logStepYear={ fontFamily:t.head, fontSize:32, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.ink, lineHeight:1 };
+    s.logSumCard={ background: logCrop? this.cc(logCrop) : t.accent, color:t.accentInk, borderRadius:R, padding:'14px 16px', flexShrink:0, transition:'background .2s' };
+    s.logSumTotal={ fontFamily:t.head, fontSize:30, fontWeight:t.head.indexOf('Serif')>-1?400:800, lineHeight:1 };
+    s.logSumSub={ fontSize:12.5, opacity:.92, marginTop:4, fontWeight:600 };
+    const logHasCrop = !!logCrop;
+    const logCropLabel = logCrop || 'All crops';
+    const logCropDot = { width:14, height:14, borderRadius:'50%', flex:'0 0 auto', background: logCrop? this.cc(logCrop) : 'linear-gradient(135deg,'+t.accent+','+t.accent2+')' };
+    s.logCropPill={ display:'flex', alignItems:'center', gap:9, padding:'11px 14px', background:t.card, border:'1px solid '+t.line, borderRadius:14, cursor:'pointer', boxShadow:softShadow, textAlign:'left', flexShrink:0 };
+    s.logCropPillLbl={ flex:1, fontSize:14.5, fontWeight:700, color:t.ink };
+    s.logCaret={ fontSize:16, color:t.sub, fontWeight:700 };
+    let flt = yEntries; if(logCrop) flt = yEntries.filter(e=>e.crop===logCrop);
+    const monthsRaw = this.monthsOf(flt);
+    const maxMonth = Math.max(1,...monthsRaw.map(mo=>mo.total));
+    const expandedMap = app.expandedMonths || {};
+    const mapLogItem=(e)=>{ const ic=this.iconFor(e.crop); return { name:e.crop, initial:this.ini(e.crop), hasIcon:!!ic, noIcon:!ic, iconSrc:ic, disc:discBase(this.cc(e.crop),34), ozStr:this.fmt(e.oz)+' oz', note:e.note||'', hasNote:!!(e.note&&e.note.length), hasPhoto:!!e.photo, thumb:makeThumb(34) }; };
+    const logMonths = monthsRaw.map(mo=>{ const key=logYear+'-'+mo.m; const expanded=!!expandedMap[key]; return { name:this.monthName(mo.m), totalStr:this.wt(mo.total), expanded, onToggle:()=> P.onToggleMonth && P.onToggleMonth(key), headerStyle:{ display:'flex', alignItems:'center', padding:'12px 14px', background:t.card, border:'1px solid '+t.line, borderRadius:14, cursor:'pointer', boxShadow:softShadow, marginTop:8, textAlign:'left', width:'100%' }, bar:{ width:Math.max(6,(mo.total/maxMonth)*100)+'%', height:'100%', background: logCrop? this.cc(logCrop) : t.accent2, borderRadius:999 }, chevStyle:{ fontSize:18, color:t.sub, marginLeft:10, transform:expanded?'rotate(90deg)':'none', transition:'transform .15s', flex:'0 0 auto' }, days:mo.days.map(d=>({ label:d.label, items:d.items.map(mapLogItem) })) }; });
+    s.mName={ fontFamily:t.head, fontSize:18, fontWeight:t.head.indexOf('Serif')>-1?400:800, color:t.ink, flex:'0 0 auto', width:96, textAlign:'left' };
+    s.mBarTrack={ flex:1, height:8, background:t.line, borderRadius:999, overflow:'hidden', margin:'0 12px' };
+    s.mTot={ fontFamily:t.mono, fontSize:12, fontWeight:700, color:t.accent, flex:'0 0 auto' };
+    s.monthDays={ display:'flex', flexDirection:'column', paddingLeft:2 };
+    let chYears=[]; let chSectLbl='';
+    if(logCrop){ const perYear=years.map(y=>({year:y, v: entries.filter(e=>String(e.date).slice(0,4)===String(y) && e.crop===logCrop).reduce((a,e)=>a+e.oz,0)})); const maxV=Math.max(1,...perYear.map(o=>o.v)); chYears=perYear.map(o=>{ const active=o.year===logYear; return { year:String(o.year), valStr:o.v>0?this.wt(o.v):'—', onTap:()=> P.onLogYear && P.onLogYear(o.year), rowStyle:{ display:'flex', alignItems:'center', gap:10, padding:'7px 9px', margin:'0 -9px', borderRadius:10, background:active?'rgba(255,106,77,.10)':'transparent', border:'none', cursor:'pointer', width:'calc(100% + 18px)' }, yearStyle:{ width:44, fontFamily:t.mono, fontSize:14, fontWeight:active?800:700, color:active?t.accent:t.ink, flex:'0 0 auto', textAlign:'left' }, bar:{ width:Math.max(4,(o.v/maxV)*100)+'%', height:'100%', background:this.cc(logCrop), borderRadius:999 } }; }); chSectLbl=logCrop+' in '+logYear; }
+    s.chWrap={ display:'flex', flexDirection:'column', gap:9, padding:'14px', background:t.card, border:'1px solid '+t.line, borderRadius:R, boxShadow:softShadow, flexShrink:0 };
+    s.chHead={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub };
+    s.chTrack={ flex:1, height:14, background:t.line, borderRadius:999, overflow:'hidden' };
+    s.chVal={ width:76, textAlign:'right', fontSize:12.5, fontWeight:800, color:t.sub, fontFamily:t.mono, flex:'0 0 auto' };
+    s.chSectLbl={ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub, marginTop:6 };
+    const logEmpty = logMonths.length===0;
+    const logEmptyLabel = logCrop? ('No '+logCrop+' logged in '+logYear) : ('Nothing logged in '+logYear+' yet');
+    const yTot={}; yEntries.forEach(e=>{ yTot[e.crop]=(yTot[e.crop]||0)+e.oz; });
+    const yCrops=Object.keys(yTot).sort((a,b)=>yTot[b]-yTot[a]);
+    const cropSheetItems=[null,...yCrops].map(name=>{ const active=logCrop===name; const ic=name?this.iconFor(name):null; return { name:name||'All crops', initial:name?this.ini(name):'∗', hasIcon:!!ic, noIcon:!ic, iconSrc:ic, valStr:name?this.wt(yTot[name]):this.wt(logTotal), onTap:()=> P.onLogCrop && P.onLogCrop(name), disc: name? discBase(this.cc(name),30) : { width:30, height:30, borderRadius:'50%', flex:'0 0 auto', background:'linear-gradient(135deg,'+t.accent+','+t.accent2+')' }, style:{ display:'flex', alignItems:'center', gap:12, padding:'12px 15px', background:active?'rgba(255,106,77,.08)':'transparent', border:'none', borderBottom:'1px solid '+t.line, cursor:'pointer', width:'100%' } }; });
+    const cropSheetSub = 'Totals for '+logYear+' · sums to '+this.wt(logTotal);
+    const showCropSheet = app.screen==='log' && !!app.cropSheet;
+    s.cropSheet={ position:'absolute', left:10, right:10, bottom:14, zIndex:41, background: dark?'#2b3020':'#fff', borderRadius:18, overflow:'hidden', boxShadow:'0 16px 48px rgba(0,0,0,.34)', maxHeight:'62%', display:'flex', flexDirection:'column' };
+    s.cropSheetTitleWrap={ padding:'12px 14px 11px', borderBottom:'1px solid '+t.line, flex:'0 0 auto', display:'flex', flexDirection:'column', gap:3, alignItems:'center' };
+    s.cropSheetTitle={ textAlign:'center', fontSize:12, fontWeight:800, textTransform:'uppercase', letterSpacing:1.2, color:t.sub };
+    s.cropSheetSub={ textAlign:'center', fontSize:11, fontWeight:600, color:t.sub, opacity:.75, fontFamily:t.mono };
+    s.cropSheetScroll={ overflowY:'auto' };
+    s.cropSheetName={ flex:1, fontSize:15, fontWeight:700, color:t.ink, textAlign:'left' };
+    s.cropSheetVal={ fontSize:12.5, fontWeight:700, color:t.sub, fontFamily:t.mono };
+    s.logEmpty={ textAlign:'center', color:t.sub, fontSize:13, padding:'40px 0', fontStyle:'italic' };
+
+    // top crops
+    const topArr = Object.keys(totalsBy).map(n=>({n, v:totalsBy[n]})).sort((a,b)=>b.v-a.v);
+    const maxV = topArr.length? topArr[0].v : 1;
+    const top = topArr.slice(0,6).map(o=>({
+      name:o.n, valStr:this.wt(o.v),
+      bar:{ width: Math.max(6,(o.v/maxV)*100)+'%', height:'100%', background:this.cc(o.n), borderRadius:999 }
+    }));
+
+    // timeline buckets mar..jul, half-months
+    const labels=['Mar','','Apr','','May','','Jun','','Jul',''];
+    const buckets=new Array(10).fill(0);
+    seasonEntries.forEach(e=>{ const [,m,d]=e.date.split('-').map(Number); if(m>=3&&m<=7){ const idx=(m-3)*2+(d>15?1:0); buckets[idx]+=e.oz; } });
+    const maxB=Math.max(1,...buckets);
+    const weeks = buckets.map((v,i)=>({ label:labels[i], bar:{ width:'70%', height: Math.max(3,(v/maxB)*100)+'%', background: i===buckets.indexOf(maxB)? t.accent : t.accent2, borderRadius:'4px 4px 0 0', minHeight:3 } }));
+
+    // superlative
+    const superName = topArr.length? topArr[0].n : '—';
+    const superMap = { Raspberries:'Bramble royalty — 40%+ of the haul', Strawberries:'Strawberry sovereign of the season', Asparagus:'Spring spear champion', Blueberries:'Blue-ribbon berry', Boysenberries:'The rare-berry connoisseur', Artichoke:'Thistle whisperer', Peas:'Pod squad leader' };
+    const superTitle = superMap[superName] || 'Most-picked crop of 2026';
+
+    // comparison
+    const lastYear = P.lastYearTotal || 468;
+    const delta = total-lastYear; const dp = Math.round((delta/lastYear)*100);
+    const deltaStr = (delta>=0?'+':'−')+Math.abs(dp)+'%  ('+(delta>=0?'+':'−')+this.wt(Math.abs(delta))+')';
+
+    // entry helpers
+    const ozStr = (draft.oz==null||draft.oz==='')? '' : String(draft.oz);
+    const ozDisplay = ozStr==='' ? '0' : ozStr;
+    const ozChips = [
+      {label:'−1', d:-1},{label:'+0.5', d:0.5},{label:'+1', d:1},{label:'+5', d:5}
+    ].map(c=>({ label:c.label, onTap:()=> P.onBump && P.onBump(c.d) }));
+    const padDefs = ['1','2','3','4','5','6','7','8','9','.','0','⌫'];
+    const padKeys = padDefs.map(k=>({
+      label:k, onTap:()=> P.onKey && P.onKey(k==='⌫'?'del':k),
+      style:{ padding:'15px 0', borderRadius:14, border:'1px solid '+t.line, background: k==='⌫'?'transparent':t.card, color:t.ink, fontSize:22, fontWeight:700, cursor:'pointer', fontFamily:t.head }
+    }));
+    const variantsMap = P.variants||{};
+    const vList = variantsMap[app.sel]||[];
+    const hasVariants = vList.length>0;
+    const variantChips = vList.map(v=>({
+      label:v, onTap:()=> P.onVariant && P.onVariant(v),
+      style:{ padding:'7px 16px', borderRadius:999, border:'1.5px solid '+(draft.variant===v?t.accent:t.line), background: draft.variant===v? t.accent : t.card, color: draft.variant===v? t.accentInk : t.ink, fontSize:13, fontWeight:800, cursor:'pointer' }
+    }));
+    const dateChips = [
+      {label:'Today', off:0},{label:'Yesterday', off:1},{label:'2 days ago', off:2}
+    ].map(c=>{
+      const active = draft.dayOff===c.off;
+      return { label:c.label, onTap:()=> P.onDate && P.onDate(c.off),
+        style:{ padding:'8px 13px', borderRadius:999, border:'1px solid '+(active?t.accent:t.line), background: active? t.accent : t.card, color: active? t.accentInk : t.sub, fontSize:12.5, fontWeight:700, cursor:'pointer' } };
+    });
+    const photoOn = !!draft.photo;
+    const photoStyle = { flex:'0 0 auto', padding:'0 15px', borderRadius:14, border:'1px solid '+(photoOn?t.accent2:t.line), background: photoOn? t.accent2 : t.card, color: photoOn? '#fff' : t.sub, fontSize:13.5, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' };
+    const photoLabel = photoOn? '✓ Photo' : '＋ Photo';
+    const photoSourceLabel = photoOn? ('From '+((draft.photo&&draft.photo.source)||'Library')) : '';
+    const photoThumb = makeThumb(52);
+    s.photoPreview = { display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:t.card, border:'1px solid '+t.line, borderRadius:14 };
+    s.photoThumbTag = { fontFamily:t.mono, fontSize:10, fontWeight:700, letterSpacing:1, color:t.sub, opacity:.7 };
+    s.photoMeta = { flex:1 };
+    s.photoMetaTitle = { fontSize:13.5, fontWeight:700, color:t.ink };
+    s.photoMetaSub = { fontSize:11.5, color:t.sub, marginTop:1, fontFamily:t.mono };
+    s.photoRemove = { background:'transparent', border:'none', color:t.accent, fontSize:13, fontWeight:800, cursor:'pointer' };
+    s.logThumbTag = { fontFamily:t.mono, fontSize:8, fontWeight:700, letterSpacing:.5, color:t.sub, opacity:.7 };
+    s.sheetScrim = { position:'absolute', inset:0, background:'rgba(0,0,0,.35)', zIndex:40 };
+    s.sheet = { position:'absolute', left:10, right:10, bottom:14, zIndex:41, display:'flex', flexDirection:'column', gap:8 };
+    s.sheetGroup = { background: dark?'#2b3020':'#ffffff', borderRadius:16, overflow:'hidden', boxShadow:'0 12px 44px rgba(0,0,0,.34)' };
+    s.sheetTitle = { textAlign:'center', padding:'12px', fontSize:12, color:t.sub, fontWeight:600, borderBottom:'1px solid '+t.line };
+    s.sheetBtn = { width:'100%', padding:'15px', background:'transparent', border:'none', borderBottom:'1px solid '+t.line, color:t.accent, fontSize:17, fontWeight:600, cursor:'pointer' };
+    s.sheetBtnLast = { width:'100%', padding:'15px', background:'transparent', border:'none', color:t.accent, fontSize:17, fontWeight:600, cursor:'pointer' };
+    s.sheetCancel = { width:'100%', padding:'16px', background: dark?'#2b3020':'#ffffff', border:'none', borderRadius:16, color:t.accent, fontSize:17, fontWeight:800, cursor:'pointer', boxShadow:'0 12px 44px rgba(0,0,0,.34)' };
+    const openPhoto = ()=> this.setState({photoSheet:true});
+    const closePhoto = ()=> this.setState({photoSheet:false});
+    const pickCamera = ()=>{ this.props.onPhoto && this.props.onPhoto({source:'Camera'}); this.setState({photoSheet:false}); };
+    const pickLibrary = ()=>{ this.props.onPhoto && this.props.onPhoto({source:'Library'}); this.setState({photoSheet:false}); };
+    const removePhoto = ()=> this.props.onPhoto && this.props.onPhoto(null);
+    const showPhotoSheet = (app.screen==='entry') && !!this.state.photoSheet;
+    const oz = parseFloat(ozStr)||0;
+    const saveStyle = { marginTop:4, padding:'16px', borderRadius:16, background: oz>0? t.accent : t.line, color: oz>0? t.accentInk : t.sub, border:'none', fontSize:16, fontWeight:800, cursor: oz>0?'pointer':'default', fontFamily:t.font };
+    const saveLabel = oz>0? 'Log '+this.fmt(oz)+' oz '+(app.sel||'') : 'Enter a weight';
+    const selDisc = discBase(this.cc(app.sel||''), 44);
+    const selInitial = this.ini(app.sel||'');
+    const selIcon = this.iconFor(app.sel||'');
+    const selHasIcon = !!selIcon; const selNoIcon = !selIcon; const selIconSrc = selIcon;
+    s.entryIconPlate = { width:60, height:60, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', boxShadow:'inset 0 -5px 12px rgba(34,56,28,.07)', flex:'0 0 auto' };
+    s.entryIconImg = { width:46, height:46, objectFit:'contain', filter:'drop-shadow(0 3px 5px rgba(34,56,28,.22))' };
+
+    // add flow
+    const master = P.master||[];
+    const addName = (app.addName||'').trim();
+    const addIcon = this.iconFor(addName);
+    const addHasIcon = !!addIcon; const addIconSrc = addIcon;
+    const addShowInitial = !addIcon && addName.length>0;
+    const addEmpty = addName.length===0;
+    const addInitial = this.ini(addName);
+    const addDisc = discBase(this.cc(addName||''), 108);
+    const addPreviewCap = addHasIcon? 'Auto-matched icon' : (addShowInitial? "No icon match — we'll use initials" : 'Start typing to auto-pick an icon');
+    s.addPreviewWrap = { display:'flex', flexDirection:'column', alignItems:'center', gap:8, marginTop:2, marginBottom:2 };
+    s.addPreviewPlate = { width:128, height:128, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'radial-gradient(circle at 50% 38%, #ffffff, #eef3e4)', boxShadow:'inset 0 -7px 16px rgba(34,56,28,.08), inset 0 2px 5px rgba(255,255,255,.9)', flex:'0 0 auto', transition:'transform .18s' };
+    s.addPreviewPlateEmpty = { width:128, height:128, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1.5px dashed '+t.line, flex:'0 0 auto' };
+    s.addPreviewImg = { width:98, height:98, objectFit:'contain', filter:'drop-shadow(0 5px 8px rgba(34,56,28,.22))' };
+    s.addSeed = { fontSize:46, opacity:.5, lineHeight:1 };
+    s.addPreviewCap = { fontSize:11.5, fontWeight:700, color: addHasIcon? t.accent2 : t.sub, fontFamily:t.mono, letterSpacing:.3 };
+    const q = addName.toLowerCase();
+    const knownSet = new Set((app.quick||[]).map(x=>x.toLowerCase()));
+    let suggestions=[];
+    if(q.length>0){
+      suggestions = master.filter(m=>m.toLowerCase().includes(q)).slice(0,6).map(m=>{
+        const ic=this.iconFor(m);
+        return { name:m, initial:this.ini(m), known: knownSet.has(m.toLowerCase()) || totalsBy[m]!=null,
+          hasIcon:!!ic, noIcon:!ic, iconSrc:ic,
+          disc:discBase(this.cc(m),34), onTap:()=> P.onPickSuggest && P.onPickSuggest(m) };
+      });
+    }
+    const hasSuggest = suggestions.length>0;
+    const addPlateStyle = addEmpty ? s.addPreviewPlateEmpty : s.addPreviewPlate;
+    const quickOn = app.addToQuick!==false;
+    const toggleStyle = { width:50, height:30, borderRadius:999, background: quickOn? t.accent : t.line, border:'none', cursor:'pointer', position:'relative', flex:'0 0 auto', transition:'background .15s' };
+    const toggleKnob = { position:'absolute', top:3, left: quickOn?23:3, width:24, height:24, borderRadius:'50%', background:'#fff', boxShadow:'0 1px 3px rgba(0,0,0,.3)', transition:'left .15s' };
+    const canAdd = (app.addName||'').trim().length>0;
+    const commitStyle = { marginTop:6, padding:'16px', borderRadius:16, background: canAdd? t.accent : t.line, color: canAdd? t.accentInk : t.sub, border:'none', fontSize:16, fontWeight:800, cursor: canAdd?'pointer':'default', fontFamily:t.font };
+    const commitLabel = canAdd? 'Add '+(app.addName||'').trim()+' & log it' : 'Name your vegetable';
+
+    // nav
+    const scr = app.screen;
+    const navDefs=[{id:'home',label:'Home',icon:'⌂'},{id:'log',label:'Log',icon:'▤'},{id:'unwrapped',label:'Unwrapped',icon:'✦'}];
+    const navItems = navDefs.map(n=>{
+      const active = scr===n.id || (n.id==='home' && (scr==='entry'||scr==='add'));
+      const col = active? t.accent : t.sub;
+      return { label:n.label, icon:n.icon, onTap:()=> P.onNav && P.onNav(n.id),
+        style:{ background:'transparent', border:'none', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:3, padding:'2px 10px' },
+        iconStyle:{ fontSize:19, color:col, lineHeight:1 },
+        lblStyle:{ fontSize:10, fontWeight:700, color:col } };
+    });
+
+    const seasonLabel = '2026 season · Jul 3';
+    const prompt = 'What did you pick?';
+    const statusGlyph = '●●● ⌵ 100%';
+
+    return {
+      s, app, isGrid: t.grid!==false, isList: t.grid===false,
+      isHome: scr==='home', isEntry: scr==='entry', isLog: scr==='log', isUnwrapped: scr==='unwrapped', isAdd: scr==='add',
+      showQuickLogLabel: P.showQuickLogLabel===true,
+      navShown: scr==='home'||scr==='log'||scr==='unwrapped',
+      hasToast: !!app.toast,
+      tiles, totalStr, cropCount, seasonLabel, prompt, statusGlyph,
+      onStartAdd: ()=> P.onStartAdd && P.onStartAdd(),
+      onBack: ()=> P.onBack && P.onBack(),
+      onSave: ()=> P.onSave && P.onSave(),
+      onShare: ()=> P.onShare && P.onShare(),
+      openPhoto, closePhoto, pickCamera, pickLibrary, removePhoto, showPhotoSheet,
+      hasPhoto: photoOn, photoThumb, photoSourceLabel,
+      noteChange: (e)=> P.onNote && P.onNote(e.target.value),
+      addNameChange: (e)=> P.onAddName && P.onAddName(e.target.value),
+      onToggleQuick: ()=> P.onToggleQuick && P.onToggleQuick(),
+      onCommitAdd: ()=> P.onCommitAdd && P.onCommitAdd(),
+      ozChips, padKeys, ozDisplay, hasVariants, variantChips, dateChips,
+      photoStyle, photoLabel, saveStyle, saveLabel, selDisc, selInitial,
+      selHasIcon, selNoIcon, selIconSrc,
+      pickCount: seasonEntries.length,
+      logYear, logSumTotal, logSumSub, onPrevLogY, onNextLogY, prevLogStyle, nextLogStyle,
+      logHasCrop, logCropLabel, logCropDot, onOpenCropSheet: ()=> P.onOpenCropSheet && P.onOpenCropSheet(),
+      chYears, chSectLbl, logMonths, logEmpty, logEmptyLabel,
+      showCropSheet, onCloseCropSheet: ()=> P.onCloseCropSheet && P.onCloseCropSheet(), cropSheetItems, cropSheetSub,
+      top, weeks, superName, superTitle, deltaStr, lastYearStr:this.wt(lastYear),
+      suggestions, hasSuggest, toggleStyle, toggleKnob, commitStyle, commitLabel,
+      addHasIcon, addIconSrc, addShowInitial, addEmpty, addInitial, addDisc, addPreviewCap, addPlateStyle,
+      navItems
+    };
+  }
+}
+</script>
+</body>
+</html>
