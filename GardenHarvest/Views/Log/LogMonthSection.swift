@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 /// One collapsible month in the Log: a header row with the month's share bar
 /// and total, and — when expanded — day labels with their picking rows.
+/// Tapping a picking row reveals inline Edit/Delete actions beneath it.
 struct LogMonthSection: View {
     let group: LogGrouping.MonthGroup
     /// Month total relative to the year's biggest month, 0...1 (floored by caller).
@@ -9,8 +11,13 @@ struct LogMonthSection: View {
     /// Green by default; the crop's color when the Log is filtered to one crop.
     let barFill: Color
     let isExpanded: Bool
+    /// The entry whose action bar is showing (at most one across the Log).
+    let revealedEntryID: PersistentIdentifier?
     let colorHex: (String) -> String
     let onToggle: () -> Void
+    let onRowTap: (HarvestEntry) -> Void
+    let onEdit: (HarvestEntry) -> Void
+    let onDelete: (HarvestEntry) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -20,13 +27,48 @@ struct LogMonthSection: View {
                     ForEach(group.days, id: \.date) { day in
                         dayLabel(day.date)
                         ForEach(day.entries) { entry in
-                            pickingRow(entry)
+                            Button {
+                                onRowTap(entry)
+                            } label: {
+                                pickingRow(entry)
+                            }
+                            .buttonStyle(.plain)
+                            if revealedEntryID == entry.id {
+                                actionBar(entry)
+                            }
                         }
                     }
                 }
                 .padding(.leading, 2)
             }
         }
+    }
+
+    /// Inline Edit/Delete revealed by tapping a row.
+    private func actionBar(_ entry: HarvestEntry) -> some View {
+        HStack(spacing: 8) {
+            Spacer()
+            actionButton("Edit", icon: "pencil", tint: Theme.accent) { onEdit(entry) }
+            actionButton("Delete", icon: "trash", tint: Color(hex: "#c0392b")) { onDelete(entry) }
+        }
+        .padding(.vertical, 8)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.hairline).frame(height: 1)
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func actionButton(_ label: String, icon: String, tint: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(label, systemImage: icon)
+                .font(Theme.Font.body(12.5, weight: .bold))
+                .foregroundStyle(tint)
+                .padding(.vertical, 7)
+                .padding(.horizontal, 13)
+                .background(tint.opacity(0.1))
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     private var header: some View {

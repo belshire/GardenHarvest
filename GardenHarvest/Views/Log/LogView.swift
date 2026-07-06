@@ -4,6 +4,7 @@ import SwiftData
 /// Multi-year "Almanac" harvest log: year stepper, season summary, crop
 /// filter with an across-the-years dossier, and collapsible month sections.
 struct LogView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query private var allEntries: [HarvestEntry]
     @Query private var crops: [Crop]
 
@@ -13,6 +14,10 @@ struct LogView: View {
     @State private var didExpandLatestMonth = false
     @State private var showCropSheet = false
     @State private var showImportSheet = false
+    /// Row whose Edit/Delete actions are revealed (tap toggles, one at a time).
+    @State private var revealedEntryID: PersistentIdentifier?
+    @State private var entryToEdit: HarvestEntry?
+    @State private var entryToDelete: HarvestEntry?
 
     /// Everything the Log derives from the entry list, computed once per
     /// data/filter change (not on every body evaluation — grouping thousands
@@ -69,6 +74,25 @@ struct LogView: View {
             ImportSheet()
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $entryToEdit) { entry in
+            EntryView(
+                cropName: entry.cropName,
+                editing: entry,
+                onSaved: { _ in entryToEdit = nil },
+                onBack: { entryToEdit = nil }
+            )
+        }
+        .confirmationDialog(
+            deleteConfirmationTitle,
+            isPresented: Binding(
+                get: { entryToDelete != nil },
+                set: { if !$0 { entryToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete entry", role: .destructive) { deleteRevealedEntry() }
+            Button("Cancel", role: .cancel) { entryToDelete = nil }
         }
         .onAppear {
             rebuildDerivedData()
@@ -307,14 +331,37 @@ struct LogView: View {
                     fillFraction: max(0.06, group.total / maxTotal),
                     barFill: filterColor ?? Theme.accent2,
                     isExpanded: expandedMonths.contains(expansionKey(year: year, month: group.month)),
+                    revealedEntryID: revealedEntryID,
                     colorHex: colorHex(for:),
-                    onToggle: { toggleMonth(group.month, in: year) }
+                    onToggle: { toggleMonth(group.month, in: year) },
+                    onRowTap: { entry in
+                        withAnimation(.easeInOut(duration: 0.15)) {
+                            revealedEntryID = revealedEntryID == entry.id ? nil : entry.id
+                        }
+                    },
+                    onEdit: { entry in entryToEdit = entry },
+                    onDelete: { entry in entryToDelete = entry }
                 )
                 // Month cards sit 8pt apart but 12pt from the cards above,
                 // matching the previous nested-VStack spacing.
                 .padding(.top, group.month == groups.first?.month ? 0 : -4)
             }
         }
+    }
+
+    private var deleteConfirmationTitle: String {
+        guard let entry = entryToDelete else { return "Delete this entry?" }
+        return "Delete \(WeightFormatter.ounces(entry.ounces)) oz \(entry.cropName)?"
+    }
+
+    private func deleteRevealedEntry() {
+        guard let entry = entryToDelete else { return }
+        entryToDelete = nil
+        withAnimation(.easeInOut(duration: 0.15)) {
+            revealedEntryID = nil
+            modelContext.delete(entry)
+        }
+        try? modelContext.save()
     }
 
     private func emptyLabel(for year: Int) -> String {
