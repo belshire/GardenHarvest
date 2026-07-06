@@ -41,13 +41,13 @@ struct HomeContainerView: View {
             if path.isEmpty {
                 AddVegFAB { path.append(.add) }
                     .padding(.trailing, 16)
-                    .padding(.bottom, 86)
+                    .padding(.bottom, 116)
             }
         }
         .overlay(alignment: .bottom) {
             if let toastMessage {
                 ToastView(message: toastMessage)
-                    .padding(.bottom, 96)
+                    .padding(.bottom, 126)
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }

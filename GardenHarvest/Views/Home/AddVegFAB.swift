@@ -9,7 +9,7 @@ struct AddVegFAB: View {
                 Text("＋")
                     .font(Theme.Font.body(21, weight: .bold))
                     .padding(.top, -1)
-                Text("Add veg")
+                Text("Add Crop")
                     .font(Theme.Font.body(15.5, weight: .heavy))
                     .tracking(0.2)
             }
