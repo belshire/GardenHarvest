@@ -13,10 +13,32 @@ struct LogView: View {
     @State private var didExpandPeakMonth = false
     @State private var showCropSheet = false
 
-    private var years: [Int] { LogGrouping.years(in: allEntries) }
+    /// Everything the Log derives from the entry list, computed once per
+    /// data/filter change (not on every body evaluation — grouping thousands
+    /// of entries inline made scrolling jitter when many rows were visible).
+    @State private var derived = DerivedData()
 
-    private var yearEntries: [HarvestEntry] {
-        LogGrouping.entries(in: logYear, from: allEntries)
+    /// Cached derivations, rebuilt in `rebuildDerivedData()`.
+    private struct DerivedData {
+        /// Distinct years present in the entries, newest first.
+        var years: [Int] = []
+        /// Per-year picking count and crop count, unfiltered (summary card).
+        var entryCountByYear: [Int: Int] = [:]
+        var cropCountByYear: [Int: Int] = [:]
+        /// Per-year grand total, unfiltered (filter sheet subtitle).
+        var totalByYear: [Int: Double] = [:]
+        /// Per-year crop totals sorted descending (filter sheet rows).
+        var cropTotalsByYear: [Int: [(name: String, total: Double)]] = [:]
+        /// Per-year total and count after the crop filter (summary card,
+        /// dossier rows). Matches the unfiltered values when no crop is set.
+        var filteredTotalByYear: [Int: Double] = [:]
+        var filteredCountByYear: [Int: Int] = [:]
+        /// Per-year month groups after the crop filter, newest month first.
+        var monthGroupsByYear: [Int: [LogGrouping.MonthGroup]] = [:]
+        /// Biggest month total per year, floored at 1 (bar denominators).
+        var maxMonthTotalByYear: [Int: Double] = [:]
+        /// Crop name → stored color, for O(1) lookups per picking row.
+        var colorHexByCrop: [String: String] = [:]
     }
 
     var body: some View {
@@ -42,8 +64,47 @@ struct LogView: View {
             .presentationDetents([.fraction(0.62), .large])
             .presentationDragIndicator(.visible)
         }
-        .onAppear(perform: expandPeakMonthOnce)
+        .onAppear {
+            rebuildDerivedData()
+            expandPeakMonthOnce()
+        }
+        .onChange(of: allEntries) { rebuildDerivedData() }
+        .onChange(of: crops) { rebuildDerivedData() }
+        .onChange(of: logCrop) { rebuildDerivedData() }
     }
+
+    // MARK: Derived data
+
+    /// One pass over the entries rebuilds every cached derivation. Runs when
+    /// the store or the crop filter changes; body evaluations only read the
+    /// cache.
+    private func rebuildDerivedData() {
+        let calendar = Calendar.current
+        var data = DerivedData()
+        let byYear = Dictionary(grouping: allEntries) { calendar.component(.year, from: $0.date) }
+        data.years = byYear.keys.sorted(by: >)
+        for (year, entries) in byYear {
+            data.entryCountByYear[year] = entries.count
+            data.cropCountByYear[year] = Set(entries.map(\.cropName)).count
+            data.totalByYear[year] = entries.reduce(0) { $0 + $1.ounces }
+            data.cropTotalsByYear[year] = LogGrouping.totalsByCrop(entries)
+                .map { (name: $0.key, total: $0.value) }
+                .sorted { $0.total > $1.total }
+            let filtered = logCrop.map { crop in entries.filter { $0.cropName == crop } } ?? entries
+            data.filteredTotalByYear[year] = filtered.reduce(0) { $0 + $1.ounces }
+            data.filteredCountByYear[year] = filtered.count
+            let groups = LogGrouping.monthGroups(of: filtered, calendar: calendar)
+            data.monthGroupsByYear[year] = groups
+            data.maxMonthTotalByYear[year] = max(groups.map(\.total).max() ?? 0, 1)
+        }
+        data.colorHexByCrop = Dictionary(
+            crops.map { ($0.name, $0.colorHex) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        derived = data
+    }
+
+    private var years: [Int] { derived.years }
 
     // MARK: Year stepper
 
@@ -121,9 +182,11 @@ struct LogView: View {
     }
 
     /// One year's scrollable content; pages keep independent scroll positions.
+    /// Lazy so month sections (and their expanded rows) are only laid out as
+    /// they approach the viewport instead of all at once.
     private func yearPage(for year: Int) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
+            LazyVStack(alignment: .leading, spacing: 12) {
                 summaryCard(for: year)
                 cropFilterPill
                 if let logCrop {
@@ -142,15 +205,15 @@ struct LogView: View {
     /// Unfiltered: the year's grand total on the accent card. Filtered: the
     /// crop's yearly total on a card tinted with the crop's color.
     private func summaryCard(for year: Int) -> some View {
-        let entries = LogGrouping.entries(in: year, from: allEntries)
-        let counted = logCrop.map { crop in entries.filter { $0.cropName == crop } } ?? entries
-        let total = counted.reduce(0) { $0 + $1.ounces }
+        let total = derived.filteredTotalByYear[year] ?? 0
         let subline: String
         if let logCrop {
-            subline = "\(counted.count) \(logCrop) pickings in \(String(year))"
+            let count = derived.filteredCountByYear[year] ?? 0
+            subline = "\(count) \(logCrop) pickings in \(String(year))"
         } else {
-            let cropCount = Set(entries.map(\.cropName)).count
-            subline = "\(entries.count) pickings · \(cropCount) crops"
+            let entryCount = derived.entryCountByYear[year] ?? 0
+            let cropCount = derived.cropCountByYear[year] ?? 0
+            subline = "\(entryCount) pickings · \(cropCount) crops"
         }
         return TotalInfoCard(
             total: total,
@@ -209,10 +272,10 @@ struct LogView: View {
     // MARK: Crop dossier
 
     private func dossier(for crop: String, in year: Int) -> some View {
+        // With a crop filter active the cached filtered totals are exactly
+        // this crop's per-year totals.
         let rows = years.map { year in
-            (year: year, total: LogGrouping.entries(in: year, from: allEntries)
-                .filter { $0.cropName == crop }
-                .reduce(0) { $0 + $1.ounces })
+            (year: year, total: derived.filteredTotalByYear[year] ?? 0)
         }
         return VStack(alignment: .leading, spacing: 12) {
             CropDossierCard(
@@ -231,32 +294,30 @@ struct LogView: View {
 
     // MARK: Months
 
+    @ViewBuilder
     private func monthList(for year: Int) -> some View {
-        let entries = LogGrouping.entries(in: year, from: allEntries)
-        let filtered = logCrop.map { crop in entries.filter { $0.cropName == crop } } ?? entries
-        let groups = LogGrouping.monthGroups(of: filtered)
-        let maxTotal = max(groups.map(\.total).max() ?? 0, 1)
-        return Group {
-            if groups.isEmpty {
-                Text(emptyLabel(for: year))
-                    .font(Theme.Font.body(13))
-                    .italic()
-                    .foregroundStyle(Theme.sub)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(groups, id: \.month) { group in
-                        LogMonthSection(
-                            group: group,
-                            fillFraction: max(0.06, group.total / maxTotal),
-                            barFill: filterColor ?? Theme.accent2,
-                            isExpanded: expandedMonths.contains(expansionKey(year: year, month: group.month)),
-                            colorHex: colorHex(for:),
-                            onToggle: { toggleMonth(group.month, in: year) }
-                        )
-                    }
-                }
+        let groups = derived.monthGroupsByYear[year] ?? []
+        let maxTotal = derived.maxMonthTotalByYear[year] ?? 1
+        if groups.isEmpty {
+            Text(emptyLabel(for: year))
+                .font(Theme.Font.body(13))
+                .italic()
+                .foregroundStyle(Theme.sub)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 40)
+        } else {
+            ForEach(groups, id: \.month) { group in
+                LogMonthSection(
+                    group: group,
+                    fillFraction: max(0.06, group.total / maxTotal),
+                    barFill: filterColor ?? Theme.accent2,
+                    isExpanded: expandedMonths.contains(expansionKey(year: year, month: group.month)),
+                    colorHex: colorHex(for:),
+                    onToggle: { toggleMonth(group.month, in: year) }
+                )
+                // Month cards sit 8pt apart but 12pt from the cards above,
+                // matching the previous nested-VStack spacing.
+                .padding(.top, group.month == groups.first?.month ? 0 : -4)
             }
         }
     }
@@ -285,7 +346,11 @@ struct LogView: View {
     private func expandPeakMonthOnce() {
         guard !didExpandPeakMonth else { return }
         didExpandPeakMonth = true
-        if let peak = LogGrouping.peakMonth(of: yearEntries) {
+        // No crop filter is active on first appearance, so the cached groups
+        // are the unfiltered year, matching the old peakMonth(of:) call.
+        let peak = (derived.monthGroupsByYear[logYear] ?? [])
+            .max { $0.total < $1.total }?.month
+        if let peak {
             expandedMonths.insert(expansionKey(year: logYear, month: peak))
         }
     }
@@ -293,17 +358,15 @@ struct LogView: View {
     // MARK: Crop colors & totals
 
     private func colorHex(for name: String) -> String {
-        crops.first { $0.name == name }?.colorHex ?? CropColorAssigner.colorHex(for: name)
+        derived.colorHexByCrop[name] ?? CropColorAssigner.colorHex(for: name)
     }
 
     /// Crops present in the active year, sorted by that year's total descending.
     private var yearCropTotals: [(name: String, total: Double)] {
-        LogGrouping.totalsByCrop(yearEntries)
-            .map { (name: $0.key, total: $0.value) }
-            .sorted { $0.total > $1.total }
+        derived.cropTotalsByYear[logYear] ?? []
     }
 
     private var yearTotal: Double {
-        yearEntries.reduce(0) { $0 + $1.ounces }
+        derived.totalByYear[logYear] ?? 0
     }
 }

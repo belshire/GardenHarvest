@@ -1,4 +1,31 @@
 import SwiftUI
+import UIKit
+
+/// The Entry and Add screens hide the system navigation bar and draw their own
+/// "‹ Back" button, which normally disables UIKit's interactive pop
+/// (swipe-back) gesture. Embedding this helper inside the NavigationStack
+/// re-attaches the gesture's delegate so swiping from the leading edge still
+/// pops pushed screens while the bar is hidden.
+private struct SwipeBackEnabler: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> Controller {
+        Controller()
+    }
+
+    func updateUIViewController(_ uiViewController: Controller, context: Context) {}
+
+    final class Controller: UIViewController, UIGestureRecognizerDelegate {
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            navigationController?.interactivePopGestureRecognizer?.delegate = self
+        }
+
+        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+            // Only when there is something to pop; otherwise the gesture can
+            // freeze the navigation controller on the root view.
+            (navigationController?.viewControllers.count ?? 0) > 1
+        }
+    }
+}
 
 enum HomeRoute: Hashable {
     case entry(cropName: String)
@@ -15,6 +42,7 @@ struct HomeContainerView: View {
             HomeView(
                 onSelectCrop: { name in path.append(.entry(cropName: name)) }
             )
+            .background(SwipeBackEnabler())
             .navigationDestination(for: HomeRoute.self) { route in
                 switch route {
                 case .entry(let cropName):

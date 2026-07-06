@@ -28,18 +28,9 @@ struct AddCropView: View {
         ScrollView {
             VStack(spacing: 12) {
                 topBar
-                Text("What did you grow?")
-                    .font(Theme.Font.body(13, weight: .semibold))
-                    .foregroundStyle(Theme.sub)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                header
                 iconPreview
-                TextField("Type a vegetable…", text: $name)
-                    .font(Theme.Font.heading(17, weight: .bold))
-                    .focused($isFocused)
-                    .padding(14)
-                    .background(Theme.card)
-                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.accent, lineWidth: 1.5))
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                nameField
                 if !suggestions.isEmpty {
                     suggestionList
                 }
@@ -60,13 +51,26 @@ struct AddCropView: View {
                 .font(Theme.Font.body(15, weight: .bold))
                 .foregroundStyle(Theme.accent)
             Spacer()
-            Text("NEW VEGETABLE")
-                .font(Theme.Font.mono(13, weight: .bold))
-                .tracking(1.2)
-                .foregroundStyle(Theme.sub)
-            Spacer()
-            Color.clear.frame(width: 44)
         }
+    }
+
+    /// Eyebrow-over-serif page header, matching the Home and Log headers
+    /// (see `PageHeaderTitle`).
+    private var header: some View {
+        PageHeaderTitle(eyebrow: "New vegetable", title: "What did you grow?")
+            .frame(maxWidth: .infinity)
+    }
+
+    private var nameField: some View {
+        TextField("Type a vegetable…", text: $name)
+            .font(Theme.Font.heading(17, weight: .bold))
+            .foregroundStyle(Theme.ink)
+            .focused($isFocused)
+            .padding(14)
+            .background(Theme.card)
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.accent, lineWidth: 1.5))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
     }
 
     private var matchedIconName: String? {
@@ -146,6 +150,7 @@ struct AddCropView: View {
         .background(Theme.card)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
+        .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
     }
 
     private var commitButton: some View {
@@ -160,6 +165,10 @@ struct AddCropView: View {
         }
         .background(trimmedName.isEmpty ? Theme.hairline : Theme.accent)
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(
+            color: trimmedName.isEmpty ? .clear : Theme.accent.opacity(0.35),
+            radius: 10, y: 6
+        )
         .disabled(trimmedName.isEmpty)
     }
 

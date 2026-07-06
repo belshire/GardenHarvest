@@ -7,7 +7,7 @@ struct BottomTabBar: View {
     @Binding var selectedTab: AppTab
 
     private let items: [(tab: AppTab, label: String, icon: String)] = [
-        (.home, "Home", "TabIcons/garden-bed"),
+        (.home, "Pick", "TabIcons/garden-bed"),
         (.log, "Log", "TabIcons/notebook"),
         (.unwrapped, "Report", "TabIcons/cornucopia")
     ]
