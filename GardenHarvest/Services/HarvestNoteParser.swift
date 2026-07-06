@@ -94,8 +94,11 @@ enum HarvestNoteParser {
             let numbers = body[dateRange]
                 .components(separatedBy: CharacterSet.decimalDigits.inverted)
                 .filter { !$0.isEmpty }
-            month = Int(numbers[0])
-            day = Int(numbers[1])
+            guard let parsedMonth = Int(numbers[0]), (1...12).contains(parsedMonth),
+                  let parsedDay = Int(numbers[1]), (1...31).contains(parsedDay)
+            else { return .issue("impossible (month/day) date") }
+            month = parsedMonth
+            day = parsedDay
             body.removeSubrange(dateRange)
             body = body.trimmingCharacters(in: .whitespaces)
         }

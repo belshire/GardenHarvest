@@ -32,6 +32,21 @@ struct NoteImportServiceTests {
 
     // MARK: dedup
 
+    @Test func priorYearEntryIsNotADuplicate() {
+        // The store holds seeded prior seasons; a 2025 entry sharing
+        // month/day/ounces must not absorb a 2026 note line.
+        let priorYear = HarvestEntry(
+            cropName: "Peas", ounces: 4,
+            date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 23))!
+        )
+        let result = plan(
+            [parsed("Peas", 4, month: 6, day: 23)],
+            existingEntries: [priorYear]
+        )
+        #expect(result.new.count == 1)
+        #expect(result.duplicateCount == 0)
+    }
+
     @Test func exactMatchIsSkippedAsDuplicate() {
         let result = plan(
             [parsed("Peas", 4, month: 6, day: 23)],

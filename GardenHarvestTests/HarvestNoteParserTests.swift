@@ -84,6 +84,12 @@ struct HarvestNoteParserTests {
 
     // MARK: junk
 
+    @Test func impossibleDatesBecomeIssues() {
+        let parsed = HarvestNoteParser.parse("June:\nPeas, 4oz (13/45)\nPeas, 4oz (6/32)\nPeas, 4oz (0/1)")
+        #expect(parsed.entries.isEmpty)
+        #expect(parsed.issues.count == 3)
+    }
+
     @Test func unparseableLinesBecomeIssuesNotGuesses() {
         let parsed = HarvestNoteParser.parse("June:\nsomething about the weather\nPeas, 4oz (6/23)")
         #expect(parsed.entries.count == 1)

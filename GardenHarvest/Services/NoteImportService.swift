@@ -53,6 +53,8 @@ enum NoteImportService {
         }
 
         // Dedup pool: each existing entry can absorb one incoming duplicate.
+        // Only the imported year participates — the store holds other
+        // seasons, and a 2025 entry must never absorb a 2026 note line.
         struct PoolEntry {
             let cropKey: String
             let month: Int
@@ -61,15 +63,17 @@ enum NoteImportService {
             let variant: String?
             var used = false
         }
-        var pool = existingEntries.map { entry in
-            PoolEntry(
-                cropKey: cropKey(entry.cropName),
-                month: calendar.component(.month, from: entry.date),
-                day: calendar.component(.day, from: entry.date),
-                ounces: entry.ounces,
-                variant: entry.variant
-            )
-        }
+        var pool = existingEntries
+            .filter { calendar.component(.year, from: $0.date) == year }
+            .map { entry in
+                PoolEntry(
+                    cropKey: cropKey(entry.cropName),
+                    month: calendar.component(.month, from: entry.date),
+                    day: calendar.component(.day, from: entry.date),
+                    ounces: entry.ounces,
+                    variant: entry.variant
+                )
+            }
 
         var new: [PlannedEntry] = []
         var duplicateCount = 0
