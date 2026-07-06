@@ -32,7 +32,7 @@ struct LogView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 yearStepper
-                summaryCard
+                summaryPager
                 cropFilterPill
                 if let logCrop {
                     dossier(for: logCrop)
@@ -46,7 +46,9 @@ struct LogView: View {
         .background(Theme.panelBackground.ignoresSafeArea())
         .sheet(isPresented: $showCropSheet) {
             CropFilterSheet(
-                items: allTimeCropTotals,
+                items: yearCropTotals,
+                allCropsTotal: yearTotal,
+                subtitle: "Totals for \(String(logYear)) · sums to \(WeightFormatter.poundsAndOunces(yearTotal))",
                 selected: logCrop,
                 colorHex: colorHex(for:),
                 onSelect: { name in
@@ -72,7 +74,7 @@ struct LogView: View {
     private var yearStepper: some View {
         HStack(spacing: 10) {
             stepButton(glyph: "‹", enabled: canGoOlder) {
-                if let yearIndex, canGoOlder { logYear = years[yearIndex + 1] }
+                if let yearIndex, canGoOlder { setYear(years[yearIndex + 1]) }
             }
             VStack(spacing: 2) {
                 Text("Harvest log")
@@ -86,20 +88,29 @@ struct LogView: View {
             }
             .frame(maxWidth: .infinity)
             stepButton(glyph: "›", enabled: canGoNewer) {
-                if let yearIndex, canGoNewer { logYear = years[yearIndex - 1] }
+                if let yearIndex, canGoNewer { setYear(years[yearIndex - 1]) }
             }
         }
         .padding(.top, 2)
     }
 
+    /// Animated so the summary pager slides when the year is changed from the
+    /// stepper or the dossier rather than by swiping.
+    private func setYear(_ year: Int) {
+        withAnimation(.easeInOut(duration: 0.25)) {
+            logYear = year
+        }
+    }
+
     private func stepButton(glyph: String, enabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(glyph)
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(enabled ? Theme.ink : Theme.hairline)
-                .frame(width: 44, height: 44)
+                .font(.system(size: 24, weight: .heavy))
+                .foregroundStyle(enabled ? Theme.accent : Theme.ink.opacity(0.16))
+                .padding(.bottom, 2)
+                .frame(width: 46, height: 46)
                 .background(enabled ? Theme.card : Color.clear)
-                .overlay(Circle().stroke(Theme.hairline, lineWidth: 1))
+                .overlay(Circle().stroke(enabled ? Theme.ink.opacity(0.16) : Theme.hairline, lineWidth: 1.5))
                 .clipShape(Circle())
                 .shadow(color: Color(hex: "#1e3214").opacity(enabled ? 0.08 : 0), radius: 9, y: 6)
         }
@@ -109,13 +120,47 @@ struct LogView: View {
 
     // MARK: Summary card
 
-    private var summaryCard: some View {
-        let total = yearEntries.reduce(0) { $0 + $1.ounces }
-        let cropCount = Set(yearEntries.map(\.cropName)).count
+    /// Summary card paged horizontally: swiping left/right steps to the
+    /// newer/older year, mirroring the ‹/› stepper. The crop filter and the
+    /// rest of the screen follow `logYear` and are untouched by the swipe.
+    private var summaryPager: some View {
+        Group {
+            if years.contains(logYear) {
+                summaryCard(for: logYear)
+                    .hidden()
+                    .overlay(
+                        TabView(selection: $logYear) {
+                            // Oldest → newest so a leftward swipe advances to
+                            // the newer year, matching the stepper layout.
+                            ForEach(years.reversed(), id: \.self) { year in
+                                summaryCard(for: year).tag(year)
+                            }
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                    )
+            } else {
+                summaryCard(for: logYear)
+            }
+        }
+    }
+
+    /// Unfiltered: the year's grand total on the accent card. Filtered: the
+    /// crop's yearly total on a card tinted with the crop's color.
+    private func summaryCard(for year: Int) -> some View {
+        let entries = LogGrouping.entries(in: year, from: allEntries)
+        let counted = logCrop.map { crop in entries.filter { $0.cropName == crop } } ?? entries
+        let total = counted.reduce(0) { $0 + $1.ounces }
+        let subline: String
+        if let logCrop {
+            subline = "\(counted.count) \(logCrop) pickings in \(String(year))"
+        } else {
+            let cropCount = Set(entries.map(\.cropName)).count
+            subline = "\(entries.count) pickings · \(cropCount) crops"
+        }
         return VStack(alignment: .leading, spacing: 4) {
             Text(WeightFormatter.poundsAndOunces(total))
                 .font(Theme.Font.heading(30))
-            Text("\(yearEntries.count) pickings · \(cropCount) crops")
+            Text(subline)
                 .font(Theme.Font.body(12.5, weight: .semibold))
                 .opacity(0.92)
         }
@@ -123,8 +168,14 @@ struct LogView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 14)
         .padding(.horizontal, 16)
-        .background(Theme.accent)
+        .background(filterColor ?? Theme.accent)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .animation(.easeInOut(duration: 0.2), value: logCrop)
+    }
+
+    /// The selected crop's color, `nil` when showing all crops.
+    private var filterColor: Color? {
+        logCrop.map { Color(hex: colorHex(for: $0)) }
     }
 
     // MARK: Crop filter pill
@@ -178,7 +229,7 @@ struct LogView: View {
                 colorHex: colorHex(for: crop),
                 rows: rows,
                 activeYear: logYear,
-                onSelectYear: { logYear = $0 }
+                onSelectYear: { setYear($0) }
             )
             Text("\(crop) in \(String(logYear))")
                 .font(Theme.Font.mono(11, weight: .heavy))
@@ -207,6 +258,7 @@ struct LogView: View {
                         LogMonthSection(
                             group: group,
                             fillFraction: max(0.06, group.total / maxTotal),
+                            barFill: filterColor ?? Theme.accent2,
                             isExpanded: expandedMonths.contains(expansionKey(month: group.month)),
                             colorHex: colorHex(for:),
                             onToggle: { toggleMonth(group.month) }
@@ -252,10 +304,14 @@ struct LogView: View {
         crops.first { $0.name == name }?.colorHex ?? CropColorAssigner.colorHex(for: name)
     }
 
-    /// Every crop that appears in any year, sorted by all-time total descending.
-    private var allTimeCropTotals: [(name: String, total: Double)] {
-        LogGrouping.totalsByCrop(allEntries)
+    /// Crops present in the active year, sorted by that year's total descending.
+    private var yearCropTotals: [(name: String, total: Double)] {
+        LogGrouping.totalsByCrop(yearEntries)
             .map { (name: $0.key, total: $0.value) }
             .sorted { $0.total > $1.total }
+    }
+
+    private var yearTotal: Double {
+        yearEntries.reduce(0) { $0 + $1.ounces }
     }
 }

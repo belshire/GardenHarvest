@@ -6,6 +6,8 @@ struct LogMonthSection: View {
     let group: LogGrouping.MonthGroup
     /// Month total relative to the year's biggest month, 0...1 (floored by caller).
     let fillFraction: Double
+    /// Green by default; the crop's color when the Log is filtered to one crop.
+    let barFill: Color
     let isExpanded: Bool
     let colorHex: (String) -> String
     let onToggle: () -> Void
@@ -34,7 +36,7 @@ struct LogMonthSection: View {
                     .font(Theme.Font.heading(18))
                     .foregroundStyle(Theme.ink)
                     .frame(width: 96, alignment: .leading)
-                CapsuleBar(fraction: fillFraction, fill: Theme.accent2)
+                CapsuleBar(fraction: fillFraction, fill: barFill)
                     .frame(height: 8)
                     .padding(.horizontal, 12)
                 Text(WeightFormatter.poundsAndOunces(group.total))
