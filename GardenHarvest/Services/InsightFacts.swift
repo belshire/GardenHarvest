@@ -206,7 +206,7 @@ extension InsightFact {
     var promptLine: String {
         switch self {
         case .frequencyWeightSplit(let mostPicked, let heaviest):
-            return "The gardener picked \(mostPicked) as often as any other crop, but no crop weighed more in total than \(heaviest)."
+            return "The gardener picked \(mostPicked) most often, but no crop weighed more in total than \(heaviest)."
         case .marathonCrop(let crop, let spanDays):
             return "\(crop) had the longest harvest run, spanning about \(spanDays) days from first picking to last."
         case .lateBloomer(let crop):

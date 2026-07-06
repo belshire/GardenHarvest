@@ -276,7 +276,7 @@ struct InsightFactsTests {
             .oneDayWonder(crop: "Artichoke")
         ]
         #expect(facts[0].promptLine
-            == "The gardener picked Strawberries as often as any other crop, but no crop weighed more in total than Asparagus.")
+            == "The gardener picked Strawberries most often, but no crop weighed more in total than Asparagus.")
         #expect(facts[1].promptLine == "Artichoke was picked exactly once all season.")
     }
 }
