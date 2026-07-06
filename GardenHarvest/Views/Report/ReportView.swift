@@ -28,13 +28,8 @@ struct ReportView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("\(String(season)) harvest report")
-                    .font(Theme.Font.mono(11, weight: .bold))
-                    .textCase(.uppercase)
-                    .tracking(2)
-                    .foregroundStyle(Theme.accent)
+                PageHeaderTitle(eyebrow: "\(String(season)) season", title: "Harvest report")
                     .frame(maxWidth: .infinity)
-                    .padding(.top, 6)
 
                 hero
 

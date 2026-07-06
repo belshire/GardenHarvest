@@ -10,7 +10,7 @@ struct LogView: View {
     @State private var logYear = Calendar.current.component(.year, from: .now)
     @State private var logCrop: String?
     @State private var expandedMonths: Set<String> = []
-    @State private var didExpandPeakMonth = false
+    @State private var didExpandLatestMonth = false
     @State private var showCropSheet = false
 
     /// Everything the Log derives from the entry list, computed once per
@@ -66,7 +66,7 @@ struct LogView: View {
         }
         .onAppear {
             rebuildDerivedData()
-            expandPeakMonthOnce()
+            expandLatestMonthOnce()
         }
         .onChange(of: allEntries) { rebuildDerivedData() }
         .onChange(of: crops) { rebuildDerivedData() }
@@ -342,16 +342,22 @@ struct LogView: View {
         }
     }
 
-    /// Opening the Log defaults to the current season with its peak month expanded.
-    private func expandPeakMonthOnce() {
-        guard !didExpandPeakMonth else { return }
-        didExpandPeakMonth = true
+    /// Opening the Log defaults to the most recent month with entries expanded
+    /// (all other months collapsed). Runs once; manual toggles win afterwards.
+    private func expandLatestMonthOnce() {
+        guard !didExpandLatestMonth else { return }
+        didExpandLatestMonth = true
         // No crop filter is active on first appearance, so the cached groups
-        // are the unfiltered year, matching the old peakMonth(of:) call.
-        let peak = (derived.monthGroupsByYear[logYear] ?? [])
-            .max { $0.total < $1.total }?.month
-        if let peak {
-            expandedMonths.insert(expansionKey(year: logYear, month: peak))
+        // are the unfiltered year. Groups are sorted newest month first, so
+        // `.first` is the latest month that has entries. If the current year
+        // is empty, fall back to the newest year with data.
+        var year = logYear
+        if derived.monthGroupsByYear[year]?.isEmpty != false, let newest = derived.years.first {
+            year = newest
+        }
+        if let latest = derived.monthGroupsByYear[year]?.first?.month {
+            logYear = year
+            expandedMonths.insert(expansionKey(year: year, month: latest))
         }
     }
 

@@ -36,6 +36,10 @@ struct HomeView: View {
             .padding(.bottom, 200)
         }
         .background(Theme.panelBackground.ignoresSafeArea())
+        .onDrop(of: [.text], delegate: CropReorderCatchAllDelegate(
+            draggingCrop: $draggingCrop,
+            saveOrder: persistOrder
+        ))
     }
 
     private var header: some View {
@@ -50,16 +54,16 @@ struct HomeView: View {
                         }
                     } label: {
                         Text("Done")
-                            .font(Theme.Font.body(14, weight: .bold))
-                            .foregroundStyle(Theme.accent)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 7)
-                            .background(Theme.card)
+                            .font(Theme.Font.body(15, weight: .bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 9)
+                            .background(Theme.accent)
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Theme.hairline, lineWidth: 1))
+                            .shadow(color: Theme.accent.opacity(0.35), radius: 8, y: 4)
                     }
                     .buttonStyle(.plain)
-                    .transition(.opacity)
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
     }
@@ -89,25 +93,34 @@ struct HomeView: View {
 
     @ViewBuilder
     private func tile(for crop: Crop, at index: Int, totalOunces: Double) -> some View {
+        let isDragging = isEditing && draggingCrop?.id == crop.id
         let base = CropTileView(crop: crop, totalOunces: totalOunces) {
             if !isEditing {
                 onSelectCrop(crop.name)
             }
         }
-        .rotationEffect(.degrees(isEditing ? (index.isMultiple(of: 2) ? 1.2 : -1.2) : 0))
-        .animation(
-            isEditing
-                ? .easeInOut(duration: 0.14).repeatForever(autoreverses: true)
-                : .easeOut(duration: 0.15),
-            value: isEditing
-        )
+        .modifier(TileWiggleModifier(
+            isActive: isEditing,
+            clockwise: index.isMultiple(of: 2),
+            phase: Double(index % 3) * 0.045
+        ))
+        .opacity(isDragging ? 0.5 : 1)
+        .scaleEffect(isDragging ? 0.95 : 1)
 
         if isEditing {
             base
-                .opacity(draggingCrop?.id == crop.id ? 0.4 : 1)
                 .onDrag {
-                    draggingCrop = crop
-                    return NSItemProvider(object: crop.name as NSString)
+                    withAnimation(.easeOut(duration: 0.22)) {
+                        draggingCrop = crop
+                    }
+                    // The system releases the provider when the drag session
+                    // ends, wherever the tile was dropped — including gaps and
+                    // non-tile areas where no drop delegate fires. Clearing
+                    // here (instantly, no fade) means the tile is already
+                    // opaque when the system's drag preview lands on it.
+                    let provider = DragSessionItemProvider(object: crop.name as NSString)
+                    provider.onSessionEnd = { draggingCrop = nil }
+                    return provider
                 }
                 .onDrop(of: [.text], delegate: CropReorderDropDelegate(
                     item: crop,
@@ -129,6 +142,44 @@ struct HomeView: View {
 
     private func persistOrder() {
         try? modelContext.save()
+    }
+}
+
+/// iOS home-screen style wiggle for edit mode. Lives in its own modifier so
+/// the repeat-forever rotation is (re)started from `onAppear`/`onChange` —
+/// the edit/non-edit branches in `tile(for:)` give the tile a new identity
+/// when edit mode toggles, which would otherwise drop an in-flight animation
+/// and leave the tile frozen at a static skew.
+private struct TileWiggleModifier: ViewModifier {
+    let isActive: Bool
+    /// Alternates the swing direction per tile so neighbors are out of sync.
+    let clockwise: Bool
+    /// Small per-tile delay so the grid doesn't wiggle in lockstep.
+    let phase: Double
+
+    @State private var angle: Double = 0
+
+    func body(content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(angle))
+            .onAppear {
+                if isActive { startWiggle() }
+            }
+            .onChange(of: isActive) { _, active in
+                if active {
+                    startWiggle()
+                } else {
+                    withAnimation(.easeOut(duration: 0.18)) { angle = 0 }
+                }
+            }
+    }
+
+    private func startWiggle() {
+        let swing = 1.3
+        angle = clockwise ? -swing : swing
+        withAnimation(.easeInOut(duration: 0.13).repeatForever(autoreverses: true).delay(phase)) {
+            angle = clockwise ? swing : -swing
+        }
     }
 }
 
@@ -164,5 +215,38 @@ private struct CropReorderDropDelegate: DropDelegate {
         draggingCrop = nil
         saveOrder()
         return true
+    }
+}
+
+/// Accepts drops anywhere in the Pick screen outside the tiles, so releasing
+/// a tile over a grid gap, the header, or the totals card completes the drop
+/// in place instead of playing the system's cancel fly-back animation.
+private struct CropReorderCatchAllDelegate: DropDelegate {
+    @Binding var draggingCrop: Crop?
+    let saveOrder: () -> Void
+
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        DropProposal(operation: .move)
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        draggingCrop = nil
+        saveOrder()
+        return true
+    }
+}
+
+/// `CropReorderDropDelegate.performDrop` only runs when the tile is released
+/// over another tile; every other release cancels the session silently, which
+/// used to leave `draggingCrop` set and the tile stuck semi-transparent. The
+/// system releases this provider when the drag session tears down, wherever
+/// it ended, so `deinit` is a reliable session-end hook.
+private final class DragSessionItemProvider: NSItemProvider {
+    var onSessionEnd: (() -> Void)?
+
+    deinit {
+        if let onSessionEnd {
+            DispatchQueue.main.async(execute: onSessionEnd)
+        }
     }
 }

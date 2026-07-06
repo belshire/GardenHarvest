@@ -66,13 +66,14 @@ struct LogGroupingTests {
         #expect(totals["Asparagus"] == 8)
     }
 
-    @Test func peakMonthPicksHighestTotal() {
+    @Test func latestMonthPicksMostRecentMonthWithEntries() {
         let entries = [
-            entry("Asparagus", 18, year: 2026, month: 3, day: 10),
-            entry("Strawberries", 10, year: 2026, month: 6, day: 9),
-            entry("Raspberries", 9.5, year: 2026, month: 6, day: 11)
+            entry("Strawberries", 30, year: 2026, month: 6, day: 9),
+            entry("Tomatoes", 2, year: 2026, month: 7, day: 4),
+            entry("Asparagus", 18, year: 2026, month: 3, day: 10)
         ]
-        #expect(LogGrouping.peakMonth(of: entries) == 6)
-        #expect(LogGrouping.peakMonth(of: []) == nil)
+        // July has entries, so it wins even though June's total is bigger.
+        #expect(LogGrouping.latestMonth(of: entries) == 7)
+        #expect(LogGrouping.latestMonth(of: []) == nil)
     }
 }

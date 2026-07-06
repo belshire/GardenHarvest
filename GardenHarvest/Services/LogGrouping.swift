@@ -42,8 +42,8 @@ enum LogGrouping {
         Dictionary(grouping: entries, by: \.cropName).mapValues { $0.reduce(0) { $0 + $1.ounces } }
     }
 
-    /// Month (1–12) with the highest harvested total, `nil` when empty.
-    static func peakMonth(of entries: [HarvestEntry], calendar: Calendar = .current) -> Int? {
-        monthGroups(of: entries, calendar: calendar).max { $0.total < $1.total }?.month
+    /// Most recent month (1–12) that has entries, `nil` when empty.
+    static func latestMonth(of entries: [HarvestEntry], calendar: Calendar = .current) -> Int? {
+        monthGroups(of: entries, calendar: calendar).first?.month
     }
 }

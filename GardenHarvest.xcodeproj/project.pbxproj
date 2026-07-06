@@ -96,6 +96,7 @@
 		4BFFA0D50018AAD0F17EB69A /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
 		599C86015BCE19741443A328 /* GardenHarvestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenHarvestApp.swift; sourceTree = "<group>"; };
+		24FC80BA12064EECA717A50B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssignerTests.swift; sourceTree = "<group>"; };
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconPlate.swift; sourceTree = "<group>"; };
@@ -130,6 +131,7 @@
 			children = (
 				EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */,
 				599C86015BCE19741443A328 /* GardenHarvestApp.swift */,
+				24FC80BA12064EECA717A50B /* Info.plist */,
 				B37B8D327911F78A20CCA529 /* Models */,
 				FF03A5CBCCF31A387FF8D464 /* Seed */,
 				2A175997EFAA09A17061632A /* Services */,
@@ -596,8 +598,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22L3K5S6HT;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GardenHarvest/Info.plist;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves your harvest card to your photo library.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -620,8 +622,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22L3K5S6HT;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GardenHarvest/Info.plist;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves your harvest card to your photo library.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
