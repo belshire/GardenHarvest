@@ -43,8 +43,8 @@ struct TemplateComposer: InsightComposer {
             ]
         case .lateBloomer(let crop):
             return [
-                "\(crop) took the scenic route, saving their best for the tail end of the season.",
-                "While the rest of the garden wound down, \(crop.lowercased()) were just warming up."
+                "\(crop) took the scenic route, saving the best for the tail end of the season.",
+                "While the rest of the garden wound down, \(crop.lowercased()) just got going."
             ]
         case .earlyBird(let crop):
             return [
@@ -59,12 +59,12 @@ struct TemplateComposer: InsightComposer {
             ]
         case .steadyProducer(let crop, _):
             return [
-                "No drama, no dry spells: \(crop.lowercased()) were your steadiest producer.",
+                "No drama, no dry spells: \(crop.lowercased()) delivered all season long.",
                 "\(crop) showed up again and again — the most dependable member of the patch."
             ]
         case .varietyCollector(let crop, let variantCount):
             return [
-                "You didn't just grow \(crop.lowercased()) — you collected them, \(variantCount) varieties strong.",
+                "You didn't just grow \(crop.lowercased()) — you curated a collection, \(variantCount) varieties strong.",
                 "\(crop) came in \(variantCount) different varieties this season. A true connoisseur move."
             ]
         case .oneDayWonder(let crop):
