@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 /// Season harvest report ("unwrapped"): hero total, Season MVP, expandable
-/// top-crop bars, the "When it peaked" timeline, the AI insight deck,
-/// and the shareable harvest card.
+/// top-crop bars, the "When it peaked" timeline, the Fun Facts deck, the
+/// AI story of the season, and the shareable harvest card.
 struct ReportView: View {
     @Query private var allEntries: [HarvestEntry]
     @Query private var crops: [Crop]
@@ -69,6 +69,11 @@ struct ReportView: View {
                 if !insights.isEmpty {
                     InsightDeck(insights: insights, colorHex: colorHex(for:))
                         .id(season)
+                }
+
+                if let story {
+                    sectionLabel("The story of the season")
+                    storyCard(story)
                 }
 
                 Button {
@@ -249,6 +254,25 @@ struct ReportView: View {
             topCrops: top,
             peakLabel: ReportStats.peakLabel(of: seasonEntries) ?? "—"
         )
+    }
+
+    // MARK: Story of the season
+
+    /// The on-device model's narrative recap, shown only once generated.
+    private func storyCard(_ text: String) -> some View {
+        Text(text)
+            .font(Theme.Font.body(14.5))
+            .foregroundStyle(Theme.ink)
+            .lineSpacing(3.5)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
+            .background(Theme.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.cardRadius)
+                    .stroke(Theme.hairline, lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     // MARK: Helpers

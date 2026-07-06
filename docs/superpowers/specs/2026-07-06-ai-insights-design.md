@@ -127,6 +127,24 @@ removed from `project.pbxproj` — which is edited by hand, never xcodegen).
   discard, keep templates, no retry loop (next fingerprint change retries).
 - Corrupt/missing cache → recompute from scratch.
 
+## Amendment (2026-07-06, post-review)
+
+The AI-rewording of template cards proved low-value and is removed. Revised roles:
+
+- **Fact cards are template-only** on every device. The deck header reads
+  "Fun Facts" with no icon; the carousel wraps around (sentinel-page
+  technique) so swiping past either end loops.
+- **The AI's job is a "season story"**: one 2–4 sentence second-person
+  narrative generated on-device from the season's fact statements
+  (`promptLine`, now phrased as "You picked…") plus any non-empty harvest
+  notes ("Jun 14 Strawberries: <note>" lines, capped). No notes → narrate
+  from facts alone. It renders in its own section below the deck, labeled
+  "The story of the season", and is hidden entirely when Apple Intelligence
+  is unavailable or generation fails.
+- **Cache**: `InsightStore.Cached` drops `aiComposed` in favor of
+  `story: String?`; a nil story retries on next view when the model is
+  available, same fingerprint invalidation as before.
+
 ## Testing
 
 - `InsightFactsTests` — each extractor: triggering data, threshold-miss data,
