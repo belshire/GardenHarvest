@@ -40,6 +40,7 @@
 		2B8D551CE00FE231AC64C01B /* InsightStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01B /* InsightStoreTests.swift */; };
 		2B8D551CE00FE231AC64C01C /* HarvestNoteParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */; };
 		2B8D551CE00FE231AC64C01D /* NoteImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01D /* NoteImportService.swift */; };
+		2B8D551CE00FE231AC64C021 /* ImportHarvestNoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */; };
 		2B8D551CE00FE231AC64C01E /* ImportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01E /* ImportSheet.swift */; };
 		2B8D551CE00FE231AC64C01F /* HarvestNoteParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01F /* HarvestNoteParserTests.swift */; };
 		2B8D551CE00FE231AC64C020 /* NoteImportServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B020 /* NoteImportServiceTests.swift */; };
@@ -116,6 +117,7 @@
 		1A7C440BD90FE231AC64B01B /* InsightStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightStoreTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestNoteParser.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01D /* NoteImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImportService.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportHarvestNoteIntent.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01E /* ImportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSheet.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01F /* HarvestNoteParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestNoteParserTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B020 /* NoteImportServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImportServiceTests.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				1A7C440BD90FE231AC64B017 /* FoundationModelComposer.swift */,
 				1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */,
 				1A7C440BD90FE231AC64B01D /* NoteImportService.swift */,
+				1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -496,6 +499,7 @@
 				2B8D551CE00FE231AC64C017 /* FoundationModelComposer.swift in Sources */,
 				2B8D551CE00FE231AC64C01C /* HarvestNoteParser.swift in Sources */,
 				2B8D551CE00FE231AC64C01D /* NoteImportService.swift in Sources */,
+				2B8D551CE00FE231AC64C021 /* ImportHarvestNoteIntent.swift in Sources */,
 				2B8D551CE00FE231AC64C01E /* ImportSheet.swift in Sources */,
 				2B8D551CE00FE231AC64C018 /* InsightDeck.swift in Sources */,
 			);

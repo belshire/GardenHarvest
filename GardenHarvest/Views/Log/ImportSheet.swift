@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 import UniformTypeIdentifiers
 
 /// Bulk import of harvest entries from the free-form Apple Note format:
@@ -95,14 +96,28 @@ struct ImportSheet: View {
 
     private var filePickerButton: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Button {
-                showFilePicker = true
-            } label: {
-                Label("Choose a .txt file", systemImage: "doc.badge.plus")
-                    .font(Theme.Font.body(13.5, weight: .bold))
-                    .foregroundStyle(Theme.accent)
+            HStack(spacing: 18) {
+                Button {
+                    if let clipboard = UIPasteboard.general.string, !clipboard.isEmpty {
+                        text = clipboard
+                    } else {
+                        fileError = "The clipboard has no text."
+                    }
+                } label: {
+                    Label("Paste from clipboard", systemImage: "doc.on.clipboard")
+                        .font(Theme.Font.body(13.5, weight: .bold))
+                        .foregroundStyle(Theme.accent)
+                }
+                .buttonStyle(.plain)
+                Button {
+                    showFilePicker = true
+                } label: {
+                    Label("Choose a .txt file", systemImage: "doc.badge.plus")
+                        .font(Theme.Font.body(13.5, weight: .bold))
+                        .foregroundStyle(Theme.accent)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
             if let fileError {
                 Text(fileError)
                     .font(Theme.Font.body(12))
