@@ -199,3 +199,28 @@ enum InsightFacts {
         return Array(extracted.compactMap { $0 }.prefix(5))
     }
 }
+
+extension InsightFact {
+    /// Plain-English statement of the fact, fed verbatim to the on-device
+    /// model so it rewords exactly this and nothing more.
+    var promptLine: String {
+        switch self {
+        case .frequencyWeightSplit(let mostPicked, let heaviest):
+            return "The gardener picked \(mostPicked) more often than any other crop, but \(heaviest) weighed the most in total."
+        case .marathonCrop(let crop, let spanDays):
+            return "\(crop) had the longest harvest run, spanning about \(spanDays) days from first picking to last."
+        case .lateBloomer(let crop):
+            return "\(crop) produced mostly at the very end of the season, later than every other crop."
+        case .earlyBird(let crop):
+            return "\(crop) produced at the very start of the season, earlier than every other crop."
+        case .busiestDay(let date, let crops):
+            return "The busiest day was \(ReportStats.monthDayLabel(date)), when \(crops.count) different crops were picked: \(crops.joined(separator: ", "))."
+        case .steadyProducer(let crop, let pickings):
+            return "\(crop) was the steadiest producer, with \(pickings) pickings spread evenly with no long dry spells."
+        case .varietyCollector(let crop, let variantCount):
+            return "The gardener grew \(variantCount) different varieties of \(crop), more than any other crop."
+        case .oneDayWonder(let crop):
+            return "\(crop) was picked exactly once all season."
+        }
+    }
+}

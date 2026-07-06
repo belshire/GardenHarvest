@@ -267,4 +267,16 @@ struct InsightFactsTests {
         ]
         #expect(InsightFacts.topFacts(in: entries).isEmpty)
     }
+
+    // MARK: promptLine
+
+    @Test func promptLinesArePlainEnglishFactStatements() {
+        let facts: [InsightFact] = [
+            .frequencyWeightSplit(mostPicked: "Strawberries", heaviest: "Asparagus"),
+            .oneDayWonder(crop: "Artichoke")
+        ]
+        #expect(facts[0].promptLine
+            == "The gardener picked Strawberries more often than any other crop, but Asparagus weighed the most in total.")
+        #expect(facts[1].promptLine == "Artichoke was picked exactly once all season.")
+    }
 }
