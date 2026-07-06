@@ -15,7 +15,6 @@ struct SeedIfNeededTests {
         let crops = try context.fetch(FetchDescriptor<Crop>())
         let entries = try context.fetch(FetchDescriptor<HarvestEntry>())
         #expect(crops.count == 10)
-        #expect(crops.filter(\.isQuickLog).count == 8)
         #expect(entries.filter { Calendar.current.component(.year, from: $0.date) == 2026 }.count == 110)
         #expect(entries.count > 110)
 

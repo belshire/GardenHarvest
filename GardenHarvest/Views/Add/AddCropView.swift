@@ -8,7 +8,6 @@ struct AddCropView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var crops: [Crop]
     @State private var name: String = ""
-    @State private var addToQuickLog = true
     @FocusState private var isFocused: Bool
 
     private var trimmedName: String {
@@ -44,7 +43,6 @@ struct AddCropView: View {
                 if !suggestions.isEmpty {
                     suggestionList
                 }
-                quickLogToggleRow
                 commitButton
             }
             .padding(.horizontal, 20)
@@ -150,27 +148,6 @@ struct AddCropView: View {
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
     }
 
-    private var quickLogToggleRow: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Add to quick log")
-                    .font(Theme.Font.body(14, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                Text("Show it on your home screen")
-                    .font(Theme.Font.body(11.5))
-                    .foregroundStyle(Theme.sub)
-            }
-            Spacer()
-            Toggle("", isOn: $addToQuickLog)
-                .labelsHidden()
-                .tint(Theme.accent)
-        }
-        .padding(12)
-        .background(Theme.card)
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.hairline, lineWidth: 1))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-
     private var commitButton: some View {
         Button {
             commit()
@@ -193,7 +170,6 @@ struct AddCropView: View {
             let crop = Crop(
                 name: canonicalName,
                 colorHex: CropColorAssigner.colorHex(for: canonicalName),
-                isQuickLog: addToQuickLog,
                 sortIndex: (crops.map(\.sortIndex).max() ?? -1) + 1,
                 variants: []
             )

@@ -10,7 +10,7 @@ struct ModelPersistenceTests {
         let container = try ModelContainer(for: schema, configurations: [configuration])
         let context = ModelContext(container)
 
-        let crop = Crop(name: "Asparagus", colorHex: "#5a9a3d", isQuickLog: true, sortIndex: 0, variants: [])
+        let crop = Crop(name: "Asparagus", colorHex: "#5a9a3d", sortIndex: 0, variants: [])
         context.insert(crop)
         let entry = HarvestEntry(cropName: "Asparagus", ounces: 18, date: .now)
         context.insert(entry)

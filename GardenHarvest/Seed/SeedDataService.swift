@@ -206,17 +206,17 @@ enum SeedDataService {
         )
     }
 
-    static let knownCrops: [(name: String, isQuickLog: Bool, variants: [String])] = [
-        ("Asparagus", true, []),
-        ("Strawberries", true, []),
-        ("Raspberries", true, ["small", "large"]),
-        ("Blueberries", true, []),
-        ("Boysenberries", true, []),
-        ("Artichoke", true, []),
-        ("Peas", true, []),
-        ("Radishes", true, []),
-        ("Mushrooms", false, []),
-        ("Tomatoes Cherry", false, [])
+    static let knownCrops: [(name: String, variants: [String])] = [
+        ("Asparagus", []),
+        ("Strawberries", []),
+        ("Raspberries", ["small", "large"]),
+        ("Blueberries", []),
+        ("Boysenberries", []),
+        ("Artichoke", []),
+        ("Peas", []),
+        ("Radishes", []),
+        ("Mushrooms", []),
+        ("Tomatoes Cherry", [])
     ]
 
     static func seedIfNeeded(context: ModelContext, currentYear: Int) {
@@ -227,7 +227,6 @@ enum SeedDataService {
             let record = Crop(
                 name: crop.name,
                 colorHex: CropColorAssigner.colorHex(for: crop.name),
-                isQuickLog: crop.isQuickLog,
                 sortIndex: index,
                 variants: crop.variants
             )

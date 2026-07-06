@@ -72,7 +72,7 @@
 		7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconPlate.swift; sourceTree = "<group>"; };
 		797CA0FB12C5EA4B8A5C98B4 /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComingSoonView.swift; sourceTree = "<group>"; };
 		7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVegFAB.swift; sourceTree = "<group>"; };
-		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		895FE7494C4D4DB6E87B9D20 /* GardenHarvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GardenHarvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
 		8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCropView.swift; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 		9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChipTests.swift; sourceTree = "<group>"; };
 		A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssignerTests.swift; sourceTree = "<group>"; };
 		B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropListTests.swift; sourceTree = "<group>"; };
-		B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GardenHarvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A39114B937E2AD7DE84BF6 /* GardenHarvestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GardenHarvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataServiceTests.swift; sourceTree = "<group>"; };
 		C66F3A9BE72042DDDB464608 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
@@ -272,7 +272,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					68DDD92E8094BAE2B659980B = {
 						ProvisioningStyle = Automatic;
@@ -410,6 +410,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -430,6 +431,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -473,6 +475,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -486,6 +489,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;

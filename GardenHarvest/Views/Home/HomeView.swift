@@ -17,10 +17,6 @@ struct HomeView: View {
         Dictionary(grouping: seasonEntries, by: \.cropName).mapValues { $0.reduce(0) { $0 + $1.ounces } }
     }
 
-    private var quickCrops: [Crop] {
-        crops.filter(\.isQuickLog)
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
@@ -74,7 +70,7 @@ struct HomeView: View {
     private var grid: some View {
         let totals = totalsByCrop
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 2), spacing: 14) {
-            ForEach(quickCrops) { crop in
+            ForEach(crops) { crop in
                 CropTileView(crop: crop, totalOunces: totals[crop.name] ?? 0) {
                     onSelectCrop(crop.name)
                 }
