@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "68DDD92E8094BAE2B659980B"
-               BuildableName = "GardenHarvest.app"
+               BuildableName = "KatiesHarvest.app"
                BlueprintName = "GardenHarvest"
                ReferencedContainer = "container:GardenHarvest.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DDD92E8094BAE2B659980B"
-            BuildableName = "GardenHarvest.app"
+            BuildableName = "KatiesHarvest.app"
             BlueprintName = "GardenHarvest"
             ReferencedContainer = "container:GardenHarvest.xcodeproj">
          </BuildableReference>
@@ -79,7 +79,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DDD92E8094BAE2B659980B"
-            BuildableName = "GardenHarvest.app"
+            BuildableName = "KatiesHarvest.app"
             BlueprintName = "GardenHarvest"
             ReferencedContainer = "container:GardenHarvest.xcodeproj">
          </BuildableReference>
@@ -96,7 +96,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DDD92E8094BAE2B659980B"
-            BuildableName = "GardenHarvest.app"
+            BuildableName = "KatiesHarvest.app"
             BlueprintName = "GardenHarvest"
             ReferencedContainer = "container:GardenHarvest.xcodeproj">
          </BuildableReference>
