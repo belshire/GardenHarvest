@@ -9,17 +9,11 @@ enum SeedDataService {
         let note: String
     }
 
-    struct GeneratedEntry {
+    struct SeedEntry {
         let crop: String
         let ounces: Double
         let date: Date
         let note: String
-    }
-
-    struct SeasonSeed {
-        let currentYearEntries: [GeneratedEntry]
-        let lastYearEntries: [GeneratedEntry]
-        let twoYearsAgoEntries: [GeneratedEntry]
     }
 
     static let utcCalendar: Calendar = {
@@ -156,12 +150,6 @@ enum SeedDataService {
             }
     }
 
-    /// Ports the prototype's `seed(n){ const x=Math.sin(n*127.1+311.7)*43758.5; return x-Math.floor(x); }`
-    static func seed(_ n: Double) -> Double {
-        let x = sin(n * 127.1 + 311.7) * 43758.5
-        return x - x.rounded(.down)
-    }
-
     static func date(year: Int, monthDay: String) -> Date? {
         let parts = monthDay.components(separatedBy: "-")
         guard parts.count == 2, let month = Int(parts[0]), let day = Int(parts[1]) else { return nil }
@@ -172,38 +160,11 @@ enum SeedDataService {
         return utcCalendar.date(from: components)
     }
 
-    /// Ports the prototype's `gen(base,year,scale,drop)`.
-    static func generate(base: [BaseEntry], year: Int, scale: Double, drop: Double) -> [GeneratedEntry] {
-        var out: [GeneratedEntry] = []
-        let yearOffset = Double(year)
-        for (i, entry) in base.enumerated() {
-            let index = Double(i)
-            if seed(index * 2.3 + yearOffset) < drop { continue }
-            let jitter = 0.75 + seed(index * 3.7 + yearOffset) * 0.55
-            let ounces = max(0.3, (entry.ounces * scale * jitter * 10).rounded() / 10)
-            let shift = Int((seed(index * 5.1 + yearOffset) * 7).rounded(.down)) - 3
-            guard let baseDate = date(year: year, monthDay: entry.monthDay) else { continue }
-            let shiftedDate = utcCalendar.date(byAdding: .day, value: shift, to: baseDate) ?? baseDate
-            out.append(GeneratedEntry(crop: entry.crop, ounces: ounces, date: shiftedDate, note: ""))
-        }
-        return out
-    }
-
-    /// Ports the prototype's `buildAll()`, generalized to any current year instead of the
-    /// hardcoded 2026.
-    static func buildSeasonSeed(currentYear: Int) -> SeasonSeed {
-        let base = parseBase()
-        let currentYearEntries: [GeneratedEntry] = base.compactMap { entry in
+    static func buildSeed(currentYear: Int) -> [SeedEntry] {
+        parseBase().compactMap { entry in
             guard let entryDate = date(year: currentYear, monthDay: entry.monthDay) else { return nil }
-            return GeneratedEntry(crop: entry.crop, ounces: entry.ounces, date: entryDate, note: entry.note)
+            return SeedEntry(crop: entry.crop, ounces: entry.ounces, date: entryDate, note: entry.note)
         }
-        let lastYearEntries = generate(base: base, year: currentYear - 1, scale: 0.84, drop: 0.18)
-        let twoYearsAgoEntries = generate(base: base, year: currentYear - 2, scale: 0.62, drop: 0.32)
-        return SeasonSeed(
-            currentYearEntries: currentYearEntries,
-            lastYearEntries: lastYearEntries,
-            twoYearsAgoEntries: twoYearsAgoEntries
-        )
     }
 
     static let knownCrops: [(name: String, variants: [String])] = [
@@ -233,10 +194,8 @@ enum SeedDataService {
             context.insert(record)
         }
 
-        let seasonSeed = buildSeasonSeed(currentYear: currentYear)
-        let allGenerated = seasonSeed.currentYearEntries + seasonSeed.lastYearEntries + seasonSeed.twoYearsAgoEntries
-        for generated in allGenerated {
-            context.insert(HarvestEntry(cropName: generated.crop, ounces: generated.ounces, date: generated.date, note: generated.note))
+        for entry in buildSeed(currentYear: currentYear) {
+            context.insert(HarvestEntry(cropName: entry.crop, ounces: entry.ounces, date: entry.date, note: entry.note))
         }
 
         try? context.save()

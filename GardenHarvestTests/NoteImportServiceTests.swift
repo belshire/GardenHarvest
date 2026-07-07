@@ -145,7 +145,7 @@ struct NoteImportServiceTests {
     @Test func realNotePlusJulyAgainstSeededStoreImportsOnlyTheNewLines() {
         // The exact Katie scenario: store seeded from the transcription,
         // note re-imported with six new July lines appended.
-        let seeded = SeedDataService.buildSeasonSeed(currentYear: 2026).currentYearEntries.map {
+        let seeded = SeedDataService.buildSeed(currentYear: 2026).map {
             HarvestEntry(cropName: $0.crop, ounces: $0.ounces, date: $0.date, note: $0.note)
         }
         let crops = SeedDataService.knownCrops.enumerated().map { index, crop in

@@ -4,7 +4,7 @@ import Foundation
 @testable import GardenHarvest
 
 struct SeedIfNeededTests {
-    @Test func seedsTenKnownCropsAndThreeSeasonsOfEntries() throws {
+    @Test func seedsTenKnownCropsAndCurrentSeasonEntries() throws {
         let schema = Schema([HarvestEntry.self, Crop.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [configuration])
@@ -15,8 +15,8 @@ struct SeedIfNeededTests {
         let crops = try context.fetch(FetchDescriptor<Crop>())
         let entries = try context.fetch(FetchDescriptor<HarvestEntry>())
         #expect(crops.count == 10)
-        #expect(entries.filter { Calendar.current.component(.year, from: $0.date) == 2026 }.count == 110)
-        #expect(entries.count > 110)
+        #expect(entries.count == 110)
+        #expect(entries.allSatisfy { Calendar.current.component(.year, from: $0.date) == 2026 })
 
         let raspberries = crops.first { $0.name == "Raspberries" }
         #expect(raspberries?.variants == ["small", "large"])
