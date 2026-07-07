@@ -35,7 +35,7 @@ enum ReportStats {
     // MARK: Season MVP
 
     static let superlativeTitles: [String: String] = [
-        "Raspberries": "Bramble royalty — 40%+ of the haul",
+        "Raspberries": "Bramble royalty",
         "Strawberries": "Strawberry sovereign of the season",
         "Asparagus": "Spring spear champion",
         "Blueberries": "Blue-ribbon berry",

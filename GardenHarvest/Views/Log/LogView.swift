@@ -173,6 +173,12 @@ struct LogView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
+                // Unlike a bare ScrollView (Pick/Report), the page-style
+                // TabView stops at the bottom safe-area edge and clips its
+                // pages there, cutting scroll content off above the screen
+                // bottom. Extend it under the home indicator; the pages'
+                // 128pt bottom padding already clears the tab bar.
+                .ignoresSafeArea(.container, edges: .bottom)
                 // The page-style TabView pre-renders neighboring pages and
                 // won't re-render them while offscreen, so a filter change
                 // would leave stale cards sliding in. Rebuild pages on change.
