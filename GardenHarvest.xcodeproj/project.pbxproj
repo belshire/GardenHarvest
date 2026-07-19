@@ -63,6 +63,7 @@
 		AFAE4A6DDD94238D8AE0FF41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFF8D4FDE50F39B1D36234A1 /* LaunchScreen.storyboard */; };
 		B28BA66E5A9082AC2C892001 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D29EA0A52F056B6C5E121BC /* RootView.swift */; };
 		B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5449C088D712A3599D41170 /* CropColorAssigner.swift */; };
+		4AB4606308B54F18B644438D /* CropIconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F433E1A6E743698CF0F2A3 /* CropIconResolver.swift */; };
 		B4D8C943CC0DF7B355221739 /* MasterCropList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */; };
 		B6CE91A8FC849E8195ECBB2F /* ModelPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5C181DBADF30D06D2571C8 /* ModelPersistenceTests.swift */; };
 		B7CC2C81F6B27BA83F03588F /* CropColorAssignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */; };
@@ -73,6 +74,7 @@
 		F17498723188FAF9A343F51E /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EDE223CB055F31ABA92A00 /* HomeContainerView.swift */; };
 		F443D89041BBC227DCC90B3F /* SeedDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAA205C1E34F3C05D31085 /* SeedDataServiceTests.swift */; };
 		FE4A6EFF6475A3A438774571 /* CropIconAssignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */; };
+		001B1EC57B384DC8B1F3DEA7 /* CropIconResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A79C470EC240E4ACB346AE /* CropIconResolverTests.swift */; };
 		FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */; };
 /* End PBXBuildFile section */
 
@@ -130,6 +132,7 @@
 		4F5FF7111EE15233F29B4F8D /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
 		599C86015BCE19741443A328 /* GardenHarvestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenHarvestApp.swift; sourceTree = "<group>"; };
 		5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconAssignerTests.swift; sourceTree = "<group>"; };
+		30A79C470EC240E4ACB346AE /* CropIconResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconResolverTests.swift; sourceTree = "<group>"; };
 		5F3A9D21C4E87B60D1A2F340 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		7676820E7CDD1DEA8FFCE202 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		7728E4D606964D3A8D7CCAD0 /* CropIconPlate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconPlate.swift; sourceTree = "<group>"; };
@@ -151,6 +154,7 @@
 		C66F3A9BE72042DDDB464608 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
 		D5449C088D712A3599D41170 /* CropColorAssigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropColorAssigner.swift; sourceTree = "<group>"; };
+		00F433E1A6E743698CF0F2A3 /* CropIconResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropIconResolver.swift; sourceTree = "<group>"; };
 		D5EDE223CB055F31ABA92A00 /* HomeContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainerView.swift; sourceTree = "<group>"; };
 		DFF76E17B753CE23FCB985A4 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		E77F214A547210FBEEFBA4D6 /* CropTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropTileView.swift; sourceTree = "<group>"; };
@@ -222,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				D5449C088D712A3599D41170 /* CropColorAssigner.swift */,
+				00F433E1A6E743698CF0F2A3 /* CropIconResolver.swift */,
 				2EF83FADE49F806A885E1AD4 /* CropIconAssigner.swift */,
 				0326D752E09E8676C5366250 /* CropInitials.swift */,
 				45B0648B2D125D047F6E2A44 /* DateChip.swift */,
@@ -293,6 +298,7 @@
 				95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */,
 				A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */,
 				5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */,
+				30A79C470EC240E4ACB346AE /* CropIconResolverTests.swift */,
 				9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */,
 				1A7C440BD90FE231AC64B007 /* LogGroupingTests.swift */,
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
@@ -433,6 +439,7 @@
 				DA3FA4CAD3859CAFBB9CBDD2 /* ColorHexTests.swift in Sources */,
 				B7CC2C81F6B27BA83F03588F /* CropColorAssignerTests.swift in Sources */,
 				FE4A6EFF6475A3A438774571 /* CropIconAssignerTests.swift in Sources */,
+				001B1EC57B384DC8B1F3DEA7 /* CropIconResolverTests.swift in Sources */,
 				D3F219C2FA18B48A859BFEE3 /* DateChipTests.swift in Sources */,
 				2B8D551CE00FE231AC64C007 /* LogGroupingTests.swift in Sources */,
 				2B8D551CE00FE231AC64C00F /* ReportStatsTests.swift in Sources */,
@@ -462,6 +469,7 @@
 				49E66E7F6F94B866ABA19761 /* ChipButtonStyle.swift in Sources */,
 				2274BD7C870FDCE58309788B /* Crop.swift in Sources */,
 				B2F557248DDB45F2DCDB31E5 /* CropColorAssigner.swift in Sources */,
+				4AB4606308B54F18B644438D /* CropIconResolver.swift in Sources */,
 				2B8D551CE00FE231AC64C003 /* CropDossierCard.swift in Sources */,
 				2B8D551CE00FE231AC64C004 /* CropFilterSheet.swift in Sources */,
 				474EF32F06776422128731F7 /* CropIconAssigner.swift in Sources */,
