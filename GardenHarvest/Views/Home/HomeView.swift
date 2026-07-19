@@ -9,6 +9,7 @@ struct HomeView: View {
 
     @State private var isEditing = false
     @State private var draggingCrop: Crop?
+    @State private var iconEditingCrop: Crop?
 
     let onSelectCrop: (String) -> Void
 
@@ -40,6 +41,17 @@ struct HomeView: View {
             draggingCrop: $draggingCrop,
             saveOrder: persistOrder
         ))
+        .sheet(item: $iconEditingCrop) { crop in
+            IconPickerSheet(
+                cropName: crop.name,
+                colorHex: crop.colorHex,
+                current: crop.iconChoice,
+                onSelect: { choice in
+                    crop.iconChoice = choice
+                    try? modelContext.save()
+                }
+            )
+        }
     }
 
     private var header: some View {
@@ -95,7 +107,9 @@ struct HomeView: View {
     private func tile(for crop: Crop, at index: Int, totalOunces: Double) -> some View {
         let isDragging = isEditing && draggingCrop?.id == crop.id
         let base = CropTileView(crop: crop, totalOunces: totalOunces) {
-            if !isEditing {
+            if isEditing {
+                iconEditingCrop = crop
+            } else {
                 onSelectCrop(crop.name)
             }
         }
