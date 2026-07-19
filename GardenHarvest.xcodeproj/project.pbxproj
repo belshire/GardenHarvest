@@ -653,7 +653,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.belshire.GardenHarvestTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GardenHarvest.app/GardenHarvest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KatiesHarvest.app/KatiesHarvest";
 			};
 			name = Release;
 		};
@@ -676,6 +676,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.belshire.GardenHarvest;
+				PRODUCT_MODULE_NAME = GardenHarvest;
 				PRODUCT_NAME = KatiesHarvest;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -702,6 +703,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.belshire.GardenHarvest;
+				PRODUCT_MODULE_NAME = GardenHarvest;
 				PRODUCT_NAME = KatiesHarvest;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -723,7 +725,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.belshire.GardenHarvestTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GardenHarvest.app/GardenHarvest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KatiesHarvest.app/KatiesHarvest";
 			};
 			name = Debug;
 		};
