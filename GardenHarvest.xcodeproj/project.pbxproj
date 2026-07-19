@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */; };
+		AC795405673A470DB95BA7C9 /* IconPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF41A7C00F80476187ACCC2C /* IconPickerSheet.swift */; };
 		0D73D783A6E0F6E293668090 /* MasterCropListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */; };
 		1019B080C442D33366D40AA3 /* WeightFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC691A6D23BD8DCE4A2FCC54 /* WeightFormatterTests.swift */; };
 		1244E55DE2EF84A4A710868C /* GardenHarvestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C86015BCE19741443A328 /* GardenHarvestApp.swift */; };
@@ -145,6 +146,7 @@
 		8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabBar.swift; sourceTree = "<group>"; };
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
 		8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCropView.swift; sourceTree = "<group>"; };
+		AF41A7C00F80476187ACCC2C /* IconPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerSheet.swift; sourceTree = "<group>"; };
 		906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedIfNeededTests.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
 		9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageHeaderTitle.swift; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */,
+				AF41A7C00F80476187ACCC2C /* IconPickerSheet.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -477,6 +480,7 @@
 			files = (
 				03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */,
 				FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */,
+				AC795405673A470DB95BA7C9 /* IconPickerSheet.swift in Sources */,
 				25A40347E4B78135958703CC /* AppTab.swift in Sources */,
 				31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */,
 				2B8D551CE00FE231AC64C002 /* CapsuleBar.swift in Sources */,
