@@ -133,7 +133,8 @@ struct ReportView: View {
                 colorHex: colorHex(for: crop),
                 plateSize: 78,
                 iconSize: 58,
-                discSize: 62
+                discSize: 62,
+                resolvedIcon: CropIconResolver.resolve(name: crop, in: crops)
             )
             .padding(.top, 13)
             .padding(.bottom, 6)

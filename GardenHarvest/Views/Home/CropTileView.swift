@@ -13,7 +13,8 @@ struct CropTileView: View {
                     colorHex: crop.colorHex,
                     plateSize: 104,
                     iconSize: 82,
-                    discSize: 92
+                    discSize: 92,
+                    resolvedIcon: CropIconResolver.resolve(for: crop)
                 )
                 Text(crop.name)
                     .font(Theme.Font.heading(15, weight: .heavy))

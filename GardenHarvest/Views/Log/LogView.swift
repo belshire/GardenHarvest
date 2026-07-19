@@ -250,7 +250,8 @@ struct LogView: View {
             plateSize: plateSize,
             iconSize: iconSize,
             discSize: discSize,
-            assetOverride: logCrop == nil ? CropIconAssigner.allCropsAssetName : nil
+            assetOverride: logCrop == nil ? CropIconAssigner.allCropsAssetName : nil,
+            resolvedIcon: logCrop.map { CropIconResolver.resolve(name: $0, in: crops) }
         )
     }
 
