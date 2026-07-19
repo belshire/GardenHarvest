@@ -165,6 +165,7 @@ struct ReportView: View {
                     valueString: WeightFormatter.poundsAndOunces(crop.total),
                     fillFraction: max(0.06, crop.total / maxTotal),
                     colorHex: colorHex(for: crop.name),
+                    icon: CropIconResolver.resolve(name: crop.name, in: crops),
                     isExpanded: expandedCrop == crop.name,
                     timeline: expandedCrop == crop.name
                         ? ReportStats.cropTimeline(for: crop.name, seasonEntries: seasonEntries)

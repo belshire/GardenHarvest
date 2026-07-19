@@ -168,6 +168,7 @@ struct HarvestShareCardView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
+                        .frame(width: 23, height: 23)
                         .clipShape(Circle())
                 } else {
                     initialsCircle(crop)

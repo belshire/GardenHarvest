@@ -8,6 +8,8 @@ struct TopCropRow: View {
     /// Filled portion of the bar relative to the top crop, 0...1.
     let fillFraction: Double
     let colorHex: String
+    /// Pre-resolved icon honoring the crop's overrides (see `CropIconResolver`).
+    let icon: ResolvedCropIcon
     let isExpanded: Bool
     /// Present only while expanded.
     let timeline: ReportStats.CropTimeline?
@@ -58,22 +60,37 @@ struct TopCropRow: View {
     /// iconless crops keep the same alignment.
     private var rowIcon: some View {
         Group {
-            if let assetName = CropIconAssigner.assetName(for: name) {
+            switch icon {
+            case .custom(let data):
+                if let image = UIImage(data: data) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 22, height: 22)
+                        .clipShape(Circle())
+                } else {
+                    initialsDisc
+                }
+            case .asset(let assetName):
                 Image(assetName)
                     .resizable()
                     .scaledToFit()
                     .shadow(color: Color(hex: "#22381c").opacity(0.18), radius: 2, y: 1)
-            } else {
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .overlay(
-                        Text(name.cropInitials)
-                            .font(Theme.Font.mono(9, weight: .bold))
-                            .foregroundStyle(.white)
-                    )
+            case .initials:
+                initialsDisc
             }
         }
         .frame(width: 22, height: 22)
+    }
+
+    private var initialsDisc: some View {
+        Circle()
+            .fill(Color(hex: colorHex))
+            .overlay(
+                Text(name.cropInitials)
+                    .font(Theme.Font.mono(9, weight: .bold))
+                    .foregroundStyle(.white)
+            )
     }
 }
 
