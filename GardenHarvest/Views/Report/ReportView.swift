@@ -242,7 +242,8 @@ struct ReportView: View {
             HarvestShareCardModel.TopCrop(
                 name: crop.name,
                 valueString: WeightFormatter.poundsAndOunces(crop.total),
-                colorHex: colorHex(for: crop.name)
+                colorHex: colorHex(for: crop.name),
+                icon: CropIconResolver.resolve(name: crop.name, in: crops)
             )
         }
         return HarvestShareCardModel(
@@ -253,6 +254,7 @@ struct ReportView: View {
             mvpTitle: rankedCrops.first.map { ReportStats.superlativeTitle(for: $0.name, year: season) },
             mvpColorHex: rankedCrops.first.map { colorHex(for: $0.name) },
             mvpValueString: rankedCrops.first.map { WeightFormatter.poundsAndOunces($0.total) },
+            mvpIcon: rankedCrops.first.map { CropIconResolver.resolve(name: $0.name, in: crops) },
             topCrops: runnersUp,
             peakLabel: ReportStats.peakLabel(of: seasonEntries) ?? "—"
         )

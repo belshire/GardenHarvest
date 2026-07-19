@@ -8,6 +8,7 @@ struct HarvestShareCardModel {
         let name: String
         let valueString: String
         let colorHex: String
+        let icon: ResolvedCropIcon
     }
 
     let season: Int
@@ -18,6 +19,7 @@ struct HarvestShareCardModel {
     let mvpColorHex: String?
     /// The MVP's season total, shown on its merged row.
     let mvpValueString: String?
+    let mvpIcon: ResolvedCropIcon?
     /// Ranks 2–5; the MVP row above covers #1.
     let topCrops: [TopCrop]
     let peakLabel: String
@@ -69,7 +71,8 @@ struct HarvestShareCardView: View {
                         colorHex: model.mvpColorHex ?? "#999999",
                         plateSize: 50,
                         iconSize: 36,
-                        discSize: 40
+                        discSize: 40,
+                        resolvedIcon: model.mvpIcon
                     )
                     VStack(alignment: .leading, spacing: 3) {
                         Text(mvpName)
@@ -159,21 +162,35 @@ struct HarvestShareCardView: View {
 
     private func cropIcon(_ crop: HarvestShareCardModel.TopCrop) -> some View {
         Group {
-            if let assetName = CropIconAssigner.assetName(for: crop.name) {
+            switch crop.icon {
+            case .custom(let data):
+                if let image = UIImage(data: data) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                } else {
+                    initialsCircle(crop)
+                }
+            case .asset(let assetName):
                 Image(assetName)
                     .resizable()
                     .scaledToFit()
-            } else {
-                Circle()
-                    .fill(Color(hex: crop.colorHex))
-                    .overlay(
-                        Text(crop.name.cropInitials)
-                            .font(Theme.Font.mono(9, weight: .bold))
-                            .foregroundStyle(.white)
-                    )
+            case .initials:
+                initialsCircle(crop)
             }
         }
         .frame(width: 23, height: 23)
+    }
+
+    private func initialsCircle(_ crop: HarvestShareCardModel.TopCrop) -> some View {
+        Circle()
+            .fill(Color(hex: crop.colorHex))
+            .overlay(
+                Text(crop.name.cropInitials)
+                    .font(Theme.Font.mono(9, weight: .bold))
+                    .foregroundStyle(.white)
+            )
     }
 }
 
