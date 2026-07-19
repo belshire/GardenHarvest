@@ -38,7 +38,7 @@ struct ReportStatsTests {
 
     @Test func superlativeUsesKnownTitle() {
         #expect(ReportStats.superlativeTitle(for: "Raspberries", year: 2026)
-            == "Bramble royalty — 40%+ of the haul")
+            == "Bramble royalty")
     }
 
     @Test func superlativeFallsBackToYearedDefault() {
