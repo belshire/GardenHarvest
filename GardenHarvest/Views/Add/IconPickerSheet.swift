@@ -16,8 +16,12 @@ struct IconPickerSheet: View {
 
     private static let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 4)
 
+    private var trimmedQuery: String {
+        search.trimmingCharacters(in: .whitespaces).lowercased()
+    }
+
     private var filteredSlugs: [String] {
-        let query = search.trimmingCharacters(in: .whitespaces).lowercased()
+        let query = trimmedQuery
         guard !query.isEmpty else { return IconCatalog.allSlugs }
         return IconCatalog.allSlugs.filter {
             IconCatalog.displayName(for: $0).lowercased().contains(query)
@@ -33,7 +37,7 @@ struct IconPickerSheet: View {
             searchField
             ScrollView {
                 LazyVGrid(columns: Self.columns, spacing: 14) {
-                    if search.isEmpty {
+                    if trimmedQuery.isEmpty {
                         autoTile
                         uploadTile
                     }
@@ -50,7 +54,10 @@ struct IconPickerSheet: View {
             guard let item else { return }
             Task {
                 if let raw = try? await item.loadTransferable(type: Data.self),
-                   let processed = IconImageProcessor.squareIconData(from: raw) {
+                   // Full-res decode + render is too heavy for the main actor.
+                   let processed = await Task.detached(priority: .userInitiated, operation: {
+                       IconImageProcessor.squareIconData(from: raw)
+                   }).value {
                     onSelect(.custom(processed))
                     dismiss()
                 }
@@ -137,5 +144,6 @@ struct IconPickerSheet: View {
             .padding(.vertical, 8)
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
