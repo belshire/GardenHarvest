@@ -76,6 +76,10 @@
 		FE4A6EFF6475A3A438774571 /* CropIconAssignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */; };
 		001B1EC57B384DC8B1F3DEA7 /* CropIconResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A79C470EC240E4ACB346AE /* CropIconResolverTests.swift */; };
 		FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF06BC87ECDF0E3FBE1DC31 /* AddVegFAB.swift */; };
+		5EAB23DCE3974CCFBD75F69A /* IconImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645455EE5023419596A6422A /* IconImageProcessor.swift */; };
+		A00C96BBB06945909BDC5CC5 /* IconImageProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F260A4616BAB48D6B2FE9DA9 /* IconImageProcessorTests.swift */; };
+		D95AB43E5DCD4A4985953CB9 /* IconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7DA7B30AB545068D0552B8 /* IconCatalog.swift */; };
+		E49BBD09A3B44090A7930D22 /* IconCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E7D5F0F0FE47F589D1092D /* IconCatalogTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +165,10 @@
 		EFF8D4FDE50F39B1D36234A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFF8D4FDE50F39B1D36234A1 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F55E2C03448BB0BBDEF14D39 /* MasterCropList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterCropList.swift; sourceTree = "<group>"; };
+		645455EE5023419596A6422A /* IconImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconImageProcessor.swift; sourceTree = "<group>"; };
+		F260A4616BAB48D6B2FE9DA9 /* IconImageProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconImageProcessorTests.swift; sourceTree = "<group>"; };
+		FF7DA7B30AB545068D0552B8 /* IconCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCatalog.swift; sourceTree = "<group>"; };
+		27E7D5F0F0FE47F589D1092D /* IconCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCatalogTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -241,6 +249,8 @@
 				1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */,
 				1A7C440BD90FE231AC64B01D /* NoteImportService.swift */,
 				1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */,
+				645455EE5023419596A6422A /* IconImageProcessor.swift */,
+				FF7DA7B30AB545068D0552B8 /* IconCatalog.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -299,6 +309,8 @@
 				A6C70E2322782780AB284B2F /* CropColorAssignerTests.swift */,
 				5DC1E2A6AAD41AAC2E0C8549 /* CropIconAssignerTests.swift */,
 				30A79C470EC240E4ACB346AE /* CropIconResolverTests.swift */,
+				F260A4616BAB48D6B2FE9DA9 /* IconImageProcessorTests.swift */,
+				27E7D5F0F0FE47F589D1092D /* IconCatalogTests.swift */,
 				9F4A01F950404C5DDB2EE078 /* DateChipTests.swift */,
 				1A7C440BD90FE231AC64B007 /* LogGroupingTests.swift */,
 				B1047C6914D9654F2DDC5CCA /* MasterCropListTests.swift */,
@@ -454,6 +466,8 @@
 				2B8D551CE00FE231AC64C01B /* InsightStoreTests.swift in Sources */,
 				2B8D551CE00FE231AC64C01F /* HarvestNoteParserTests.swift in Sources */,
 				2B8D551CE00FE231AC64C020 /* NoteImportServiceTests.swift in Sources */,
+				A00C96BBB06945909BDC5CC5 /* IconImageProcessorTests.swift in Sources */,
+				E49BBD09A3B44090A7930D22 /* IconCatalogTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,6 +524,8 @@
 				2B8D551CE00FE231AC64C021 /* ImportHarvestNoteIntent.swift in Sources */,
 				2B8D551CE00FE231AC64C01E /* ImportSheet.swift in Sources */,
 				2B8D551CE00FE231AC64C018 /* InsightDeck.swift in Sources */,
+				5EAB23DCE3974CCFBD75F69A /* IconImageProcessor.swift in Sources */,
+				D95AB43E5DCD4A4985953CB9 /* IconCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
