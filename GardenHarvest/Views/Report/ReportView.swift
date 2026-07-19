@@ -67,7 +67,7 @@ struct ReportView: View {
                 }
 
                 if !insights.isEmpty {
-                    InsightDeck(insights: insights, colorHex: colorHex(for:))
+                    InsightDeck(insights: insights, colorHex: colorHex(for:), resolveIcon: { CropIconResolver.resolve(name: $0, in: crops) })
                         .id(season)
                 }
 

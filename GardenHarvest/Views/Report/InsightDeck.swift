@@ -9,6 +9,7 @@ struct InsightDeck: View {
     let insights: [Insight]
     /// Resolves a crop's display color, matching the rest of the report.
     let colorHex: (String) -> String
+    let resolveIcon: (String) -> ResolvedCropIcon
 
     /// Tag into `pages`: real cards are 1...count, 0 and count+1 are the
     /// wraparound sentinels.
@@ -83,7 +84,8 @@ struct InsightDeck: View {
                     colorHex: colorHex(crop),
                     plateSize: 52,
                     iconSize: 38,
-                    discSize: 42
+                    discSize: 42,
+                    resolvedIcon: resolveIcon(crop)
                 )
             } else {
                 Text("✦")
