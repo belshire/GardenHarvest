@@ -67,7 +67,7 @@ struct ReportView: View {
                 }
 
                 if !insights.isEmpty {
-                    InsightDeck(insights: insights, colorHex: colorHex(for:))
+                    InsightDeck(insights: insights, colorHex: colorHex(for:), resolveIcon: { CropIconResolver.resolve(name: $0, in: crops) })
                         .id(season)
                 }
 
@@ -133,7 +133,8 @@ struct ReportView: View {
                 colorHex: colorHex(for: crop),
                 plateSize: 78,
                 iconSize: 58,
-                discSize: 62
+                discSize: 62,
+                resolvedIcon: CropIconResolver.resolve(name: crop, in: crops)
             )
             .padding(.top, 13)
             .padding(.bottom, 6)
@@ -164,6 +165,7 @@ struct ReportView: View {
                     valueString: WeightFormatter.poundsAndOunces(crop.total),
                     fillFraction: max(0.06, crop.total / maxTotal),
                     colorHex: colorHex(for: crop.name),
+                    icon: CropIconResolver.resolve(name: crop.name, in: crops),
                     isExpanded: expandedCrop == crop.name,
                     timeline: expandedCrop == crop.name
                         ? ReportStats.cropTimeline(for: crop.name, seasonEntries: seasonEntries)
@@ -241,7 +243,8 @@ struct ReportView: View {
             HarvestShareCardModel.TopCrop(
                 name: crop.name,
                 valueString: WeightFormatter.poundsAndOunces(crop.total),
-                colorHex: colorHex(for: crop.name)
+                colorHex: colorHex(for: crop.name),
+                icon: CropIconResolver.resolve(name: crop.name, in: crops)
             )
         }
         return HarvestShareCardModel(
@@ -252,6 +255,7 @@ struct ReportView: View {
             mvpTitle: rankedCrops.first.map { ReportStats.superlativeTitle(for: $0.name, year: season) },
             mvpColorHex: rankedCrops.first.map { colorHex(for: $0.name) },
             mvpValueString: rankedCrops.first.map { WeightFormatter.poundsAndOunces($0.total) },
+            mvpIcon: rankedCrops.first.map { CropIconResolver.resolve(name: $0.name, in: crops) },
             topCrops: runnersUp,
             peakLabel: ReportStats.peakLabel(of: seasonEntries) ?? "—"
         )

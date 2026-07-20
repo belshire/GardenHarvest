@@ -62,6 +62,7 @@ struct LogView: View {
                 subtitle: "Totals for \(String(logYear)) · sums to \(WeightFormatter.poundsAndOunces(yearTotal))",
                 selected: logCrop,
                 colorHex: colorHex(for:),
+                resolveIcon: { CropIconResolver.resolve(name: $0, in: crops) },
                 onSelect: { name in
                     logCrop = name
                     showCropSheet = false
@@ -250,7 +251,8 @@ struct LogView: View {
             plateSize: plateSize,
             iconSize: iconSize,
             discSize: discSize,
-            assetOverride: logCrop == nil ? CropIconAssigner.allCropsAssetName : nil
+            assetOverride: logCrop == nil ? CropIconAssigner.allCropsAssetName : nil,
+            resolvedIcon: logCrop.map { CropIconResolver.resolve(name: $0, in: crops) }
         )
     }
 
@@ -342,6 +344,7 @@ struct LogView: View {
                     isExpanded: expandedMonths.contains(expansionKey(year: year, month: group.month)),
                     revealedEntryID: revealedEntryID,
                     colorHex: colorHex(for:),
+                    resolveIcon: { CropIconResolver.resolve(name: $0, in: crops) },
                     onToggle: { toggleMonth(group.month, in: year) },
                     onRowTap: { entry in
                         withAnimation(.easeInOut(duration: 0.15)) {

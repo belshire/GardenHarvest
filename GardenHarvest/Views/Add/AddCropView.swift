@@ -8,6 +8,8 @@ struct AddCropView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var crops: [Crop]
     @State private var name: String = ""
+    @State private var iconChoice: IconChoice = .auto
+    @State private var showIconPicker = false
     @FocusState private var isFocused: Bool
 
     private var trimmedName: String {
@@ -43,6 +45,14 @@ struct AddCropView: View {
         .background(Theme.panelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear { isFocused = true }
+        .sheet(isPresented: $showIconPicker) {
+            IconPickerSheet(
+                cropName: trimmedName,
+                colorHex: CropColorAssigner.colorHex(for: trimmedName),
+                current: iconChoice,
+                onSelect: { iconChoice = $0 }
+            )
+        }
     }
 
     private var topBar: some View {
@@ -77,41 +87,65 @@ struct AddCropView: View {
         trimmedName.isEmpty ? nil : CropIconAssigner.assetName(for: trimmedName)
     }
 
-    private var iconPreview: some View {
-        VStack(spacing: 8) {
-            if trimmedName.isEmpty {
-                Circle()
-                    .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [5, 5]))
-                    .foregroundStyle(Theme.hairline)
-                    .frame(width: 128, height: 128)
-                    .overlay(
-                        Text("🌱")
-                            .font(.system(size: 46))
-                            .opacity(0.5)
-                    )
-            } else {
-                CropIconPlate(
-                    cropName: trimmedName,
-                    colorHex: CropColorAssigner.colorHex(for: trimmedName),
-                    plateSize: 128,
-                    iconSize: 98,
-                    discSize: 108
-                )
-            }
-            Text(previewCaption)
-                .font(Theme.Font.mono(11.5, weight: .bold))
-                .tracking(0.3)
-                .foregroundStyle(matchedIconName != nil ? Theme.accent2 : Theme.sub)
+    private var resolvedPreviewIcon: ResolvedCropIcon? {
+        switch iconChoice {
+        case .auto: return nil
+        case .asset(let name): return .asset(name)
+        case .custom(let data): return .custom(data)
         }
+    }
+
+    private var iconPreview: some View {
+        Button {
+            showIconPicker = true
+        } label: {
+            VStack(spacing: 8) {
+                if trimmedName.isEmpty && iconChoice == .auto {
+                    Circle()
+                        .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [5, 5]))
+                        .foregroundStyle(Theme.hairline)
+                        .frame(width: 128, height: 128)
+                        .overlay(
+                            Text("🌱")
+                                .font(.system(size: 46))
+                                .opacity(0.5)
+                        )
+                } else {
+                    CropIconPlate(
+                        cropName: trimmedName,
+                        colorHex: CropColorAssigner.colorHex(for: trimmedName),
+                        plateSize: 128,
+                        iconSize: 98,
+                        discSize: 108,
+                        resolvedIcon: resolvedPreviewIcon
+                    )
+                }
+                Text(previewCaption)
+                    .font(Theme.Font.mono(11.5, weight: .bold))
+                    .tracking(0.3)
+                    .foregroundStyle(captionIsAccented ? Theme.accent2 : Theme.sub)
+            }
+        }
+        .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 2)
+        .animation(.easeOut(duration: 0.18), value: iconChoice)
         .animation(.easeOut(duration: 0.18), value: matchedIconName)
     }
 
+    private var captionIsAccented: Bool {
+        iconChoice != .auto || matchedIconName != nil
+    }
+
     private var previewCaption: String {
-        if matchedIconName != nil { return "Auto-matched icon" }
-        if trimmedName.isEmpty { return "Start typing to auto-pick an icon" }
-        return "No icon match — we'll use initials"
+        switch iconChoice {
+        case .custom: return "Custom photo · tap to change"
+        case .asset: return "Icon picked · tap to change"
+        case .auto:
+            if matchedIconName != nil { return "Auto-matched · tap to change" }
+            if trimmedName.isEmpty { return "Start typing, or tap to pick an icon" }
+            return "No icon match · tap to pick one"
+        }
     }
 
     private var suggestionList: some View {
@@ -175,13 +209,20 @@ struct AddCropView: View {
     private func commit() {
         guard !trimmedName.isEmpty else { return }
         let canonicalName = MasterCropList.names.first { $0.lowercased() == trimmedName.lowercased() } ?? trimmedName
-        if !crops.contains(where: { $0.name == canonicalName }) {
+        if let existing = crops.first(where: { $0.name == canonicalName }) {
+            // Re-adding a known crop: only a deliberate pick overwrites its icon.
+            if iconChoice != .auto {
+                existing.iconChoice = iconChoice
+                try? modelContext.save()
+            }
+        } else {
             let crop = Crop(
                 name: canonicalName,
                 colorHex: CropColorAssigner.colorHex(for: canonicalName),
                 sortIndex: (crops.map(\.sortIndex).max() ?? -1) + 1,
                 variants: []
             )
+            crop.iconChoice = iconChoice
             modelContext.insert(crop)
             try? modelContext.save()
         }

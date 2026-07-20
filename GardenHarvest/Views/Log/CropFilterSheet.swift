@@ -11,6 +11,7 @@ struct CropFilterSheet: View {
     let subtitle: String
     let selected: String?
     let colorHex: (String) -> String
+    let resolveIcon: (String) -> ResolvedCropIcon
     let onSelect: (String?) -> Void
 
     var body: some View {
@@ -57,7 +58,8 @@ struct CropFilterSheet: View {
                     plateSize: 34,
                     iconSize: 27,
                     discSize: 30,
-                    assetOverride: name == nil ? CropIconAssigner.allCropsAssetName : nil
+                    assetOverride: name == nil ? CropIconAssigner.allCropsAssetName : nil,
+                    resolvedIcon: name.map(resolveIcon)
                 )
                 Text(name ?? "All crops")
                     .font(Theme.Font.body(15, weight: .bold))

@@ -14,6 +14,7 @@ struct LogMonthSection: View {
     /// The entry whose action bar is showing (at most one across the Log).
     let revealedEntryID: PersistentIdentifier?
     let colorHex: (String) -> String
+    let resolveIcon: (String) -> ResolvedCropIcon
     let onToggle: () -> Void
     let onRowTap: (HarvestEntry) -> Void
     let onEdit: (HarvestEntry) -> Void
@@ -137,7 +138,8 @@ struct LogMonthSection: View {
                 colorHex: colorHex(entry.cropName),
                 plateSize: 38,
                 iconSize: 30,
-                discSize: 34
+                discSize: 34,
+                resolvedIcon: resolveIcon(entry.cropName)
             )
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.cropName)

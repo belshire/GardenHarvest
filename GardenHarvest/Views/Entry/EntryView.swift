@@ -106,7 +106,8 @@ struct EntryView: View {
                     colorHex: crop?.colorHex ?? "#999999",
                     plateSize: 46,
                     iconSize: 36,
-                    discSize: 40
+                    discSize: 40,
+                    resolvedIcon: crop.map { CropIconResolver.resolve(for: $0) }
                 )
                 Text(cropName)
                     .font(Theme.Font.heading(27, weight: .heavy))
