@@ -44,6 +44,9 @@
 		2B8D551CE00FE231AC64C01E /* ImportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01E /* ImportSheet.swift */; };
 		2B8D551CE00FE231AC64C01F /* HarvestNoteParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B01F /* HarvestNoteParserTests.swift */; };
 		2B8D551CE00FE231AC64C020 /* NoteImportServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B020 /* NoteImportServiceTests.swift */; };
+		2B8D551CE00FE231AC64C032 /* CropEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B032 /* CropEditSheet.swift */; };
+		2B8D551CE00FE231AC64C031 /* CropEditService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B031 /* CropEditService.swift */; };
+		2B8D551CE00FE231AC64C030 /* CropEditServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B030 /* CropEditServiceTests.swift */; };
 		2B8D551CE00FE231AC64C021 /* ImportHarvestNoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */; };
 		2D37BC2A659551ED8CADEF9F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66F3A9BE72042DDDB464608 /* HomeView.swift */; };
 		31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A06BC39CC3C307D53C6F02C /* BottomTabBar.swift */; };
@@ -123,9 +126,11 @@
 		1A7C440BD90FE231AC64B01B /* InsightStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightStoreTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestNoteParser.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01D /* NoteImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImportService.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B031 /* CropEditService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropEditService.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01E /* ImportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSheet.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B01F /* HarvestNoteParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestNoteParserTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B020 /* NoteImportServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImportServiceTests.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B030 /* CropEditServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropEditServiceTests.swift; sourceTree = "<group>"; };
 		1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportHarvestNoteIntent.swift; sourceTree = "<group>"; };
 		241BD037D0F81D70CC20B4BE /* ChipButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipButtonStyle.swift; sourceTree = "<group>"; };
 		24FC80BA12064EECA717A50B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -147,6 +152,7 @@
 		8D01260F0E704A7595BD52B1 /* HarvestEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarvestEntry.swift; sourceTree = "<group>"; };
 		8EA93FAA0B68CAB627A9E390 /* AddCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCropView.swift; sourceTree = "<group>"; };
 		AF41A7C00F80476187ACCC2C /* IconPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPickerSheet.swift; sourceTree = "<group>"; };
+		1A7C440BD90FE231AC64B032 /* CropEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropEditSheet.swift; sourceTree = "<group>"; };
 		906655409F60BE410E5614A6 /* SeedIfNeededTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedIfNeededTests.swift; sourceTree = "<group>"; };
 		95ABE122EBEC89C1BFB1B2AE /* ColorHexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHexTests.swift; sourceTree = "<group>"; };
 		9C4B7E1F3A6D50287FBE9D14 /* PageHeaderTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageHeaderTitle.swift; sourceTree = "<group>"; };
@@ -251,11 +257,20 @@
 				1A7C440BD90FE231AC64B017 /* FoundationModelComposer.swift */,
 				1A7C440BD90FE231AC64B01C /* HarvestNoteParser.swift */,
 				1A7C440BD90FE231AC64B01D /* NoteImportService.swift */,
+				1A7C440BD90FE231AC64B031 /* CropEditService.swift */,
 				1A7C440BD90FE231AC64B021 /* ImportHarvestNoteIntent.swift */,
 				645455EE5023419596A6422A /* IconImageProcessor.swift */,
 				FF7DA7B30AB545068D0552B8 /* IconCatalog.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		1A7C440BD90FE231AC64B033 /* Crop */ = {
+			isa = PBXGroup;
+			children = (
+				1A7C440BD90FE231AC64B032 /* CropEditSheet.swift */,
+			);
+			path = Crop;
 			sourceTree = "<group>";
 		};
 		68D01B2AE68D1EE288C3B9CD /* Entry */ = {
@@ -328,6 +343,7 @@
 				1A7C440BD90FE231AC64B01B /* InsightStoreTests.swift */,
 				1A7C440BD90FE231AC64B01F /* HarvestNoteParserTests.swift */,
 				1A7C440BD90FE231AC64B020 /* NoteImportServiceTests.swift */,
+				1A7C440BD90FE231AC64B030 /* CropEditServiceTests.swift */,
 			);
 			path = GardenHarvestTests;
 			sourceTree = "<group>";
@@ -344,6 +360,7 @@
 				AD5C8F2E4B7961398ACF0E25 /* TotalInfoCard.swift */,
 				1A7C440BD90FE231AC64B013 /* YearStepper.swift */,
 				25EF93C51C63DBFA98CB4ED4 /* Add */,
+				1A7C440BD90FE231AC64B033 /* Crop */,
 				68D01B2AE68D1EE288C3B9CD /* Entry */,
 				CF22C8A470A8261DBA80F1EB /* Home */,
 				1A7C440BD90FE231AC64B008 /* Log */,
@@ -469,6 +486,7 @@
 				2B8D551CE00FE231AC64C01B /* InsightStoreTests.swift in Sources */,
 				2B8D551CE00FE231AC64C01F /* HarvestNoteParserTests.swift in Sources */,
 				2B8D551CE00FE231AC64C020 /* NoteImportServiceTests.swift in Sources */,
+				2B8D551CE00FE231AC64C030 /* CropEditServiceTests.swift in Sources */,
 				A00C96BBB06945909BDC5CC5 /* IconImageProcessorTests.swift in Sources */,
 				E49BBD09A3B44090A7930D22 /* IconCatalogTests.swift in Sources */,
 			);
@@ -481,6 +499,7 @@
 				03412AB41E6CD22EF7248C31 /* AddCropView.swift in Sources */,
 				FEB1769ECA38262992A386EF /* AddVegFAB.swift in Sources */,
 				AC795405673A470DB95BA7C9 /* IconPickerSheet.swift in Sources */,
+				2B8D551CE00FE231AC64C032 /* CropEditSheet.swift in Sources */,
 				25A40347E4B78135958703CC /* AppTab.swift in Sources */,
 				31C239AE2DE714AE8956E591 /* BottomTabBar.swift in Sources */,
 				2B8D551CE00FE231AC64C002 /* CapsuleBar.swift in Sources */,
@@ -525,6 +544,7 @@
 				2B8D551CE00FE231AC64C017 /* FoundationModelComposer.swift in Sources */,
 				2B8D551CE00FE231AC64C01C /* HarvestNoteParser.swift in Sources */,
 				2B8D551CE00FE231AC64C01D /* NoteImportService.swift in Sources */,
+				2B8D551CE00FE231AC64C031 /* CropEditService.swift in Sources */,
 				2B8D551CE00FE231AC64C021 /* ImportHarvestNoteIntent.swift in Sources */,
 				2B8D551CE00FE231AC64C01E /* ImportSheet.swift in Sources */,
 				2B8D551CE00FE231AC64C018 /* InsightDeck.swift in Sources */,

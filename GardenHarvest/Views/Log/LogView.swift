@@ -81,7 +81,9 @@ struct LogView: View {
                 cropName: entry.cropName,
                 editing: entry,
                 onSaved: { _ in entryToEdit = nil },
-                onBack: { entryToEdit = nil }
+                onBack: { entryToEdit = nil },
+                // A crop deleted from here takes this entry with it.
+                onCropChanged: { if case .deleted = $0 { entryToEdit = nil } }
             )
             // Push the Back/header clear of the sheet's rounded top edge.
             .safeAreaPadding(.top, 16)
@@ -103,7 +105,14 @@ struct LogView: View {
             expandLatestMonthOnce()
         }
         .onChange(of: allEntries) { rebuildDerivedData() }
-        .onChange(of: crops) { rebuildDerivedData() }
+        .onChange(of: crops) {
+            // A crop renamed, merged or deleted from the editor leaves this
+            // filter pointing at a name nobody grows any more.
+            if let logCrop, !crops.contains(where: { $0.name == logCrop }) {
+                self.logCrop = nil
+            }
+            rebuildDerivedData()
+        }
         .onChange(of: logCrop) { rebuildDerivedData() }
     }
 
