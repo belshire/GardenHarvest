@@ -8,10 +8,20 @@ struct EntryView: View {
     let editingEntry: HarvestEntry?
     let onSaved: (String) -> Void
     let onBack: () -> Void
+    /// Fires after the crop editor writes. `.deleted` leaves this screen with
+    /// no crop, so the presenter has to take it away.
+    let onCropChanged: (CropEditResult) -> Void
 
     @Environment(\.modelContext) private var modelContext
     @Query private var crops: [Crop]
+    @Query private var allEntries: [HarvestEntry]
 
+    /// The crop name as it stands now. Seeded from `cropName`, then re-pointed
+    /// in place when the editor renames or merges the crop — the presenter's
+    /// route keeps the old name so this view isn't rebuilt and the weight,
+    /// note, variant and date the user is midway through survive the sheet.
+    @State private var liveCropName: String
+    @State private var isEditingCrop = false
     @State private var ouncesText: String
     @State private var note: String
     @State private var selectedVariant: String?
@@ -23,12 +33,15 @@ struct EntryView: View {
         cropName: String,
         editing editingEntry: HarvestEntry? = nil,
         onSaved: @escaping (String) -> Void,
-        onBack: @escaping () -> Void
+        onBack: @escaping () -> Void,
+        onCropChanged: @escaping (CropEditResult) -> Void = { _ in }
     ) {
         self.cropName = cropName
         self.editingEntry = editingEntry
         self.onSaved = onSaved
         self.onBack = onBack
+        self.onCropChanged = onCropChanged
+        _liveCropName = State(initialValue: cropName)
         _ouncesText = State(initialValue: editingEntry.map { WeightFormatter.ounces($0.ounces) } ?? "")
         _note = State(initialValue: editingEntry?.note ?? "")
         _selectedVariant = State(initialValue: editingEntry?.variant)
@@ -37,7 +50,7 @@ struct EntryView: View {
     }
 
     private var crop: Crop? {
-        crops.first { $0.name == cropName }
+        crops.first { $0.name == liveCropName }
     }
 
     private var ounces: Double {
@@ -67,6 +80,19 @@ struct EntryView: View {
             }
             .background(Theme.panelBackground.ignoresSafeArea())
             .navigationBarHidden(true)
+            .sheet(isPresented: $isEditingCrop) {
+                if let crop {
+                    CropEditSheet(crop: crop) { result in
+                        isEditingCrop = false
+                        if case .updated(let newName, _) = result {
+                            liveCropName = newName
+                        }
+                        onCropChanged(result)
+                    }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+                }
+            }
             .onChange(of: noteFocused) { _, focused in
                 guard focused else { return }
                 // Wait for the keyboard inset to land, then scroll the save
@@ -91,31 +117,78 @@ struct EntryView: View {
         }
     }
 
-    /// Eyebrow-over-serif page header matching Home/Log/Add (see
-    /// `PageHeaderTitle`), with the crop's icon plate beside the title.
+    /// Eyebrow over a card-shaped button: the crop's plate and name, its
+    /// all-time history, and the way into the crop editor.
     private var header: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             Text(editingEntry == nil ? "Log harvest" : "Edit harvest")
                 .font(Theme.Font.mono(13.5, weight: .bold))
                 .textCase(.uppercase)
                 .tracking(1.8)
                 .foregroundStyle(Theme.accent)
-            HStack(spacing: 10) {
+                .frame(maxWidth: .infinity)
+            cropCardButton
+        }
+    }
+
+    private var cropCardButton: some View {
+        Button {
+            noteFocused = false
+            isEditingCrop = true
+        } label: {
+            HStack(spacing: 13) {
                 CropIconPlate(
-                    cropName: cropName,
+                    cropName: liveCropName,
                     colorHex: crop?.colorHex ?? "#999999",
-                    plateSize: 46,
-                    iconSize: 36,
-                    discSize: 40,
+                    plateSize: 62,
+                    iconSize: 48,
+                    discSize: 54,
                     resolvedIcon: crop.map { CropIconResolver.resolve(for: $0) }
                 )
-                Text(cropName)
-                    .font(Theme.Font.heading(27, weight: .heavy))
-                    .foregroundStyle(Theme.ink)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(liveCropName)
+                        .font(Theme.Font.heading(24, weight: .heavy))
+                        .foregroundStyle(Theme.ink)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    // Two lines: the count, the first year and the all-time
+                    // total together outrun one line once the Edit pill has
+                    // taken its share of the card.
+                    Text(historyLine)
+                        .font(Theme.Font.mono(10.5))
+                        .tracking(0.4)
+                        .foregroundStyle(Theme.sub)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Label("Edit", systemImage: "pencil")
+                    .font(Theme.Font.body(12.5, weight: .heavy))
+                    .foregroundStyle(Theme.accent)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 8)
+                    .background(Theme.accent.opacity(0.10))
+                    .clipShape(Capsule())
             }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(Theme.card)
+            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Theme.hairline, lineWidth: 1))
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
         }
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(liveCropName). \(historyLine). Edit name and icon")
+    }
+
+    /// All-time on purpose — the season-scoped `LogGrouping` view of the same
+    /// data would hide the history a rename is about to rewrite.
+    private var historyLine: String {
+        let radius = CropEditService.blastRadius(of: liveCropName, in: allEntries)
+        guard radius.entryCount > 0, let firstYear = radius.firstYear else { return "No pickings yet" }
+        return "\(CropEditCopy.pickings(radius.entryCount)) since \(String(firstYear)) · "
+            + WeightFormatter.poundsAndOunces(radius.totalOunces)
     }
 
     private var ouncesDisplay: some View {
@@ -254,7 +327,7 @@ struct EntryView: View {
     private var saveButtonLabel: String {
         guard ounces > 0 else { return "Enter a weight" }
         return editingEntry == nil
-            ? "Log \(WeightFormatter.ounces(ounces)) oz \(cropName)"
+            ? "Log \(WeightFormatter.ounces(ounces)) oz \(liveCropName)"
             : "Save changes"
     }
 
@@ -270,7 +343,7 @@ struct EntryView: View {
             editingEntry.variant = selectedVariant
             do {
                 try modelContext.save()
-                onSaved("✏️ Updated \(WeightFormatter.ounces(roundedOunces)) oz \(cropName)")
+                onSaved("✏️ Updated \(WeightFormatter.ounces(roundedOunces)) oz \(liveCropName)")
             } catch {
                 assertionFailure("Failed to update harvest entry: \(error)")
             }
@@ -278,7 +351,7 @@ struct EntryView: View {
         }
 
         let entry = HarvestEntry(
-            cropName: cropName,
+            cropName: liveCropName,
             ounces: roundedOunces,
             date: date,
             note: note,
@@ -287,7 +360,7 @@ struct EntryView: View {
         modelContext.insert(entry)
         do {
             try modelContext.save()
-            onSaved("🌱 Logged \(WeightFormatter.ounces(roundedOunces)) oz \(cropName)")
+            onSaved("🌱 Logged \(WeightFormatter.ounces(roundedOunces)) oz \(liveCropName)")
         } catch {
             modelContext.delete(entry)
             assertionFailure("Failed to save harvest entry: \(error)")

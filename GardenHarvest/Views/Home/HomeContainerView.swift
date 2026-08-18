@@ -40,7 +40,8 @@ struct HomeContainerView: View {
     var body: some View {
         NavigationStack(path: $path) {
             HomeView(
-                onSelectCrop: { name in path.append(.entry(cropName: name)) }
+                onSelectCrop: { name in path.append(.entry(cropName: name)) },
+                onToast: showToast
             )
             .background(SwipeBackEnabler())
             .navigationDestination(for: HomeRoute.self) { route in
@@ -52,7 +53,21 @@ struct HomeContainerView: View {
                             if !path.isEmpty { path.removeLast() }
                             showToast(message)
                         },
-                        onBack: { if !path.isEmpty { path.removeLast() } }
+                        onBack: { if !path.isEmpty { path.removeLast() } },
+                        onCropChanged: { result in
+                            switch result {
+                            case .cancelled:
+                                break
+                            case .updated(_, let toast):
+                                // The route still carries the old name; EntryView
+                                // re-points itself so the in-progress entry isn't
+                                // torn down, and this screen is popped on Back.
+                                showToast(toast)
+                            case .deleted(let toast):
+                                if !path.isEmpty { path.removeLast() }
+                                showToast(toast)
+                            }
+                        }
                     )
                 case .add:
                     AddCropView(

@@ -7,11 +7,15 @@ struct HomeView: View {
     @Query(sort: \Crop.sortIndex) private var crops: [Crop]
     @Query private var allEntries: [HarvestEntry]
 
-    @State private var isEditing = false
+    /// Drag-to-reorder mode. Entered only from a tile's context menu, so a
+    /// long press no longer drops straight into dragging.
+    @State private var isRearranging = false
     @State private var draggingCrop: Crop?
-    @State private var iconEditingCrop: Crop?
+    @State private var editingCrop: Crop?
+    @State private var cropPendingDelete: Crop?
 
     let onSelectCrop: (String) -> Void
+    let onToast: (String) -> Void
 
     private var season: Int { DateProvider.currentYear }
 
@@ -27,7 +31,11 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 header
-                totalCard
+                if isRearranging {
+                    rearrangeBar
+                } else {
+                    totalCard
+                }
                 grid
             }
             .padding(.horizontal, 20)
@@ -41,43 +49,76 @@ struct HomeView: View {
             draggingCrop: $draggingCrop,
             saveOrder: persistOrder
         ))
-        .sheet(item: $iconEditingCrop) { crop in
-            IconPickerSheet(
-                cropName: crop.name,
-                colorHex: crop.colorHex,
-                current: crop.iconChoice,
-                onSelect: { choice in
-                    crop.iconChoice = choice
-                    try? modelContext.save()
+        .sheet(item: $editingCrop) { crop in
+            CropEditSheet(crop: crop) { result in
+                editingCrop = nil
+                switch result {
+                case .cancelled:
+                    break
+                case .updated(_, let toast), .deleted(let toast):
+                    onToast(toast)
                 }
-            )
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        // `presenting:` hands the crop to the action closure, so the delete
+        // doesn't depend on the binding still holding it once the alert
+        // starts dismissing.
+        .alert(
+            cropPendingDelete.map { CropEditCopy.deleteTitle($0.name) } ?? "",
+            isPresented: Binding(
+                get: { cropPendingDelete != nil },
+                set: { if !$0 { cropPendingDelete = nil } }
+            ),
+            presenting: cropPendingDelete
+        ) { crop in
+            Button(CropEditCopy.deleteConfirm, role: .destructive) { delete(crop) }
+            Button(CropEditCopy.deleteCancel, role: .cancel) {}
+        } message: { crop in
+            Text(CropEditCopy.deleteBody(CropEditService.blastRadius(of: crop.name, in: allEntries)))
         }
     }
 
     private var header: some View {
-        PageHeaderTitle(eyebrow: seasonLabel, title: "What did you pick?")
-            .frame(maxWidth: .infinity)
-            .overlay(alignment: .trailing) {
-                if isEditing {
-                    Button {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            isEditing = false
-                            draggingCrop = nil
-                        }
-                    } label: {
-                        Text("Done")
-                            .font(Theme.Font.body(15, weight: .bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 9)
-                            .background(Theme.accent)
-                            .clipShape(Capsule())
-                            .shadow(color: Theme.accent.opacity(0.35), radius: 8, y: 4)
-                    }
-                    .buttonStyle(.plain)
-                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+        PageHeaderTitle(
+            eyebrow: seasonLabel,
+            title: isRearranging ? "Rearrange your crops" : "What did you pick?"
+        )
+        .frame(maxWidth: .infinity)
+    }
+
+    /// Replaces the season total while rearranging: what the mode is, and the
+    /// only way out of it.
+    private var rearrangeBar: some View {
+        HStack(spacing: 10) {
+            Text("Drag tiles to rearrange")
+                .font(Theme.Font.mono(11.5, weight: .bold))
+                .foregroundStyle(Theme.sub)
+            Spacer()
+            Button {
+                withAnimation(.easeOut(duration: 0.2)) {
+                    isRearranging = false
+                    draggingCrop = nil
                 }
+            } label: {
+                Text("Done")
+                    .font(Theme.Font.body(13.5, weight: .heavy))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Theme.accent)
+                    .clipShape(Capsule())
             }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 15)
+        .padding(.vertical, 13)
+        .background(Theme.card)
+        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.hairline, lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .shadow(color: Color(hex: "#1e3214").opacity(0.08), radius: 9, y: 6)
+        .transition(.opacity.combined(with: .scale(scale: 0.97)))
     }
 
     private var seasonLabel: String {
@@ -105,23 +146,22 @@ struct HomeView: View {
 
     @ViewBuilder
     private func tile(for crop: Crop, at index: Int, totalOunces: Double) -> some View {
-        let isDragging = isEditing && draggingCrop?.id == crop.id
+        let isDragging = isRearranging && draggingCrop?.id == crop.id
+        // Tapping a tile while rearranging does nothing — the drag is the
+        // gesture that matters there, and a stray tap used to open the picker.
         let base = CropTileView(crop: crop, totalOunces: totalOunces) {
-            if isEditing {
-                iconEditingCrop = crop
-            } else {
-                onSelectCrop(crop.name)
-            }
+            guard !isRearranging else { return }
+            onSelectCrop(crop.name)
         }
         .modifier(TileWiggleModifier(
-            isActive: isEditing,
+            isActive: isRearranging,
             clockwise: index.isMultiple(of: 2),
             phase: Double(index % 3) * 0.045
         ))
         .opacity(isDragging ? 0.5 : 1)
         .scaleEffect(isDragging ? 0.95 : 1)
 
-        if isEditing {
+        if isRearranging {
             base
                 .onDrag {
                     withAnimation(.easeOut(duration: 0.22)) {
@@ -143,14 +183,40 @@ struct HomeView: View {
                     saveOrder: persistOrder
                 ))
         } else {
-            base
-                .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 0.45).onEnded { _ in
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            isEditing = true
-                        }
+            // The system's lift-and-blur preview stands in for the prototype's
+            // hand-drawn scrim; it also supplies the open haptic.
+            base.contextMenu {
+                Button {
+                    editingCrop = crop
+                } label: {
+                    Label("Edit name & icon", systemImage: "pencil")
+                }
+                Button {
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        isRearranging = true
                     }
-                )
+                } label: {
+                    Label("Rearrange crops", systemImage: "arrow.up.arrow.down")
+                }
+                Button(role: .destructive) {
+                    cropPendingDelete = crop
+                } label: {
+                    Label("Delete crop", systemImage: "trash")
+                }
+            } preview: {
+                CropTileView(crop: crop, totalOunces: totalOunces) {}
+                    .frame(width: 168)
+            }
+        }
+    }
+
+    private func delete(_ crop: Crop) {
+        let name = crop.name
+        do {
+            let removed = try CropEditService.delete(crop, in: modelContext)
+            onToast(CropEditCopy.deleteToast(cropName: name, entryCount: removed))
+        } catch {
+            assertionFailure("Failed to delete crop: \(error)")
         }
     }
 

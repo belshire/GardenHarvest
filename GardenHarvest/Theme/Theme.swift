@@ -16,6 +16,7 @@ extension Color {
 enum Theme {
     static let accent = Color(hex: "#ff6a4d")
     static let accent2 = Color(hex: "#4caf50")
+    static let destructive = Color(hex: "#c0492f")
     static let ink = Color(hex: "#22381c")
     static let sub = Color(hex: "#6a8560")
     static let card = Color.white
