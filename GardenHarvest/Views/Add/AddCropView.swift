@@ -40,7 +40,10 @@ struct AddCropView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 6)
-            .padding(.bottom, 28)
+            // The tab bar floats over this content (RootView overlays
+            // it), so leave room for the button to scroll clear of it —
+            // same clearance the Log and Report screens use.
+            .padding(.bottom, 128)
         }
         .background(Theme.panelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
